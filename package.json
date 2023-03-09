@@ -1,14 +1,14 @@
 {
-  "name": "cs-546-lab-5",
+  "name": "cs-546-group-15",
   "version": "1.0.0",
-  "description": "cs-546-lab-5",
+  "description": "cs-546-group-15",
   "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Pradyumn Pundir 20012602",
+  "author": "cs-546-group-15",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
