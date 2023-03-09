@@ -1,0 +1,18 @@
+{
+  "name": "cs-546-lab-5",
+  "version": "1.0.0",
+  "description": "cs-546-lab-5",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pradyumn Pundir 20012602",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^5.1.0",
+    "path": "^0.12.7"
+  }
+}
