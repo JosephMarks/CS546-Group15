@@ -1,10 +1,4 @@
 # CS546-Group15
+This is just a standard template which we gonna follow it is similar as prof's so that it would be easy to understand for all, as well as the integration would be a lot more easier. Just in case if there is any kind of issue regarding the files do contact me.
 
-Repo for Group 15's final project in CS546 @ Stevens Institute of Technology
-
-**<u>Team Members</u>**
-
-- Pradyumn Pundir (ppundir1@stevens.edu)
-- Ruobing Liu (rliu40@stevens.edu)
-- Tzu-Ming Lu (tlu14@stevens.edu)
-- Joseph Marks (jmarks@stevens.edu)
+# Important : Do make a separate brance=h before merging into main. So, that one of us can have a look before merging it. This can help in resolving any bugs before pushing it to the main branch.
