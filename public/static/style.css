@@ -1,3 +1,33 @@
-h1 {
-text-align: center;
+body {
+    height: 100vh;
+    overflow: auto;
+    background-repeat: no-repeat;
 }
+
+.container{
+    padding: 2%;
+}
+.signUp{
+    background-color: white;
+    background: rgba(255, 255, 255, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vh;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 2%;
+    font-family: "Jazz LET, fantasy";
+    border: 2px solid black;
+}
+
+.signUp form input{
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid black;
+  border-radius: 0px;
+}
+
+h1 {
+    text-align: center;
+} 
