@@ -4,7 +4,6 @@ import { dirname } from 'path';
 import express from 'express';
 import bodyParser from 'express';
 import { fileURLToPath } from 'url';
-//const __dirname = dirname(fileURLToPath(import.meta.url));
 const __dirname = path.join(process.cwd(), '/');
 
 const constructorMethod = (app) =>{
