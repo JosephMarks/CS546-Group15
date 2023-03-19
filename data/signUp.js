@@ -1,5 +1,5 @@
 import {ObjectId} from 'mongodb';
-import {members} from '../config/mongoCollections.js';
+import {signUp} from '../config/mongoCollections.js';
 
 const userCollection = await signUp();
 
