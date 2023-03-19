@@ -6,8 +6,8 @@ const userCollection = await signUp();
 const signUpFunctions = {
 
     async create(fname, lname, age, email, password) {
-        const finalPush = await userCollection.insertOne({fname, lname, age, email, password})
-        return ({_id: finalPush.insertedId.toString(), fname, lname, age, email, password})
+        const finalPush = await userCollection.insertOne({fname, lname, age, email, password, profile:[]})
+        return (await userCollection.findOne({_id: finalPush.insertedId}))
     }
 
 }
