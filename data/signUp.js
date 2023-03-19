@@ -1,7 +1,7 @@
 import {ObjectId} from 'mongodb';
 import {members} from '../config/mongoCollections.js';
 
-const userCollection = await members();
+const userCollection = await signUp();
 
 const signUpFunctions = {
 
