@@ -5,7 +5,7 @@ import express from 'express';
 import bodyParser from 'express';
 import { fileURLToPath } from 'url';
 //const __dirname = dirname(fileURLToPath(import.meta.url));
-const __dirname = dirname("/home/pp/Downloads/CS546-Group15/public/");
+const __dirname = path.join(process.cwd(), '/');
 
 const constructorMethod = (app) =>{
     app.use(bodyParser.urlencoded())
