@@ -9,7 +9,8 @@ const __dirname = path.join(process.cwd(), '/');
 const constructorMethod = (app) =>{
     app.use(bodyParser.urlencoded())
     app.use(express.static('public'));
-    app.get("/", (req, res) => res.sendFile(`${__dirname}/public/signup.html`));
+    
+    app.get("/", (req, res) => res.sendFile(`${__dirname}/public/index.html`)); // no need to add anything at this route as by default it will call index.html
     app.get("/signUp", (req, res) => res.sendFile(`${__dirname}/public/signup.html`));
     app.use('/home', mainRoutes)
     app.use('/signUp/form', signUpRoutes)
