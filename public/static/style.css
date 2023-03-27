@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     height: 100vh;
     overflow: auto;
@@ -56,4 +57,8 @@ button:hover{
     100% {
         opacity: 1;
      }
+=======
+h1 {
+text-align: center;
+>>>>>>> d1438532f229bb94db82bbe178fdeb5232d4a77f
 }

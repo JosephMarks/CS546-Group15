@@ -21,6 +21,7 @@ const constructorMethod = (app) =>{
     app.use('/signUp/form', signUpRoutes)
     app.use('/logIn/form', logInRoutes)
 
+
     app.use('*', (req, res)=>{
         res.status(404).json({error: 'Page Not found'})
     })
