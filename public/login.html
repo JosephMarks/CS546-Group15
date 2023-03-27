@@ -4,33 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Log In</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <link href="./static/style.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
         <div class="signUp">
 
-            <form class="row g-3 needs-validation" onsubmit="submitData(event)">
+            <form class="row g-3 needs-validation" onsubmit="getError(event)">
                 <span id="errorDisplay" style="color: red"></span>
                 <img id = "icon" src="./static/images/user.svg" alt="" height="55px", width="55px">
-
-                <div class="col-md-12">
-                <label class="form-label">First name</label>
-                <input type="text" class="form-control" id = "fname" required>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="validationCustom01" class="form-label">Last name</label>
-                    <input type="text" class="form-control" id="lname" required>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="inputEmail4" class="form-label">Age</label>
-                    <input type="number" class="form-control" id="age" placeholder="Must be older than 12 years" min="12" required>
-                </div>
 
                 <div class="col-md-12">
                     <label for="inputEmail4" class="form-label">Email</label>
@@ -39,7 +25,7 @@
 
                 <div class="col-md-12">
                     <label for="inputEmail4" class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Must be atleast 8 characters" minlength="8" id="password" required>
+                    <input type="password" id="password" class="form-control" placeholder="Must be atleast 8 characters" aria-label="Password" minlength="8" required>
                 </div> 
 
                 <div class="col-md-12">
@@ -49,29 +35,22 @@
             </form>
 
         </div>
-
     </div>
-    
+
+    <!-- <script src="../helpers.js"></script> -->
     <script>
-        const url = "http://localhost:3000/signUp/form/data" 
-        async function submitData (e){
+        const url = "http://localhost:3000/logIn/form/data" 
+        
+        async function getError (e){
             e.preventDefault()
             
-            const fname = document.getElementById('fname')
-            const lname = document.getElementById('lname')
             const email = document.getElementById('email')
-            const age = document.getElementById('age')
             const pass = document.getElementById('password')
 
             const loginData = {
-                fname: fname.value,
-                lname: lname.value,
-                age: age.value,
                 email: email.value,
                 pass: pass.value
             }
-
-            // console.log(loginData)
 
             const res = await fetch(url, 
             {
@@ -88,5 +67,6 @@
             errorDisplay.innerText = data.errorMessage
         }
     </script>
+
 </body>
 </html>

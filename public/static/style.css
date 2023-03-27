@@ -2,32 +2,58 @@ body {
     height: 100vh;
     overflow: auto;
     background-repeat: no-repeat;
+    background-color: #F0A150 !important;
 }
 
 .container{
-    padding: 2%;
+    font-family: "Gill Sans Extrabold", sans-serif;
+    padding: 2px;
 }
 .signUp{
+    color: #F0A150;
     background-color: white;
-    background: rgba(255, 255, 255, 0.1);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50vh;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    width: auto;
+    max-width: 50vh;
+    box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
     padding: 2%;
-    font-family: "Jazz LET, fantasy";
-    border: 2px solid black;
+    border: 2px solid white;
+    border-radius: 35px;
+    animation: fadeInAnimation ease 2s;
 }
+
+
 
 .signUp form input{
   background: transparent;
   border: none;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid #F0A150;
   border-radius: 0px;
 }
 
 h1 {
+    color: white !important;
     text-align: center;
 } 
+
+button{
+    color: #F0A150 !important;
+    border-color: #F0A150 !important;
+}
+
+button:hover{
+    background-color: #F0A150 !important;
+    color: white !important;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+     }
+}
