@@ -33,7 +33,7 @@ const signUpFunctions = {
       lname,
       email,
       password,
-      profile: [{ age }],
+      age: age,
       gender,
       locationState,
       university,
