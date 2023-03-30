@@ -7,6 +7,7 @@ const router = Router();
 
 router.route("/signup").post(async (req, res) => {
   const bodyData = req.body;
+  console.log(bodyData);
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
     return res

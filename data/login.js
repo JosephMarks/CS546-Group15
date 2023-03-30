@@ -1,23 +1,24 @@
-import {ObjectId} from 'mongodb';
-import {user} from '../config/mongoCollections.js';
-import validations from '../helpers.js';
-import bcrypt from 'bcrypt'
+import { ObjectId } from "mongodb";
+import { users } from "../config/mongoCollections.js";
+import validations from "../helpers.js";
+import bcrypt from "bcrypt";
 
-const userCollection = await user();
+const userCollection = await users();
 
 const logInFunctions = {
+  async logIn(email, password) {
+    if (!validations.isProperString([email, password]))
+      throw "Error : Email and Password can only be string not just string with empty spaces";
 
-    async logIn(email, password) {
+    const ifAlready = await userCollection.findOne(
+      { email: email },
+      { projection: { email: 1, password: 1 } }
+    );
+    if (!ifAlready) throw "Error: User Email is not registered";
 
-        if (!validations.isProperString([email, password])) throw "Error : Email and Password can only be string not just string with empty spaces"
+    if (!(await bcrypt.compare(password, ifAlready.password)))
+      throw "Error : Wrong Password";
+  },
+};
 
-        const ifAlready = await userCollection.findOne({email: email}, {projection: {email: 1, password: 1}})
-        if (!ifAlready) throw "Error: User Email is not registered"
-
-        if (!await (bcrypt.compare(password, ifAlready.password))) throw "Error : Wrong Password"
-
-    }
-
-}
-
-export default logInFunctions
+export default logInFunctions;
