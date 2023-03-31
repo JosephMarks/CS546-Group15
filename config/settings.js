@@ -1,5 +1,5 @@
 export const mongoConfig = {
-  serverUrl: '*******',
+  serverUrl: '************',
   database: 'webDevelopmentGroup15'
 };
 
