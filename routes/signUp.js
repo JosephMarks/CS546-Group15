@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 const router = Router();
 
-router.route("/signup").post(async (req, res) => {
+router.route("/data").post(async (req, res) => {
   const bodyData = req.body;
   console.log(bodyData);
 
