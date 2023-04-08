@@ -899,8 +899,13 @@ const updateFirstPost = await networkData.updatePost(firstPostId, "This is modif
 console.log(updateFirstPost);
 
 // Get All Comments By User Id 
-const userComments = await networkData.getCommentsByUserId(did);
-console.log(userComments)
+const userCommentsByUserId = await networkData.getCommentsByUserId(did);
+console.log(userCommentsByUserId)
+
+// Get Comments By Comments Id 
+const getAllPost = await networkData.getAllPost();
+const userCommentsByCommentsId = await networkData.getCommentsByCommentId(getAllPost[0].comments[0]._id.toString());
+console.log(userCommentsByCommentsId)
 
 console.log('Done seeding database');
 await closeConnection();

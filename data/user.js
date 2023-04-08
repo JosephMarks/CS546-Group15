@@ -20,7 +20,7 @@ const exportedMethods = {
   },
 
   async createUser (fname, lname, age, email, password)
-  { 
+  {
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");
@@ -44,7 +44,7 @@ const exportedMethods = {
     let createdAt = new Date().toLocaleDateString("en-GB"); // the first time user's registeration 
     let updatedAt = new Date().toLocaleDateString("en-GB"); // update date that user modify their profile
 
-    const finalPush = await userCollection.insertOne({
+    const newCreateUser = await userCollection.insertOne({
       fname,
       lname,
       email,
@@ -62,7 +62,9 @@ const exportedMethods = {
       createdAt,
       updatedAt,
     });
-    return await userCollection.findOne({ _id: finalPush.insertedId });
+    if(!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+
+    return await this.getUserById(newCreateUser.insertedId.toString());
   },
 
   async updateUsers (userId, updateData)  // update user's profile
@@ -115,7 +117,7 @@ const exportedMethods = {
         404,
         `Error: Update failed, could not find a user with id of ${id}`
       ];
-
+    updateInfo.value._id = updateInfo.value._id.toString();
     return await updateInfo.value;
   },
 
@@ -128,7 +130,7 @@ const exportedMethods = {
     });
     if(deletionInfo.lastErrorObject.n === 0)
       throw [404, `Error: Could not delete user with id of ${id}`];
-
+    deletionInfo.value._id = deletionInfo.value._id.toString();
     return { ...deletionInfo.value, deleted: true };
   },
 
