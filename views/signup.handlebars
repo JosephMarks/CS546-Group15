@@ -1,0 +1,43 @@
+<div class="container">
+        <div class="signUp">
+
+            <form class="row g-3 needs-validation" action="/signUp/data" method="post">
+                <span id="errorDisplay" style="color: red"> {{error}} </span>
+                <img id = "icon" src='../public/static/images/user.svg' alt="" height="55px", width="55px">
+
+                <div class="col-md-12">
+                <label class="fname">First name</label>
+                <input type="text" class="form-control" id = "fname" name="fname" required>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="validationCustom01" class="lname">Last name</label>
+                    <input type="text" class="form-control" id="lname" name="lname" required>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" class="form-control" id="age" placeholder="Must be older than 18 years" min="12" max="65" name="age" required>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" placeholder="Must be atleast 8 characters" minlength="8" id="pass" name="pass" required>
+                </div> 
+
+                <span>Already a User <a href="/logIn">Log In</a></span>
+
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-outline-info">Sign Up</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
