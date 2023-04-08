@@ -5,14 +5,18 @@ import bcrypt from "bcrypt";
 
 const router = Router();
 
+router.route('/').get(async (req, res) => {
+  return res.render('signup', {title: 'Sign Up'})
+});
+
 router.route("/data").post(async (req, res) => {
   const bodyData = req.body;
-  console.log(bodyData);
+  // console.log(bodyData);
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
     return res
       .status(400)
-      .json({ error: "There are no fields in the request body" });
+      .render('signup', { error: "There are no fields in the request body" });
   }
 
   let { fname, lname, age, email, pass } = bodyData;
@@ -27,7 +31,7 @@ router.route("/data").post(async (req, res) => {
     validations.isAge(age);
     pass = await bcrypt.hash(pass.trim(), 5);
   } catch (e) {
-    return res.status(400).json({ errorMessage: e });
+    return res.status(400).render('signup', { error: e });
   }
 
   try {
@@ -38,11 +42,11 @@ router.route("/data").post(async (req, res) => {
       email.trim(),
       pass
     );
-    return res.status(200).json({ errorMessage: " New User Registered " });
+    return res.status(200).render('login', { error: " New User Registered " });
   } catch (e) {
     if (e === "Error: User Email is already registered")
-      return res.status(404).json({ errorMessage: e });
-    else return res.status(500).json({ errorMessage: "Sever Error" });
+      return res.status(404).render('login', { error: e });
+    else return res.status(500).render('signup', { error: "Sever Error" });
   }
 });
 
