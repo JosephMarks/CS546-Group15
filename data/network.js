@@ -79,9 +79,34 @@ const exportedMethods = {
         return await updateInfo.value;
     },
 
-    async getComments (postId)
+    async getCommentsByUserId (userId)
     {
+        userId = validations.checkId(userId);
+        const networkCollection = await network();
+        const userComment = await networkCollection.aggregate([
+            { $unwind: "$comments" },
+            { $match: { "comments.userId": userId } },
+            {
+                $project: {
+                    _id: 1,
+                    userId: "$comments.userId",
+                    comments: "$comments.comments",
+                }
+            }
+        ]).toArray();
 
+        if(!userComment) throw 'Error: Post not found';
+        return userComment;
+    },
+
+    async getCommentsByCommentId (commentId)
+    {
+        commentId = validations.checkId(commentId);
+        const networkCollection = await network();
+        const userComment = await networkCollection.findOne({ comments: new ObjectId(commentId) });
+
+        if(!userComment) throw 'Error: Post not found';
+        return userComment;
     },
 
     async addComments (postId, userId, comments)
