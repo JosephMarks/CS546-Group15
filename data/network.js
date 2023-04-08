@@ -9,7 +9,11 @@ const exportedMethods = {
     async getAllPost ()
     {
         const networkCollection = await network();
-        return await networkCollection.find({}).toArray();
+        const postList = await networkCollection.find({}).toArray()
+        for (let ele of postList){
+            ele._id = ele._id.toString();
+        }
+        return postList;
     },
 
     async getPostByUserId (userId)
@@ -79,9 +83,43 @@ const exportedMethods = {
         return await updateInfo.value;
     },
 
-    async getComments (postId)
+    async getCommentsByUserId (userId)
     {
+        userId = validations.checkId(userId);
+        const networkCollection = await network();
+        const userComment = await networkCollection.aggregate([
+            { $unwind: "$comments" },
+            { $match: { "comments.userId": userId } },
+            {
+                $project: {
+                    _id: "$comments._id",
+                    userId: "$comments.userId",
+                    comments: "$comments.comments",
+                }
+            }
+        ]).toArray();
 
+        if(!userComment) throw 'Error: Post not found';
+        return userComment;
+    },
+
+    async getCommentsByCommentId (commentId)
+    {
+        commentId = validations.checkId(commentId);
+        const networkCollection = await network();
+        const userComment = await networkCollection.aggregate([
+            { $unwind: "$comments" },
+            { $match: { "comments._id": new ObjectId(commentId) } },
+            {
+                $project: {
+                    _id: "$comments._id",
+                    userId: "$comments.userId",
+                    comments: "$comments.comments",
+                }
+            }
+        ]).toArray();
+        if(!userComment) throw 'Error: Post not found';
+        return userComment;
     },
 
     async addComments (postId, userId, comments)
