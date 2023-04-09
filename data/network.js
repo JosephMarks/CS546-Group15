@@ -1,11 +1,10 @@
 import { ObjectId } from "mongodb";
 import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
-import usersData from "./user.js"
+import usersData from "./user.js";
 
 
 const exportedMethods = {
-
   async getAllPost() {
     const networkCollection = await network();
     const postList = await networkCollection.find({}).toArray();
@@ -177,7 +176,6 @@ const exportedMethods = {
   async removeLikes(postId, userId) {},
 
   async addConnections() {}, // follow
-
     async getAllPost ()
     {
         //  Post
@@ -433,4 +431,5 @@ const exportedMethods = {
     },
 
 }
+
 export default exportedMethods;
