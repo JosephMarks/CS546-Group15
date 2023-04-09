@@ -10,7 +10,8 @@ const exportedMethods = {
     {
         const networkCollection = await network();
         const postList = await networkCollection.find({}).toArray()
-        for (let ele of postList){
+        for(let ele of postList)
+        {
             ele._id = ele._id.toString();
         }
         return postList;
@@ -23,6 +24,10 @@ const exportedMethods = {
         const userPost = await networkCollection.find({ userId: new ObjectId(userId) });
 
         if(!userPost) throw 'Error: Post not found';
+        for(let ele of userPost)
+        {
+            ele._id = ele._id.toString();
+        }
         return userPost;
     },
 
@@ -33,13 +38,14 @@ const exportedMethods = {
         const networkPost = await networkCollection.findOne({ _id: new ObjectId(postId) });
 
         if(!networkPost) throw 'Error: Post not found';
+        networkPost._id = networkPost._id.toString();
         return networkPost;
     },
 
     async addPost (userId, content)
     {
         userId = validations.checkId(userId);
-        content = validations.checkString(content);
+        content = validations.checkString(content, "post content");
         const newPost = {
             userId: userId,
             content: content,
@@ -79,8 +85,13 @@ const exportedMethods = {
                 404,
                 `Error: Update failed, could not find a user with id of ${id}`
             ];
-
-        return await updateInfo.value;
+        const returnValue = await updateInfo.value;
+        returnValue._id = returnValue._id.toString();
+        for(let ele of returnValue.comments)
+        {
+            ele._id = ele._id.toString();
+        }
+        return returnValue;
     },
 
     async getCommentsByUserId (userId)
@@ -100,6 +111,10 @@ const exportedMethods = {
         ]).toArray();
 
         if(!userComment) throw 'Error: Post not found';
+        for(let ele of userComment)
+        {
+            ele._id = ele._id.toString();
+        }
         return userComment;
     },
 
@@ -119,6 +134,10 @@ const exportedMethods = {
             }
         ]).toArray();
         if(!userComment) throw 'Error: Post not found';
+        for(let ele of userComment)
+        {
+            ele._id = ele._id.toString()
+        }
         return userComment;
     },
 
@@ -140,17 +159,48 @@ const exportedMethods = {
             { $addToSet: { comments: newComments } },
             { returnDocument: "after" }
         );
-        return newNetworks.value
+        const returnValue = newNetworks.value;
+        returnValue._id = returnValue._id.toString();
+        for(let ele of returnValue.comments)
+        {
+            ele._id = ele._id.toString();
+        }
+        return returnValue;
     },
 
-    async removeComments ()
+    async removeComments (commentId)
     {
+        commentId = validations.checkId(commentId);
+        const comments = this.getCommentsByCommentId(commentId);
+        const networkCollection = await network();
+        const deletionInfo = await networkCollection.findOneAndUpdate(
+            { "comments._id": new ObjectId(commentId) },
+            { $pull: { comments: { _id: new ObjectId(commentId) } } },
+            { new: true },
+            { returnDocument: 'after' }
+        );
+        if(deletionInfo.lastErrorObject.n === 0)
+            throw `Error: Could not delete post with id of ${commentId}`;
+        const postId = deletionInfo.value._id.toString();
 
+        return comments;
     },
 
-    async updateComments ()
+    async updateComments (commentId, content)
     {
+        commentId = validations.checkId(commentId);
+        content = validations.checkString(content, "Content");
+        const comments = this.getCommentsByCommentId(commentId);
+        const networkCollection = await network();
+        const updateInfo = await networkCollection.findOneAndUpdate(
+            { "comments._id": new ObjectId(commentId) },
+            { $set: {"comments.$.comments": content} },
+            { returnDocument: 'after' }
+        );
+        if(updateInfo.lastErrorObject.n === 0)
+            throw `Error: Update failed! Could not update post with id ${commentId}`;
 
+        return updateInfo.value;
     },
 
     async getLikes (postId)
@@ -180,7 +230,13 @@ const exportedMethods = {
             { $addToSet: { likes: userId } },
             { returnDocument: "after" }
         );
-        return newNetworks.value
+        const returnValue = newNetworks.value;
+        returnValue._id = returnValue._id.toString();
+        for(let ele of returnValue.comments)
+        {
+            ele._id = ele._id.toString();
+        }
+        return returnValue;
     },
 
     async removeLikes (postId, userId)
@@ -188,7 +244,12 @@ const exportedMethods = {
 
     },
 
-    async addConnections () // follow
+    async addConnections () // follow (need also add connections into user data)
+    {
+
+    },
+
+    async removeConnections () // follow (in case this will be used)
     {
 
     },
