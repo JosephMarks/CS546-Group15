@@ -3,36 +3,63 @@ import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 
 const exportedMethods = {
+<<<<<<< HEAD
+  async getAllUser() {
+    //get all users data from collectoin
+    const userCollection = await users();
+    const userList = await userCollection.find({}).toArray();
+    for (let ele of userList) {
+=======
   async getAllUser ()                     //get all users data from collectoin
   {
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
     for(let ele of userList){
+>>>>>>> main
       ele._id = ele._id.toString();
     }
     return userList;
   },
 
+<<<<<<< HEAD
+  async getUserById(
+    userId // get user from user collection using their id
+  ) {
+    userId = validations.checkId(userId);
+    const userCollection = await users();
+    const user = await userCollection.findOne({ _id: new ObjectId(userId) });
+    if (!user) throw "Error: user not found!";
+=======
   async getUserById (userId)              // get user from user collection using their id
   {
     userId = validations.checkId(userId);
     const userCollection = await users();
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
     if(!user) throw "Error: user not found!";
+>>>>>>> main
     user._id = user._id.toString();
     return user;
   },
 
+<<<<<<< HEAD
+  async createUser(fname, lname, age, email, password) {
+=======
   async createUser (fname, lname, age, email, password)
   {
+>>>>>>> main
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");
     age = validations.isAge(Number(age));
     const userCollection = await users();
     const ifAlready = await userCollection.findOne({ email: email });
+<<<<<<< HEAD
+    if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
+    email = validations.checkEmail(email, "email"); //check email is valid
+=======
     if(ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
     email = validations.checkEmail(email, "email");                //check email is valid 
+>>>>>>> main
     password = validations.checkString(password, "Password");
 
     // attributes need, but to be populated later when profile filled out by user
@@ -45,7 +72,11 @@ const exportedMethods = {
     let seekingJob = [];
     let connections = [];
     let group = [];
+<<<<<<< HEAD
+    let createdAt = new Date().toLocaleDateString("en-GB"); // the first time user's registeration
+=======
     let createdAt = new Date().toLocaleDateString("en-GB"); // the first time user's registeration 
+>>>>>>> main
     let updatedAt = new Date().toLocaleDateString("en-GB"); // update date that user modify their profile
 
     const newCreateUser = await userCollection.insertOne({
@@ -66,14 +97,28 @@ const exportedMethods = {
       createdAt,
       updatedAt,
     });
+<<<<<<< HEAD
+    if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+    const returnUser = await this.getUserById(
+      newCreateUser.insertedId.toString()
+    );
+=======
     if(!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(newCreateUser.insertedId.toString());
+>>>>>>> main
     returnUser._id = returnUser._id.toString();
     return returnUser;
   },
 
+<<<<<<< HEAD
+  async updateUsers(
+    userId,
+    updateData // update user's profile
+  ) {
+=======
   async updateUsers (userId, updateData)  // update user's profile
   {
+>>>>>>> main
     userId = validations.checkId(userId);
     let fname = validations.checkString(updateData.fname, "First Name");
     let lname = validations.checkString(updateData.lname, "Last Name");
@@ -81,6 +126,45 @@ const exportedMethods = {
     let password = validations.checkString(updateData.password, "Password");
     let age = validations.isAge(updateData.age, "age");
     let gender = validations.checkGender(updateData.gender, "Gender");
+<<<<<<< HEAD
+    let locationState = validations.checkState(
+      updateData.locationState,
+      "LocationState"
+    );
+    let university = validations.checkString(
+      updateData.university,
+      "University"
+    );
+    let collegeMajor = validations.checkString(
+      updateData.collegeMajor,
+      "Major"
+    );
+    let interestArea = validations.checkStringArray(
+      updateData.interestArea,
+      "Interest area"
+    );
+    let experience = validations.checkExperience(
+      updateData.experience,
+      "Experience year"
+    ); // experience year from 0 to 80
+    let seekingJob = validations.checkStringArray(
+      updateData.seekingJob,
+      "Seeking job"
+    );
+    let connections = validations.checkGroupAndConnections(
+      updateData.connections,
+      "Connections"
+    );
+    let group = validations.checkGroupAndConnections(updateData.group, "group");
+    let createdAt = validations.checkValidDate(
+      updateData.createdAt,
+      "Created date"
+    ); // this cannot be modified
+    let updatedAt = validations.checkValidDate(
+      updateData.updatedAt,
+      "Updated date"
+    ); // updated date can be modified
+=======
     let locationState = validations.checkState(updateData.locationState, "LocationState");
     let university = validations.checkString(updateData.university, "University");
     let collegeMajor = validations.checkString(updateData.collegeMajor, "Major");
@@ -91,6 +175,7 @@ const exportedMethods = {
     let group = validations.checkGroupAndConnections(updateData.group, "group");
     let createdAt = validations.checkValidDate(updateData.createdAt, "Created date");         // this cannot be modified
     let updatedAt = validations.checkValidDate(updateData.updatedAt, "Updated date");         // updated date can be modified
+>>>>>>> main
 
     const userUpdateInfo = {
       fname: fname,
@@ -109,36 +194,64 @@ const exportedMethods = {
       group: group,
       createdAt: createdAt,
       updatedAt: new Date().toLocaleDateString("en-GB"),
+<<<<<<< HEAD
+    };
+=======
     }
+>>>>>>> main
 
     const userCollection = await users();
     const updateInfo = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
       { $set: userUpdateInfo },
+<<<<<<< HEAD
+      { returnDocument: "after" }
+    );
+    if (updateInfo.lastErrorObject.n === 0)
+      throw [
+        404,
+        `Error: Update failed, could not find a user with id of ${id}`,
+=======
       { returnDocument: 'after' }
     )
     if(updateInfo.lastErrorObject.n === 0)
       throw [
         404,
         `Error: Update failed, could not find a user with id of ${id}`
+>>>>>>> main
       ];
     updateInfo.value._id = updateInfo.value._id.toString();
     return await updateInfo.value;
   },
 
+<<<<<<< HEAD
+  async removeUser(userId) {
+=======
   async removeUser (userId)
   {
+>>>>>>> main
     userId = validations.checkId(userId);
     const userCollection = await users();
     const deletionInfo = await userCollection.findOneAndDelete({
       _id: new ObjectId(userId),
     });
+<<<<<<< HEAD
+    if (deletionInfo.lastErrorObject.n === 0)
+=======
     if(deletionInfo.lastErrorObject.n === 0)
+>>>>>>> main
       throw [404, `Error: Could not delete user with id of ${id}`];
     deletionInfo.value._id = deletionInfo.value._id.toString();
     return { ...deletionInfo.value, deleted: true };
   },
 
+<<<<<<< HEAD
+  async updateUniversity(id, university) {
+    if (!id || !university) {
+      throw new Error("University parameter must be provided");
+    }
+    if (typeof university !== "string" || typeof id !== "string") {
+=======
   async updateUniversity (id, university)
   {
     if(!id || !university)
@@ -147,6 +260,7 @@ const exportedMethods = {
     }
     if(typeof university !== "string" || typeof id !== "string")
     {
+>>>>>>> main
       throw new Error("University must be of type stirng");
     }
 
@@ -158,8 +272,12 @@ const exportedMethods = {
       { returnDocument: "after" }
     );
 
+<<<<<<< HEAD
+    if (updatedInfo.lastErrorObject.n === 0) {
+=======
     if(updatedInfo.lastErrorObject.n === 0)
     {
+>>>>>>> main
       throw new Error("Could not update the user successfully.");
     }
 
@@ -167,6 +285,11 @@ const exportedMethods = {
     const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
 
     return foundUser;
+<<<<<<< HEAD
+  },
+};
+=======
   }
 }
+>>>>>>> main
 export default exportedMethods;

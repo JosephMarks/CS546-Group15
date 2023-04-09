@@ -1,4 +1,4 @@
-import teamDataFunctions from "./team.js";
+import * as teamDataFunctions from "./team.js";
 import * as groupDataFunctions from "./groups.js";
 import userDataFunctions from "./user.js";
 
