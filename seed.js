@@ -2,6 +2,7 @@ import { network } from './config/mongoCollections.js';
 import { dbConnection, closeConnection } from './config/mongoConnection.js';
 import usersData from './data/user.js';
 import networkData from './data/network.js';
+import { create } from 'express-handlebars';
 
 const db = await dbConnection();
 await db.dropDatabase();
@@ -10,6 +11,7 @@ await db.dropDatabase();
 
 // [] define js file in data
 // {} define as each functionality
+// () validate of each function
 // Valid date would be DD/MM/YYYY
 
 /* ------[ USER ]------*/
@@ -103,6 +105,7 @@ try // correct one
 {
     const patrick = await usersData.createUser('Patrick', 'Hill', 25, "adcacdqwe@gmail.com", "afscf");
     const pid = patrick._id.toString();
+    console.log("(Correct Create User)")
     console.log(await usersData.getUserById(pid));
 } catch(error)
 {
@@ -114,6 +117,7 @@ console.log("\n!!!!Get All Users!!!!");
 try
 {
     console.log("\nGet all users!")
+    console.log("(Correct Get All User)")
     console.log(await usersData.getAllUser());
 } catch(error)
 {
@@ -141,6 +145,7 @@ try
 //correct one
 try
 {
+    console.log("(Correct Get All User By ID)")
     const pid = (await usersData.getAllUser())[0]._id.toString()
     console.log(await usersData.getUserById(pid));
 } catch(error)
@@ -819,6 +824,7 @@ try
         createdAt: patrick.createdAt,
         updatedAt: new Date().toLocaleDateString("en-GB"),
     }
+    console.log("(Correct Update User)");
     console.log(await usersData.updateUsers(pid, updateData));
 } catch(error)
 {
@@ -830,7 +836,7 @@ console.log("\n!!!!Remove User By ID!!!!")
 try
 {
     const pid = (await usersData.getAllUser())[0]._id.toString();
-
+    console.log("(Correct Remove User)")
     console.log(await usersData.removeUser(pid));
 } catch(error)
 {
@@ -851,34 +857,64 @@ const pid = patrick._id.toString();
 const daniel = await usersData.createUser('Daniel', 'Lu', 23, "qweqwe2@yahoo.com", "1exa3rscdwr");
 const did = daniel._id.toString();
 
+// not supply content into function
+try
+{
+    const firstPost = await networkData.addPost(pid);
+} catch(error)
+{
+    console.log(error);
+}
+
+// given empty space id into function
+try
+{
+    const firstPost = await networkData.addPost("    ", "This is the first post");
+} catch(error)
+{
+    console.log(error);
+}
 
 // create the first Post 
+console.log("{Create First Post}")
 const firstPost = await networkData.addPost(pid, "This is the first post");
 const firstPostId = firstPost._id.toString()
 console.log(firstPost);
-console.log(firstPostId);
 
 // create the second Post 
+console.log("{Create Second Post}")
 const secondPost = await networkData.addPost(pid, "This is the second post");
 const secondPostId = secondPost._id.toString()
 console.log(secondPost);
-console.log(secondPostId);
 
+/* ----- create comments ----- */
 // user Daniel leave comments to the first post
+console.log("\n!!!Create Comments!!!");
+console.log("{Create First Comments to First Post}");
 const firstPostFirstComments = await networkData.addComments(firstPostId, did, "Daniel's first message");
 console.log(firstPostFirstComments);
 
 // user Daniel leave comments to the second post
+console.log("\n{Create Second Comments to First Post}");
 const firstPostSecondComments = await networkData.addComments(firstPostId, did, "Daniel's second message");
 console.log(firstPostSecondComments);
 
 // post user Patrick leave his first comments to the first post
+console.log("\n{Create the Author to Leave First Comments to First Post}");
 const firstPostFirstCommentsByAuthor = await networkData.addComments(firstPostId, pid, "Patrick's first message");
 console.log(firstPostFirstCommentsByAuthor);
 
+/* ----- create likes ----- */
 // user Daniel likes in the first post
+console.log("\n!!!Create Likes!!!");
+console.log("{Create the User Press Likes}");
 const firstPostFirstlikes = await networkData.addLikes(firstPostId, did);
 console.log(firstPostFirstlikes);
+
+// user Patrick likes in the first post
+console.log("\n{Create the Author Press Likes}");
+const firstPostSecondlikes = await networkData.addLikes(firstPostId, pid);
+console.log(firstPostSecondlikes);
 
 // user Daniel likes twice in the first post (Error checking)
 try
@@ -890,22 +926,37 @@ try
     console.log(error);
 }
 
-// user Patrick likes in the first post
-const firstPostSecondlikes = await networkData.addLikes(firstPostId, pid);
-console.log(firstPostSecondlikes);
-
-// Update post
+/* ----- Update posts ----- */
+console.log("\n!!!Update Post!!!");
+console.log("{Update the Posts Content}");
 const updateFirstPost = await networkData.updatePost(firstPostId, "This is modified of the first post!");
 console.log(updateFirstPost);
 
-// Get All Comments By User Id 
+/* ----- Get comments by using userId (Return the specific user's all comments) ----- */
+console.log("\n!!!Get Comment!!!");
+console.log("{Get Comments by User ID}");
 const userCommentsByUserId = await networkData.getCommentsByUserId(did);
 console.log(userCommentsByUserId)
 
-// Get Comments By Comments Id 
+/* ----- Get Comments By Comments Id  ----- */
+console.log("\n{Get Comments by Comment ID}");
 const getAllPost = await networkData.getAllPost();
 const userCommentsByCommentsId = await networkData.getCommentsByCommentId(getAllPost[0].comments[0]._id.toString());
 console.log(userCommentsByCommentsId)
+
+/* ----- Update Comments By Comments Id  ----- */
+console.log("\n!!!Update Comment!!!");
+console.log("{Update Comments by Comment ID}");
+const updateCommentsId = userCommentsByCommentsId[0]._id
+const updateByCommentsId = await networkData.updateComments(updateCommentsId, "This is my update comments");
+console.log(updateByCommentsId);
+
+/* ----- Remove Comments By Comments Id  ----- */
+console.log("\n!!!Remove Comment!!!");
+console.log("{Remove Comments by Comment ID}");
+const removeCommentsId = userCommentsByCommentsId[0]._id
+const removeByCommentsId = await networkData.removeComments(removeCommentsId);
+console.log(removeByCommentsId);
 
 console.log('Done seeding database');
 await closeConnection();
