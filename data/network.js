@@ -4,7 +4,7 @@ import validations from "../helpers.js";
 import usersData from "./user.js";
 
 const exportedMethods = {
-    // post
+  
     async getAllPost ()
     {
         const networkCollection = await network();
