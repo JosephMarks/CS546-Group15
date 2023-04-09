@@ -3,9 +3,9 @@ import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import usersData from "./user.js"
 
-const userCollection = await users();
 
 const exportedMethods = {
+    //  Post
     async getAllPost ()
     {
         const networkCollection = await network();
@@ -93,7 +93,7 @@ const exportedMethods = {
         }
         return returnValue;
     },
-
+    //  Comments
     async getCommentsByUserId (userId)
     {
         userId = validations.checkId(userId);
@@ -194,7 +194,7 @@ const exportedMethods = {
         const networkCollection = await network();
         const updateInfo = await networkCollection.findOneAndUpdate(
             { "comments._id": new ObjectId(commentId) },
-            { $set: {"comments.$.comments": content} },
+            { $set: { "comments.$.comments": content } },
             { returnDocument: 'after' }
         );
         if(updateInfo.lastErrorObject.n === 0)
@@ -203,9 +203,13 @@ const exportedMethods = {
         return updateInfo.value;
     },
 
+    //  Likes
     async getLikes (postId)
     {
-
+        postId = validations.checkId(postId);
+        const post = await this.getPostById(postId);
+        const likesList = post.likes;
+        return likesList;
     },
 
     async addLikes (postId, userId)
@@ -241,9 +245,10 @@ const exportedMethods = {
 
     async removeLikes (postId, userId)
     {
-
+        
     },
 
+    //  Connections
     async addConnections () // follow (need also add connections into user data)
     {
 
