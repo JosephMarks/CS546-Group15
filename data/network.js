@@ -1,13 +1,13 @@
 import { ObjectId } from "mongodb";
 import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
-import usersData from "./user.js"
+import usersData from "./user.js";
 
 
 const exportedMethods = {
-    //  Post
     async getAllPost ()
     {
+        //  Post
         const networkCollection = await network();
         const postList = await networkCollection.find({}).toArray()
         for(let ele of postList)
@@ -260,4 +260,5 @@ const exportedMethods = {
     },
 
 }
+
 export default exportedMethods;
