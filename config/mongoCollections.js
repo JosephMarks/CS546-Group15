@@ -18,3 +18,4 @@ const getCollectionFn = (collection) => {
 export const members = getCollectionFn("team");
 export const users = getCollectionFn("users");
 export const groups = getCollectionFn("groups");
+export const network = getCollectionFn("network");
