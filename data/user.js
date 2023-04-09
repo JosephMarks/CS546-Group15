@@ -6,6 +6,9 @@ const exportedMethods = {
   async getAllUser() { //get all users data from collectoin
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
+    for (let ele of userList) {
+      ele._id = ele._id.toString();
+    }
     return userList;
   },
 
@@ -16,6 +19,7 @@ const exportedMethods = {
     const userCollection = await users();
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
     if (!user) throw "Error: user not found!";
+    user._id = user._id.toString();
     return user;
   },
 
@@ -62,8 +66,11 @@ const exportedMethods = {
       updatedAt,
     });
     if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
-
-    return await this.getUserById(newCreateUser.insertedId.toString());
+    const returnUser = await this.getUserById(
+      newCreateUser.insertedId.toString()
+    );
+    returnUser._id = returnUser._id.toString();
+    return returnUser;
   },
 
   async updateUsers(
