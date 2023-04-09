@@ -926,6 +926,11 @@ try
     console.log(error);
 }
 
+// get likes by Post ID
+console.log("{Get Likes By Post Id}");
+const firstPostlikes = await networkData.getLikes(firstPostId);
+console.log(firstPostlikes);
+
 /* ----- Update posts ----- */
 console.log("\n!!!Update Post!!!");
 console.log("{Update the Posts Content}");
