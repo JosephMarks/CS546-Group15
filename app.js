@@ -41,6 +41,9 @@ let myNewGroup = await groupData.create(
 let myGroups = await groupData.getAll();
 console.log(myGroups);
 
+let myDescription = "This is an updated description of the grgoup!";
+// await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
+
 app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");
