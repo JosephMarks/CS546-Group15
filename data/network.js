@@ -3,11 +3,8 @@ import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import usersData from "./user.js";
 
-const userCollection = await users();
-
 const exportedMethods = {
-
-    //  Post
+    // post
     async getAllPost ()
     {
         const networkCollection = await network();
