@@ -3,13 +3,11 @@ import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import usersData from "./user.js";
 
-const userCollection = await users();
-
 const exportedMethods = {
     async getAllPost ()
     {
         const networkCollection = await network();
-        const postList = await networkCollection.find({}).toArray()
+        const postList = await networkCollection.find({}).toArray();
         for(let ele of postList)
         {
             ele._id = ele._id.toString();
@@ -21,7 +19,7 @@ const exportedMethods = {
     {
         userId = validations.checkId(userId)
         const networkCollection = await network();
-        const userPost = await networkCollection.find({ userId: new ObjectId(userId) });
+        const userPost = await networkCollection.find({ userId: userId }).toArray();
 
         if(!userPost) throw 'Error: Post not found';
         for(let ele of userPost)
@@ -93,7 +91,7 @@ const exportedMethods = {
         }
         return returnValue;
     },
-    
+
     //  Comments
     async getCommentsByUserId (userId)
     {
