@@ -1,6 +1,7 @@
 import validator from "email-validator";    //use to validate email address
 import { isValidStateInput as isValidState } from "usa-state-validator"; //use to check state is valid in the US, state must be in bref. words
 import validateDate from "validate-date"; //use to check date is valid or not
+import linkCheck from "link-check";
 import { ObjectId } from 'mongodb';
 
 // Valid date would be DD/MM/YYYY
@@ -177,6 +178,37 @@ const validations = {
             throw `Error: ${strVal} is not a valid date for ${varName}`;
         return strVal;
     },
+    checkVideoUrl (strVal)
+    {
+        if(!strVal) throw `Error: You must supply a ${varName}!`;
+        if(typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
+        strVal = strVal.trim();
+        linkCheck(strVal, function(err)
+        {
+            if(err) throw `Error: Video link is not a valid address!`
+        })
+        if(!isNaN(strVal))
+            throw `Error: ${strVal} is not a valid value for video link as it only contains digits`;
+    },
+    checkTags (arr)
+    {
+        //We will allow an empty array for this,
+        //if it's not empty, we will make sure all tags are strings
+        if(!arr || !Array.isArray(arr))
+            throw `Error: You must provide an array of tags`;
+        for(let i in arr)
+        {
+            if(typeof arr[i] !== 'string' || arr[i].trim().length === 0)
+            {
+                throw `Error: One or more elements in tags array is not a string or is an empty string`;
+            }
+            arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
+        }
+        const tags = ["frond-end", "back-end", "full-stack", "cybersecurity", "ai", "software development", "finance quantitative analysis", "data science", "medical", "biology", "chemistry", "law", "business", "engineering", "art", "music"]
+        const checker = (desired, target) => target.every(ele => desired.includes(ele));
+        if(!checker(tags, arr)) throw `Error: tags is not valid tags`;
+        return arr;
+    }
 }
 
 export default validations
