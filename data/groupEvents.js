@@ -213,8 +213,53 @@ export const updateEventDate = async (groupId, eventId, eventDate) => {
   return updatedInfo;
 };
 
-export const updateUsers = async (groupId, user) => {
-  return 1;
+export const addUser = async (groupId, eventId, user) => {
+  groupId = groupId.trim();
+  eventId = eventId.trim();
+  user = user.trim();
+
+  if (!groupId || !eventId || !user) {
+    throw new Error("Parameters must be provided");
+  }
+  if (
+    (typeof groupId != "string" || typeof eventId !== "string",
+    typeof user !== "string")
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || user.length === 0 || eventId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const addedUser = {
+    "events.$.users": user,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(eventId),
+        },
+      },
+    },
+    { $set: addedUser },
+    { returnDocument: "after" }
+  );
+  //TO DO - NEED TO CHECK THAT THE USER IS IN THE DATABASE AS A USER
+  // OTHER ERROR CHECKING FOR USERS TO BE ADDED
+  // FUNCTIONALITY ON THE USER SIDE TO JOIN A GROUP
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the event title successfully");
+  }
+  return updatedInfo;
 };
 
 export const remove = async (groupId) => {
