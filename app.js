@@ -4,6 +4,7 @@ import { dirname } from "path";
 import exphbs from "express-handlebars";
 import configRoutes from "./routes/index.js";
 import * as groupData from "./data/groups.js";
+import * as groupEventsData from "./data/groupEvents.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,10 +40,20 @@ let myNewGroup = await groupData.create(
   "The coolest group ever!"
 );
 let myGroups = await groupData.getAll();
-console.log(myGroups);
 
 let myDescription = "This is an updated description of the grgoup!";
 // await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
+
+let myNewGroupEvent = await groupEventsData.create(
+  "64335155c88aeab21d99b251",
+  "is this working???"
+);
+
+let updatedTitle = await groupEventsData.updateEventDate(
+  "64335155c88aeab21d99b251",
+  "64335cbb7885a7c8b6e327b4",
+  "05/13/2023"
+);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
