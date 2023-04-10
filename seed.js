@@ -888,8 +888,37 @@ const secondPostId = secondPost._id.toString()
 console.log(secondPost);
 
 /* ----- create comments ----- */
-// user Daniel leave comments to the first post
 console.log("\n!!!Create Comments!!!");
+// Error Handling
+// not supply content
+try
+{
+    const firstPostFirstComments = await networkData.addComments(firstPostId, did, "   ");
+} catch(error)
+{
+    console.log(error);
+}
+
+// not supply Post ID is not valid
+try
+{
+    const firstPostFirstComments = await networkData.addComments("acrhao3823", did, "Daniel's first message");
+} catch(error)
+{
+    console.log(error);
+}
+
+// not supply User ID is not valid
+try
+{
+    const firstPostFirstComments = await networkData.addComments(firstPost, "did", "Daniel's first message");
+} catch(error)
+{
+    console.log(error);
+}
+
+// user Daniel leave comments to the first post
+
 console.log("{Create First Comments to First Post}");
 const firstPostFirstComments = await networkData.addComments(firstPostId, did, "Daniel's first message");
 console.log(firstPostFirstComments);
@@ -927,41 +956,86 @@ try
 }
 
 // get likes by Post ID
-console.log("{Get Likes By Post Id}");
+console.log("\n{Get Likes By Post Id}");
 const firstPostlikes = await networkData.getLikes(firstPostId);
 console.log(firstPostlikes);
 
-/* ----- Update posts ----- */
+// remove likes by Post ID and userID
+console.log("\n{Remove Likes By Post Id and User Id}");
+const removeFirstPostLikes = await networkData.removeLikes(firstPostId, did);
+console.log(await networkData.getPostById(firstPostId));
+
+/* ----- {Update posts} ----- */
 console.log("\n!!!Update Post!!!");
 console.log("{Update the Posts Content}");
 const updateFirstPost = await networkData.updatePost(firstPostId, "This is modified of the first post!");
 console.log(updateFirstPost);
 
-/* ----- Get comments by using userId (Return the specific user's all comments) ----- */
+/* ----- {Get comments by using userId (Return the specific user's all comments)} ----- */
 console.log("\n!!!Get Comment!!!");
 console.log("{Get Comments by User ID}");
 const userCommentsByUserId = await networkData.getCommentsByUserId(did);
 console.log(userCommentsByUserId)
 
-/* ----- Get Comments By Comments Id  ----- */
+/* ----- {Get Comments By Comments Id}  ----- */
 console.log("\n{Get Comments by Comment ID}");
 const getAllPost = await networkData.getAllPost();
 const userCommentsByCommentsId = await networkData.getCommentsByCommentId(getAllPost[0].comments[0]._id.toString());
 console.log(userCommentsByCommentsId)
 
-/* ----- Update Comments By Comments Id  ----- */
+/* ----- {Update Comments By Comments Id}  ----- */
 console.log("\n!!!Update Comment!!!");
 console.log("{Update Comments by Comment ID}");
 const updateCommentsId = userCommentsByCommentsId[0]._id
 const updateByCommentsId = await networkData.updateComments(updateCommentsId, "This is my update comments");
 console.log(updateByCommentsId);
 
-/* ----- Remove Comments By Comments Id  ----- */
+/* ----- {Remove Comments By Comments Id } ----- */
 console.log("\n!!!Remove Comment!!!");
 console.log("{Remove Comments by Comment ID}");
 const removeCommentsId = userCommentsByCommentsId[0]._id
 const removeByCommentsId = await networkData.removeComments(removeCommentsId);
 console.log(removeByCommentsId);
+
+
+/* ----- {Create Connections} ----- */
+// user Daniel create connections with Patrick
+console.log("\n!!!Connections!!!");
+console.log("{Create Connections}");
+const firstConnectionsToDaniel = await networkData.addConnections(did, pid);
+console.log(firstConnectionsToDaniel);
+
+// Error handling that Daniel follow Patrick twice
+try
+{
+    await networkData.addConnections(did, pid);
+} catch(error)
+{
+    console.log(error);
+}
+
+// user Daniel remove connections with Patrick
+console.log("\n{Remove Connections}");
+const removeConnectionsFromDaniel = await networkData.removeConnections(did, pid);
+console.log(await usersData.getUserById(did));
+
+// Error handling that Daniel remove Patrick twice
+try
+{
+    await networkData.removeConnections(did, pid)
+} catch(error)
+{
+    console.log(error);
+}
+
+// Error handling that Patrick remove Daniel which Patrick doesn't follow Daniel
+try
+{
+    await networkData.removeConnections(pid, did)
+} catch(error)
+{
+    console.log(error);
+}
 
 console.log('Done seeding database');
 await closeConnection();
