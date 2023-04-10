@@ -1,12 +1,9 @@
+<h1>Group Details</h1>
+<div>
+  <a href="javascript:history.back();">Back to Search Results</a>
+  <h2>{{name}}</h2>
+  <h2>{{description}}</h2>
+  <h2>{{events}}</h2>
 
-{{#*inline "title"}}
-  Group Master Page
-{{/inline}}
-<h1>Groups</h1>
-<h3>Below are all the groups that you have the option of joining!! What are you waiting for, check them out!</h3>
-  <ol>
-{{#each groups}}
-<li><a href="/{{this.id}}">{{this.name}}</a></li>
-{{/each}}
-  </ol>
-<a class="search-again" href="/">Back to Home Page</a>
+  <img alt="{{name}}" src="{{image}}" />
+</div>

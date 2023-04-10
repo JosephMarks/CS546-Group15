@@ -26,9 +26,19 @@ router.route("/:id").get(async (req, res) => {
   const id = req.params.id;
 
   try {
+    let groupInfo = await groupData.get(id);
+    console.log(groupInfo);
     // Pass our data over to the template to be rendered
+    // let eventsArray = [];
+    // for (let i = 0; i < groupInfo.groups.length; i++) {
+    //   eventsArray.push(roupInfo.groups[i]);
+    // }
+    // console.log(eventsArray);
+
     res.render("./groupById", {
-      name: "Joe",
+      name: groupInfo.name,
+      description: groupInfo.description,
+      events: "the big event",
     });
   } catch (e) {
     res.status(404).render("./error", {
