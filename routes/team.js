@@ -3,7 +3,7 @@ const router = Router();
 import { teamData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 
-router.route("/").get(async (req, res) => {
+router.route("/team").get(async (req, res) => {
   try {
     let teamList = await teamData.getAll();
     let displayArray = [];
@@ -13,7 +13,8 @@ router.route("/").get(async (req, res) => {
       let groupObject = { _id: _id, name: name };
       displayArray.push(groupObject);
     }
-    res.json(displayArray);
+    console.log(teamList);
+    res.render("./teaminfo");
   } catch (e) {
     res.sendStatus(500);
   }
