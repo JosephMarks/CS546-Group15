@@ -47,10 +47,10 @@ configRoutes(app);
 // let myDescription = "This is an updated description of the grgoup!";
 // // await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
 
-let myNewGroupEvent = await groupEventsData.create(
-  "64348d1b2f4dd57a63bba048",
-  "NEW EVENT?"
-);
+// let myNewGroupEvent = await groupEventsData.create(
+//   "64348d1b2f4dd57a63bba048",
+//   "NEW EVENT?"
+// );
 
 // let updatedTitle = await groupEventsData.addUser(
 //   "64335155c88aeab21d99b251",
