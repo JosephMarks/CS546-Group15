@@ -1054,5 +1054,9 @@ try
     console.log(error);
 }
 
+
+/* ------[ Skills ]------*/
+/* ----- create skills ----- */
+
 console.log('Done seeding database');
 await closeConnection();
