@@ -262,6 +262,44 @@ export const addUser = async (groupId, eventId, user) => {
   return updatedInfo;
 };
 
-export const remove = async (groupId) => {
-  return 1;
+export const remove = async (eventId) => {
+  eventId = eventId.trim();
+  if (!eventId) {
+    throw new Error("ID parameter must be provided");
+  }
+  if (typeof eventId !== "string") {
+    throw new Error("Must be of type string");
+  }
+  if (eventId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+  const groupCollection = await groups();
+
+  const theEvent = await groupCollection.findOne({
+    events: { $elemMatch: { _id: new ObjectId(eventId) } },
+  });
+
+  if (theEvent === null) {
+    throw new Error("There is no event with that id");
+  }
+
+  const event = theEvent.events.find(
+    (event) => event._id.toString() === eventId
+  );
+  if (!event) {
+    throw new Error("There is no album with that id");
+  }
+
+  // Now we will remove the album from the array of the band document
+  const updatedGroup = await groupCollection.findOneAndUpdate(
+    { _id: theEvent._id },
+    { $pull: { events: { _id: new ObjectId(eventId) } } },
+    { returnOriginal: false }
+  );
+
+  if (!updatedGroup.value) {
+    throw new Error("Album was not able to be deleted");
+  }
+
+  return updatedGroup;
 };

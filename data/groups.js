@@ -15,14 +15,14 @@ export const create = async (name, description) => {
     throw new Error("Strings cannot be empty strings");
   }
 
-  let event;
+  let events = [];
   let activity;
   let users = [];
 
   let newGroup = {
     name: name,
     description: description,
-    event: event,
+    events: events,
     activity: activity,
     users: users,
   };
