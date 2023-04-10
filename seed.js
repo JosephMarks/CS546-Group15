@@ -887,7 +887,63 @@ const secondPost = await networkData.addPost(pid, "This is the second post");
 const secondPostId = secondPost._id.toString()
 console.log(secondPost);
 
-/* ----- create comments ----- */
+/* ----- {Get All Post} ----- */
+console.log("\n!!!Get ALL Post!!!");
+console.log(await networkData.getAllPost());
+
+/* ----- {Get Post By ID} ----- */
+console.log("\n!!!Get Post By Post ID!!!");
+console.log(await networkData.getPostById((await networkData.getAllPost())[0]._id.toString()));
+
+/* ----- {Get Post By User ID} ----- */
+console.log("\n!!!Get Post By User ID!!!");
+console.log(await networkData.getPostByUserId((await networkData.getAllPost())[0].userId.toString()));
+
+/* ----- {Update posts} ----- */
+console.log("\n!!!Update Post!!!");
+console.log("{Update the Posts Content}");
+const updateFirstPost = await networkData.updatePost(firstPostId, "This is modified of the first post!");
+console.log(updateFirstPost);
+
+/* ----- {Remove posts} ----- */
+console.log("\n!!!Remove Post!!!");
+console.log("{Remove the Posts Content}");
+const removeSecondPost = await networkData.removePost(secondPostId);
+console.log(removeSecondPost);
+
+/* ----- {Create likes} ----- */
+// user Daniel likes in the first post
+console.log("\n!!!Create Likes!!!");
+console.log("{Create the User Press Likes}");
+const firstPostFirstlikes = await networkData.addLikes(firstPostId, did);
+console.log(firstPostFirstlikes);
+
+// user Patrick likes in the first post
+console.log("\n{Create the Author Press Likes}");
+const firstPostSecondlikes = await networkData.addLikes(firstPostId, pid);
+console.log(firstPostSecondlikes);
+
+// user Daniel likes twice in the first post (Error checking)
+try
+{
+    const firstPostSecondlikes = await networkData.addLikes(firstPostId, did);
+    console.log(firstPostSecondlikes);
+} catch(error)
+{
+    console.log(error);
+}
+
+/* ----- {Get likes by Post ID} ----- */
+console.log("\n{Get Likes By Post Id}");
+const firstPostlikes = await networkData.getLikes(firstPostId);
+console.log(firstPostlikes);
+
+/* ----- {Remove likes by User ID} ----- */
+console.log("\n{Remove Likes By Post Id and User Id}");
+const removeFirstPostLikes = await networkData.removeLikes(firstPostId, did);
+console.log(await networkData.getPostById(firstPostId));
+
+/* ----- {Create Comments} ----- */
 console.log("\n!!!Create Comments!!!");
 // Error Handling
 // not supply content
@@ -918,7 +974,6 @@ try
 }
 
 // user Daniel leave comments to the first post
-
 console.log("{Create First Comments to First Post}");
 const firstPostFirstComments = await networkData.addComments(firstPostId, did, "Daniel's first message");
 console.log(firstPostFirstComments);
@@ -932,44 +987,6 @@ console.log(firstPostSecondComments);
 console.log("\n{Create the Author to Leave First Comments to First Post}");
 const firstPostFirstCommentsByAuthor = await networkData.addComments(firstPostId, pid, "Patrick's first message");
 console.log(firstPostFirstCommentsByAuthor);
-
-/* ----- create likes ----- */
-// user Daniel likes in the first post
-console.log("\n!!!Create Likes!!!");
-console.log("{Create the User Press Likes}");
-const firstPostFirstlikes = await networkData.addLikes(firstPostId, did);
-console.log(firstPostFirstlikes);
-
-// user Patrick likes in the first post
-console.log("\n{Create the Author Press Likes}");
-const firstPostSecondlikes = await networkData.addLikes(firstPostId, pid);
-console.log(firstPostSecondlikes);
-
-// user Daniel likes twice in the first post (Error checking)
-try
-{
-    const firstPostSecondlikes = await networkData.addLikes(firstPostId, did);
-    console.log(firstPostSecondlikes);
-} catch(error)
-{
-    console.log(error);
-}
-
-// get likes by Post ID
-console.log("\n{Get Likes By Post Id}");
-const firstPostlikes = await networkData.getLikes(firstPostId);
-console.log(firstPostlikes);
-
-// remove likes by Post ID and userID
-console.log("\n{Remove Likes By Post Id and User Id}");
-const removeFirstPostLikes = await networkData.removeLikes(firstPostId, did);
-console.log(await networkData.getPostById(firstPostId));
-
-/* ----- {Update posts} ----- */
-console.log("\n!!!Update Post!!!");
-console.log("{Update the Posts Content}");
-const updateFirstPost = await networkData.updatePost(firstPostId, "This is modified of the first post!");
-console.log(updateFirstPost);
 
 /* ----- {Get comments by using userId (Return the specific user's all comments)} ----- */
 console.log("\n!!!Get Comment!!!");
@@ -1036,6 +1053,10 @@ try
 {
     console.log(error);
 }
+
+
+/* ------[ Skills ]------*/
+/* ----- create skills ----- */
 
 console.log('Done seeding database');
 await closeConnection();
