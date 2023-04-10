@@ -35,25 +35,25 @@ app.set("view engine", "handlebars");
 
 configRoutes(app);
 
-let myNewGroup = await groupData.create(
-  "Joe New Group",
-  "The coolest group ever!"
-);
-let myGroups = await groupData.getAll();
+// let myNewGroup = await groupData.create(
+//   "Joe New Group",
+//   "The coolest group ever!"
+// );
+// let myGroups = await groupData.getAll();
 
-let myDescription = "This is an updated description of the grgoup!";
-// await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
+// let myDescription = "This is an updated description of the grgoup!";
+// // await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
 
-let myNewGroupEvent = await groupEventsData.create(
-  "64335155c88aeab21d99b251",
-  "is this working???"
-);
+// let myNewGroupEvent = await groupEventsData.create(
+//   "64335155c88aeab21d99b251",
+//   "is this working???"
+// );
 
-let updatedTitle = await groupEventsData.updateEventDate(
-  "64335155c88aeab21d99b251",
-  "64335cbb7885a7c8b6e327b4",
-  "05/13/2023"
-);
+// let updatedTitle = await groupEventsData.addUser(
+//   "64335155c88aeab21d99b251",
+//   "64335cbb7885a7c8b6e327b4",
+//   "64250150f2b4c8421ef908c7"
+// );
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
