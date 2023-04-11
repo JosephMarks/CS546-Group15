@@ -2,7 +2,7 @@ import { MongoUnexpectedServerResponseError, ObjectId } from "mongodb";
 import { team } from "../config/mongoCollections.js";
 
 export const getAll = async () => {
-  const teamCollection = await members();
+  const teamCollection = await team();
   let teamList = await teamCollection.find({}).toArray();
 
   if (!teamList) {
