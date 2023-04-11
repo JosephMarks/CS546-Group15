@@ -35,8 +35,11 @@ app.set("view engine", "handlebars");
 
 configRoutes(app);
 
+// let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
+// console.log(myGroup);
+
 // let myNewGroup = await groupData.create(
-//   "Joe New Group",
+//   "MASTER GROUP",
 //   "The coolest group ever!"
 // );
 // let myGroups = await groupData.getAll();
@@ -45,8 +48,8 @@ configRoutes(app);
 // // await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
 
 // let myNewGroupEvent = await groupEventsData.create(
-//   "64335155c88aeab21d99b251",
-//   "is this working???"
+//   "64348d1b2f4dd57a63bba048",
+//   "NEW EVENT?"
 // );
 
 // let updatedTitle = await groupEventsData.addUser(
