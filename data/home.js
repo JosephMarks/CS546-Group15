@@ -1,12 +1,12 @@
 import { team } from "../config/mongoCollections.js";
 
-// let exportedMethods = {
-//   async getAllTeamMates() {
-//     const userCollection = await team();
-//     const userList = await userCollection.find({}).toArray();
+let exportedMethods = {
+  async getAllTeamMates() {
+    const userCollection = await team();
+    const userList = await userCollection.find({}).toArray();
 
-//     return userList;
-//   },
-// };
+    return userList;
+  },
+};
 
-// export default exportedMethods;
+export default exportedMethods;
