@@ -1,62 +1,82 @@
 body {
-    height: 100vh;
-    overflow: auto;
-    background-repeat: no-repeat;
-    background-color: #F0A150 !important;
+  height: 100vh;
+  overflow: auto;
+  background-repeat: no-repeat;
+  background-color: #f0a150 !important;
 }
 
-.container{
-    font-family: "Gill Sans Extrabold", sans-serif;
-    padding: 2px;
+.container {
+  font-family: "Gill Sans Extrabold", sans-serif;
+  padding: 2px;
 }
-.signUp{
-    color: #F0A150;
-    background-color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: auto;
-    max-width: 50vh;
-    box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
-    padding: 2%;
-    border: 2px solid white;
-    border-radius: 35px;
-    animation: fadeInAnimation ease 2s;
+.signUp {
+  color: #f0a150;
+  background-color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  max-width: 50vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
 }
 
-.signUp form input{
+.signUp form input {
   background: transparent;
   border: none;
-  border-bottom: 2px solid #F0A150;
+  border-bottom: 2px solid #f0a150;
   border-radius: 0px;
 }
 
 h1 {
-    color: white !important;
-    text-align: center;
-} 
-
-button{
-    color: #F0A150 !important;
-    border-color: #F0A150 !important;
+  color: white !important;
+  text-align: center;
 }
 
-button:hover{
-    background-color: #F0A150 !important;
-    color: white !important;
+button {
+  color: #f0a150 !important;
+  border-color: #f0a150 !important;
+}
+
+button:hover {
+  background-color: #f0a150 !important;
+  color: white !important;
 }
 
 #logoImage {
-    width: 15vh;
-    height: 10vh;
+  width: 15vh;
+  height: 10vh;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  justify-items: center;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.team-member img {
+  margin-bottom: 5px;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 @keyframes fadeInAnimation {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-     }
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

@@ -1,6 +1,15 @@
-<h1>hello world</h1>
-<ol>
+<h1>Meet the Team!!</h1>
 
-  <li>{{team.Member1}}</li>
+<div class="team-grid">
+  {{#each team}}
+    <div class="team-member">
+      <img alt="{{name}}" src="{{image}}" />
+      <p>{{name}}</p>
+    </div>
+  {{/each}}
+</div>
 
-</ol>
+<style>
+  .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-gap:
+  20px; } .team-member { text-align: center; }
+</style>
