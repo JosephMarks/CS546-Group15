@@ -11,7 +11,7 @@ const exportedMethods = {
   },
 
   async getPostById(id) {
-    let id = validation.checkId(id);
+    id = validation.checkId(id);
     const postCollection = await socialPost();
     const post = await postCollection.findOne({ _id: ObjectId(id) });
 
