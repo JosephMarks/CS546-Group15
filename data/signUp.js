@@ -7,11 +7,15 @@ const signUpFunctions = {
   async create(fname, lname, age, email, password) {
     age = Number(age);
 
-    if (!validations.isProperString([fname, lname, email, password]))
+    if (
+      !validations.isProperString([fname, lname, email.toLowerCase(), password])
+    )
       throw "Error : FirstName, Last Name, Email, Password can only be string not just string with empty spaces";
     validations.isAge(age);
 
-    const ifAlready = await userCollection.findOne({ email: email });
+    const ifAlready = await userCollection.findOne({
+      email: email.toLowerCase(),
+    });
     if (ifAlready) throw "Error: User Email is already registered";
 
     // attributes need, but to be populated later when profile filled out by user
@@ -30,7 +34,7 @@ const signUpFunctions = {
     const finalPush = await userCollection.insertOne({
       fname,
       lname,
-      email,
+      email: email.toLowerCase(),
       password,
       age: age,
       gender,
