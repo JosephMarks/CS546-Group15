@@ -17,6 +17,7 @@ const getCollectionFn = (collection) => {
 
 export const team = getCollectionFn("team");
 export const users = getCollectionFn("users");
+export const company = getCollectionFn("company");
 export const groups = getCollectionFn("groups");
 export const network = getCollectionFn("network");
 export const skills = getCollectionFn("skills");
