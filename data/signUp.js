@@ -7,7 +7,6 @@ const signUpFunctions = {
   async create(fname, lname, age, email, password) {
     age = Number(age);
 
-    console.log("got here");
     if (!validations.isProperString([fname, lname, email, password]))
       throw "Error : FirstName, Last Name, Email, Password can only be string not just string with empty spaces";
     validations.isAge(age);

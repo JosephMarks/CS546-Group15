@@ -24,6 +24,14 @@ const validations = {
         if (!Number.isInteger(param)) throw "Error: Age must be an Integer"
     },
 
+    isArrayWithTheNonEmptyString (param) { //check if the incoming array of strings contains only valid strings
+        if (!Array.isArray(param)) throw "Error: The Tags must be an Array"
+        
+        for (let i = 0; i < param.length; i++) {
+            if (this.isProperString(param[i]) === 0) throw "Error: The Tags must contains only non empty strings"
+        }
+    },
+
     display (){
         console.log('hi')
     }
