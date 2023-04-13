@@ -1031,10 +1031,13 @@ try
     console.log(error);
 }
 
+// get Daniel's connections
+console.log(await networkData.getConnections(did))
+
 // user Daniel remove connections with Patrick
 console.log("\n{Remove Connections}");
 const removeConnectionsFromDaniel = await networkData.removeConnections(did, pid);
-console.log(await usersData.getUserById(did));
+console.log(await networkData.getConnections(did));
 
 // Error handling that Daniel remove Patrick twice
 try
@@ -1054,7 +1057,8 @@ try
     console.log(error);
 }
 
-
+console.log(await networkData.addConnections(did, pid))
+console.log(await networkData.getPostByConnections(did))
 /* ------[ Skills ]------*/
 /* ----- create skills ----- */
 

@@ -4,40 +4,59 @@ import validations from "../helpers.js";
 import usersData from "./user.js";
 
 const exportedMethods = {
-  async getAllPost() {
+  async getAllPost ()
+  {
     const networkCollection = await network();
     const postList = await networkCollection.find({}).toArray();
-    for (let ele of postList) {
+    for(let ele of postList)
+    {
       ele._id = ele._id.toString();
     }
     return postList;
   },
 
-  async getPostByUserId(userId) {
+  async getPostByUserId (userId)
+  {
     userId = validations.checkId(userId);
     const networkCollection = await network();
     const userPost = await networkCollection.find({ userId: userId }).toArray();
 
-    if (!userPost) throw "Error: Post not found";
-    for (let ele of userPost) {
+    if(!userPost) throw "Error: Post not found";
+    for(let ele of userPost)
+    {
       ele._id = ele._id.toString();
     }
     return userPost;
   },
 
-  async getPostById(postId) {
+  async getPostById (postId)
+  {
     postId = validations.checkId(postId);
     const networkCollection = await network();
     const networkPost = await networkCollection.findOne({
       _id: new ObjectId(postId),
     });
 
-    if (!networkPost) throw "Error: Post not found";
+    if(!networkPost) throw "Error: Post not found";
     networkPost._id = networkPost._id.toString();
     return networkPost;
   },
 
-  async addPost(userId, content) {
+  async getPostByConnections (userId)
+  {
+    userId = validations.checkId(userId);
+    const connections = await this.getConnections(userId);
+    const followerPost = []
+    for(let ele of connections)
+    {
+      let elePost = await this.getPostByUserId(ele)
+      followerPost.push(...elePost);
+    }
+    return followerPost;
+  },
+
+  async addPost (userId, content)
+  {
     userId = validations.checkId(userId);
     content = validations.checkString(content, "post content");
     const newPost = {
@@ -53,19 +72,21 @@ const exportedMethods = {
     return await this.getPostById(newId.toString());
   },
 
-  async removePost(postId) {
+  async removePost (postId)
+  {
     postId = validations.checkId(postId);
     const networkCollection = await network();
     const deletionInfo = await networkCollection.findOneAndDelete({
       _id: new ObjectId(postId),
     });
-    if (deletionInfo.lastErrorObject.n === 0)
+    if(deletionInfo.lastErrorObject.n === 0)
       throw `Error: Could not delete the post since the post does not exist.`;
 
     return { ...deletionInfo.value, deleted: true };
   },
 
-  async updatePost(postId, content) {
+  async updatePost (postId, content)
+  {
     postId = validations.checkId(postId);
     content = validations.checkString(content, "Content");
     const networkCollection = await network();
@@ -74,21 +95,23 @@ const exportedMethods = {
       { $set: { content: content } },
       { returnDocument: "after" }
     );
-    if (updateInfo.lastErrorObject.n === 0)
+    if(updateInfo.lastErrorObject.n === 0)
       throw [
         404,
         `Error: Update failed, could not find a user with id of ${id}`,
       ];
     const returnValue = await updateInfo.value;
     returnValue._id = returnValue._id.toString();
-    for (let ele of returnValue.comments) {
+    for(let ele of returnValue.comments)
+    {
       ele._id = ele._id.toString();
     }
     return returnValue;
   },
 
   //  Comments
-  async getCommentsByUserId(userId) {
+  async getCommentsByUserId (userId)
+  {
     userId = validations.checkId(userId);
     const networkCollection = await network();
     const userComment = await networkCollection
@@ -105,14 +128,16 @@ const exportedMethods = {
       ])
       .toArray();
 
-    if (!userComment) throw "Error: Post not found";
-    for (let ele of userComment) {
+    if(!userComment) throw "Error: Post not found";
+    for(let ele of userComment)
+    {
       ele._id = ele._id.toString();
     }
     return userComment;
   },
 
-  async getCommentsByCommentId(commentId) {
+  async getCommentsByCommentId (commentId)
+  {
     commentId = validations.checkId(commentId);
     const networkCollection = await network();
     const userComment = await networkCollection
@@ -128,14 +153,16 @@ const exportedMethods = {
         },
       ])
       .toArray();
-    if (!userComment) throw "Error: Post not found";
-    for (let ele of userComment) {
+    if(!userComment) throw "Error: Post not found";
+    for(let ele of userComment)
+    {
       ele._id = ele._id.toString();
     }
     return userComment;
   },
 
-  async addComments(postId, userId, comments) {
+  async addComments (postId, userId, comments)
+  {
     postId = validations.checkId(postId);
     userId = validations.checkId(userId);
     comments = validations.checkString(comments, "Comments");
@@ -155,13 +182,15 @@ const exportedMethods = {
     );
     const returnValue = newNetworks.value;
     returnValue._id = returnValue._id.toString();
-    for (let ele of returnValue.comments) {
+    for(let ele of returnValue.comments)
+    {
       ele._id = ele._id.toString();
     }
     return returnValue;
   },
 
-  async removeComments(commentId) {
+  async removeComments (commentId)
+  {
     commentId = validations.checkId(commentId);
     const comments = this.getCommentsByCommentId(commentId);
     const networkCollection = await network();
@@ -171,14 +200,15 @@ const exportedMethods = {
       { new: true },
       { returnDocument: "after" }
     );
-    if (deletionInfo.lastErrorObject.n === 0)
+    if(deletionInfo.lastErrorObject.n === 0)
       throw `Error: Could not delete post with id of ${commentId}`;
     const postId = deletionInfo.value._id.toString();
 
     return comments;
   },
 
-  async updateComments(commentId, content) {
+  async updateComments (commentId, content)
+  {
     commentId = validations.checkId(commentId);
     content = validations.checkString(content, "Content");
     const comments = this.getCommentsByCommentId(commentId);
@@ -188,21 +218,23 @@ const exportedMethods = {
       { $set: { "comments.$.comments": content } },
       { returnDocument: "after" }
     );
-    if (updateInfo.lastErrorObject.n === 0)
+    if(updateInfo.lastErrorObject.n === 0)
       throw `Error: Update failed! Could not update post with id ${commentId}`;
 
     return updateInfo.value;
   },
 
   //  Likes
-  async getLikes(postId) {
+  async getLikes (postId)
+  {
     postId = validations.checkId(postId);
     const post = await this.getPostById(postId);
     const likesList = post.likes;
     return likesList;
   },
 
-  async addLikes(postId, userId) {
+  async addLikes (postId, userId)
+  {
     postId = validations.checkId(postId);
     userId = validations.checkId(userId);
 
@@ -212,7 +244,8 @@ const exportedMethods = {
       { likes: userId },
       { projection: { _id: 0 } }
     );
-    if (duplicateUser !== null) {
+    if(duplicateUser !== null)
+    {
       const userName = (await usersData.getUserById(userId)).fname;
       throw `Error: ${userName} can not press likes more than twice!!`;
     }
@@ -224,13 +257,15 @@ const exportedMethods = {
     );
     const returnValue = newNetworks.value;
     returnValue._id = returnValue._id.toString();
-    for (let ele of returnValue.comments) {
+    for(let ele of returnValue.comments)
+    {
       ele._id = ele._id.toString();
     }
     return returnValue;
   },
 
-  async removeLikes(postId, userId) {
+  async removeLikes (postId, userId)
+  {
     postId = validations.checkId(postId);
     userId = validations.checkId(userId);
     const posts = this.getPostById(postId);
@@ -241,18 +276,27 @@ const exportedMethods = {
       { new: true },
       { returnDocument: "after" }
     );
-    if (deletionInfo.lastErrorObject.n === 0)
+    if(deletionInfo.lastErrorObject.n === 0)
       throw `Error: Could not delete post with id of ${commentId}`;
     deletionInfo.value._id = deletionInfo.value._id.toString();
 
     return deletionInfo.value;
   },
 
-  //  Connections
-  async addConnections(
+  //  Connection
+  async getConnections (userId)
+  {
+    userId = validations.checkId(userId);
+    const userCollection = await users();
+    const connections = (await userCollection.findOne({ _id: new ObjectId(userId) })).connections
+    return connections
+  },
+
+  async addConnections (
     userId,
     followerId // follow (need also add connections into user data)
-  ) {
+  )
+  {
     userId = validations.checkId(userId);
     followerId = validations.checkId(followerId);
     const networkCollection = await network();
@@ -264,7 +308,8 @@ const exportedMethods = {
       connections: { $elemMatch: { $in: [followerId] } },
     });
 
-    if (duplicateFollower !== null) {
+    if(duplicateFollower !== null)
+    {
       const userName = (await usersData.getUserById(userId)).fname;
       throw `Error: ${userName} has already follow this user!!`;
     }
@@ -277,10 +322,11 @@ const exportedMethods = {
     return userConnections.value;
   },
 
-  async removeConnections(
+  async removeConnections (
     userId,
     followerId // follow (in case this will be used)
-  ) {
+  )
+  {
     followerId = validations.checkId(followerId);
     userId = validations.checkId(userId);
     const userCollection = await users();
@@ -290,7 +336,8 @@ const exportedMethods = {
       connections: { $elemMatch: { $in: [followerId] } },
     });
 
-    if (existFollower === null) {
+    if(existFollower === null)
+    {
       throw `Error: The user doesn't follow this user or the user doesn't exist!!`;
     }
 
@@ -300,7 +347,7 @@ const exportedMethods = {
       { new: true },
       { returnDocument: "after" }
     );
-    if (deletionInfo.lastErrorObject.n === 0)
+    if(deletionInfo.lastErrorObject.n === 0)
       throw `Error: Could not find the user with id of ${userId}`;
     deletionInfo.value._id = deletionInfo.value._id.toString();
 
