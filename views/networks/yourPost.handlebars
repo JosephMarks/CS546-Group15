@@ -19,6 +19,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="/network/post/{{id}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
 
                     <li class="nav-item dropdown">
@@ -27,31 +28,22 @@
                             Your Follower
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/follower/new/{{id}}">Create New Relation</a>
+                            <li><a class="dropdown-item" href="">Get Your Connections Info.</a></li>
+                            {{!--
+                            /network/follower/{{id}} --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="">Create New Relation</a>
+                                {{!--/network/follower/new/{{id}} --}}
                             </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/network/follower/remove/{{id}}">Remove Your Relation</a>
+                            <li><a class="dropdown-item" href="">Remove Your Relation</a>
+                                {{!--
+                                /network/follower/remove/{{id}} --}}
                             </li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Your Post
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/post/new/{{id}}">Add New Post</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/post/update/{{id}}">Update Your Post</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/post/remove/{{id}}">Remove Your Post</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -59,6 +51,13 @@
         </div>
     </nav>
     <br>
-    <img src="https://www.lebow.drexel.edu/sites/default/files/styles/landing_wide/public/legacy/story/1501077931-network.jpg.webp?itok=Fkaq8OgY"
-        alt="Network Img" width="100%" height="50%" class="rounded float-start center-block">
+
+    <div class="card" style="width: 50%;">
+        <div class="card-body">
+            <h5 class="card-title">{{post.content}}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{fname}},&nbsp;{{lname}}</h6>
+            <p class="card-text">{{post.comments}}</p>
+            <p class="card-text">{{post.likes}}</p>
+        </div>
+    </div>
 </div>

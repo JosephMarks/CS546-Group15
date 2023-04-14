@@ -1057,8 +1057,18 @@ try
     console.log(error);
 }
 
+/* --- [Testing For the Route] --- */
+const tryPost1 = await networkData.addPost(pid, "This is my first post - By Patrick")
+await networkData.addComments(tryPost1._id, pid, "This is my first comments in my post - By Patrick")
 console.log(await networkData.addConnections(did, pid))
 console.log(await networkData.getPostByConnections(did))
+
+const tryPost2 = await networkData.addPost(did, "This is my first post - By Daniel")
+await networkData.addComments(tryPost2._id, pid, "This is my first comments in Daniel's post - By Patrick")
+// console.log(await networkData.addConnections(did, pid))
+// console.log(await networkData.getPostByConnections(did))
+
+
 /* ------[ Skills ]------*/
 /* ----- create skills ----- */
 

@@ -1,0 +1,128 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/static/images/download.png" alt="Logo" width="50" height="50"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href="">Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/network/post/{{id}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Your Follower
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="">Get Your Connections Info.</a></li>
+                            {{!--
+                            /network/follower/{{id}} --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="">Create New Relation</a>
+                                {{!--/network/follower/new/{{id}} --}}
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="">Remove Your Relation</a>
+                                {{!--
+                                /network/follower/remove/{{id}} --}}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <br>
+    {{!--Your Post --}}
+    <div class="accordion" id="your-post">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                Your Post
+            </p>
+        </div>
+        {{#if userPost.length}}
+        {{#each userPost}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls="{{_id}}">
+                    {{content}}
+                </button>
+            </h2>
+            {{#if comments.length}}
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <a class="btn btn-primary" href="/network/post/yourpost/{{_id}}" role="button" target="_blank">
+                        See this post & leave comments
+                    </a>
+                    <a class="btn btn-primary" href="" role="button">
+                        Edit this post
+                    </a>
+                    <a class="btn btn-primary" href="" role="button">
+                        Remove this post
+                    </a>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+
+    <br>
+    {{!-- Followers Post --}}
+    <div class="accordion" id="follower-post">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                Follower Post
+            </p>
+        </div>
+        {{#if followerPost.length}}
+        {{#each followerPost}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls="{{_id}}">
+                    {{content}}
+                </button>
+            </h2>
+            {{#if comments.length}}
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <a class="btn btn-primary" href="" role="button">
+                        See this post & leave comments
+                    </a>
+                    <a class="btn btn-primary" href="" role="button">
+                        Edit your comment in this post
+                    </a>
+                    <a class="btn btn-primary" href="" role="button">
+                        Remove your comment in this post
+                    </a>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+</div>
