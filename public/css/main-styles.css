@@ -9,6 +9,27 @@ body {
   font-family: "Gill Sans Extrabold", sans-serif;
   padding: 2px;
 }
+
+/*  Nav Bar  */
+
+#navbar-all {
+  background-color: #ed943b !important;
+}
+
+/*  Nav Bar  */
+
+/*  About us  */
+
+#about-us-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-family: cursive;
+}
+
+/*  About us  */
+
 .signUp {
   color: #f0a150;
   background-color: white;
@@ -104,5 +125,11 @@ button:hover {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@media(max-width: 1200px) {
+  #about-us-container {
+    height: auto;
   }
 }
