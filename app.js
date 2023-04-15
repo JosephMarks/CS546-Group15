@@ -42,7 +42,7 @@ configRoutes(app);
 // console.log(myGroup);
 
 // let myNewGroup = await groupData.create(
-//   "A second group",
+//   "A group with an image",
 //   "The coolest group ever!"
 // );
 // let myGroups = await groupData.getAll();

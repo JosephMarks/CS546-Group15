@@ -1,4 +1,4 @@
-import { MongoUnexpectedServerResponseError, ObjectId } from "mongodb";
+import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { groups, users } from "../config/mongoCollections.js";
 
 export const create = async (name, description) => {
@@ -52,6 +52,10 @@ export const get = async (id) => {
   const group = await groupCollection.findOne({ _id: new ObjectId(id) });
   if (group === null) {
     throw new Error("There is no group with that id");
+  }
+
+  if (group.image) {
+    group.base64Image = group.image.buffer.toString("base64");
   }
   group._id = group._id.toString();
   return group;
@@ -226,7 +230,41 @@ export const addUser = async (id, user) => {
   return await get(id);
 };
 
-export const updateImage = async (id, image) => {};
+export const updateImage = async (id, base64Image) => {
+  id = id.trim();
+  const parsedId = new ObjectId(id);
+  if (!id || !base64Image) {
+    throw new Error("parameters must be provided");
+  }
+  // checking to make sure id is a valid ObjectId
+  if (!ObjectId.isValid(id)) {
+    throw new Error("This is not a valid object ID");
+  }
+
+  // Convert base64Image to Binary
+  const bufferImage = Buffer.from(base64Image, "base64");
+  const bin = new Binary(bufferImage);
+
+  const updatedGroup = {
+    image: bin,
+  };
+  const groupCollection = await groups();
+  // Need to check to make sure at least one item is being changed in the band update, otherwise will throw
+  const foundGroup = await groupCollection.findOne({ _id: new ObjectId(id) });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    { _id: new ObjectId(parsedId) },
+    { $set: updatedGroup },
+    { returnDocument: "after" }
+  );
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the band successfully.");
+  }
+  // TO DO: double check - am I returning the right thing here?
+  return await get(id);
+};
 
 export const doesGroupExist = async (id) => {
   const groupCollection = await groups();

@@ -3,7 +3,8 @@ import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 
 const exportedMethods = {
-  async getAllUser() { //get all users data from collectoin
+  async getAllUser() {
+    //get all users data from collectoin
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
     for (let ele of userList) {
@@ -37,6 +38,7 @@ const exportedMethods = {
     // attributes need, but to be populated later when profile filled out by user
     let gender = "";
     let locationState = "";
+    let image;
     let university = "";
     let collegeMajor = "";
     let interestArea = [];
@@ -55,6 +57,7 @@ const exportedMethods = {
       age: age,
       gender,
       locationState,
+      image,
       university,
       collegeMajor,
       interestArea,

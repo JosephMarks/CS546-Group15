@@ -1,18 +1,23 @@
 <h1>Group Details</h1>
-<div>
-  <a href="javascript:history.back();">Back to Search Results</a>
-  <h2>{{name}}</h2>
-  <h2>{{description}}</h2>
-  <h2>{{events}}</h2>
+  <link rel="stylesheet" href="/css/group-details.css">
 
-  <img alt="{{name}}" src="{{image}}" />
-  <form action="/upload" method="POST" enctype="multipart/form-data">
-          <div class="custom-file mb-3">
-            <input type="file" name="file" id="file" class="custom-file-input">
-            <label for="file" class="custom-file-label">Choose File</label>
-          </div>
-          <input type="submit" value="Submit" class="btn btn-primary btn-block">
-        </form>
+<div class="container">
+    <h1>Group Details</h1>
+    <div>
+      <a href="javascript:history.back();">Back to Search Results</a>
+      <h2>{{name}}</h2>
+      <h2>{{description}}</h2>
+      <h2>{{events}}</h2>
 
-  </form>
-</div>
+      {{#if image}}
+        <img src="data:image/png;base64,{{image}}" alt="Group Image" />
+      {{/if}}
+
+      <form action="/groups/{{_id}}/updateimage" method="POST" enctype="multipart/form-data">
+        <div class="custom-file mb-3">
+          <input type="file" name="image" id="file" class="custom-file-input">
+          <label for="file" class="custom-file-label">Choose File</label>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary btn-block">
+      </form>
+    </div>
