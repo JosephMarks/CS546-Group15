@@ -8,6 +8,7 @@ import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
 import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
+import { userData } from "./data/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,6 +41,14 @@ configRoutes(app);
 
 // let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
 // console.log(myGroup);
+
+let newUser = await userData.createUser(
+  "Joseph",
+  "Marks",
+  37,
+  "jmichaelmarks.nc@gmail.com",
+  "Pa55word"
+);
 
 // let myNewGroup = await groupData.create(
 //   "A group with an image",

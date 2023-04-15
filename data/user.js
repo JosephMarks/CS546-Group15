@@ -100,7 +100,7 @@ const exportedMethods = {
 
     let headerDescription = validations.checkString(
       updateData.headerDescription,
-      "HeaderDescription"
+      "Header Description"
     );
     let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
     let university = validations.checkString(
@@ -119,6 +119,10 @@ const exportedMethods = {
       updateData.experience,
       "Experience year"
     ); // experience year from 0 to 80
+    let jobHistory = validations.checkStringArray(
+      updateData.jobHistory,
+      "Job History"
+    );
     let seekingJob = validations.checkStringArray(
       updateData.seekingJob,
       "Seeking job"
@@ -144,11 +148,15 @@ const exportedMethods = {
       password: password,
       age: age,
       gender: gender,
+      headerDescription: headerDescription,
+      aboutMe: aboutMe,
       locationState: locationState,
+      image: image,
       university: university,
       collegeMajor: collegeMajor,
       interestArea: interestArea,
       experience: experience,
+      jobHistory: jobHistory,
       seekingJob: seekingJob,
       connections: connections,
       group: group,
