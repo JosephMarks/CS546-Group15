@@ -39,7 +39,7 @@ router.route("/:id").get(async (req, res) => {
       name: groupInfo.name,
       description: groupInfo.description,
       events: "the big event",
-      image: "/static/images/groupStock.png",
+      image: "public/static/images/groupStock.png",
     });
   } catch (e) {
     res.status(404).render("./error", {
