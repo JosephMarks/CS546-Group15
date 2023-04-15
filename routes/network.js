@@ -18,24 +18,24 @@ router
         }
     })
 
-router.route('/post/:id')
+router.route('/post/:userid')
     .get(async (req, res) =>
     {
         try
         {
-            req.params.id = validation.checkId(req.params.id)
+            req.params.userid = validation.checkId(req.params.userid)
         } catch(error)
         {
             return res.status(400).json({ error: error });
         }
         try
         {
-            const userId = req.params.id
+            const userId = req.params.userid
             const title = "Post"
             const h1 = "Post";
-            const userPostList = await networkData.getPostByUserId(req.params.id);
-            const followerPostList = await networkData.getPostByConnections(req.params.id);
-            res.render('networks/networkPost', { title: title, h1: h1, authorId: userId, userPost: userPostList, followerPost: followerPostList });
+            const userPostList = await networkData.getPostByUserId(req.params.userid);
+            const followerPostList = await networkData.getPostByConnections(req.params.userid);
+            res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
         } catch(error)
         {
             return res.status(404).json({ error: error });
@@ -43,7 +43,7 @@ router.route('/post/:id')
 
     })
 
-router.route('/post/:id/postId/:id')
+router.route('/post/:userid/postId/:id')
     .get(async (req, res) =>
     {
         const post = await networkData.getPostById(req.params.id);
@@ -54,7 +54,7 @@ router.route('/post/:id/postId/:id')
     })
     .post(async (req, res) =>
     {
-        const updatedData = req.body;
+        let updatedData = req.body.comments;
         let errors = [];
         try
         {
@@ -65,15 +65,24 @@ router.route('/post/:id/postId/:id')
         }
         try
         {
-            updatedData.newComment = validation.checkString(updatedData.newComment, 'Comment');
+            updatedData = validation.checkString(updatedData, 'Comment');
         } catch(e)
         {
             errors.push(e);
         }
 
-        if(errors.length > 0)
+        if(errors.length > 0) //Bugs
         {
-            res.render(`post/postId/${req.params.id}`, {
+            const post = await networkData.getPostById(req.params.id);
+            const author = await userData.getUserById(post.userId);
+            const title = post.content;
+            const h1 = post.content;
+            res.render('networks/yourPost', {
+                title: title,
+                h1: h1,
+                post: post,
+                fname: author.fname,
+                lname: author.lname,
                 errors: errors,
                 hasErrors: true,
                 newComments: updatedData,
@@ -81,11 +90,13 @@ router.route('/post/:id/postId/:id')
             return;
         }
 
-        const user = await networkData.getCommentsByCommentId(req.params.id);  //cannot get userid??
         try
         {
-            const updatedPost = await networkData.addComments(req.params.id, user.Id, updatedData)
-            const post = await networkData.getPostById(req.params.id)
+            const updatedPost = await networkData.addComments(req.params.id, req.params.userid, updatedData);
+            const post = await networkData.getPostById(req.params.id);
+            const author = await userData.getUserById(req.params.userid);
+            const title = post.content;
+            const h1 = post.content;
             res.render(`networks/yourPost`, { title: title, h1: h1, post: post, fname: author.fname, lname: author.lname })
         } catch(e)
         {
