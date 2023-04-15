@@ -3,6 +3,7 @@ const router = Router();
 import { groupData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 import multer from "multer";
+const upload = multer({ dest: "uploads/" });
 
 router.route("/").get(async (req, res) => {
   try {
@@ -21,7 +22,7 @@ router.route("/").get(async (req, res) => {
   }
 });
 
-router.route("/:id/update").post(async (req, res) => {
+router.route("/:id/updateimage").post(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;

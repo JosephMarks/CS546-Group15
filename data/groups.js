@@ -18,10 +18,12 @@ export const create = async (name, description) => {
   let events = [];
   let activity;
   let users = [];
+  let image;
 
   let newGroup = {
     name: name,
     description: description,
+    image: image,
     events: events,
     activity: activity,
     users: users,
@@ -223,6 +225,8 @@ export const addUser = async (id, user) => {
   // TO DO: double check - am I returning the right thing here?
   return await get(id);
 };
+
+export const updateImage = async (id, image) => {};
 
 export const doesGroupExist = async (id) => {
   const groupCollection = await groups();

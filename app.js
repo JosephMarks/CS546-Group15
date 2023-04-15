@@ -5,6 +5,9 @@ import exphbs from "express-handlebars";
 import configRoutes from "./routes/index.js";
 import * as groupData from "./data/groups.js";
 import * as groupEventsData from "./data/groupEvents.js";
+import multer from "multer";
+import GridFsStorage from "multer-gridfs-storage";
+import Grid from "gridfs-stream";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
