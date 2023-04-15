@@ -4,7 +4,7 @@ import { groups } from "../config/mongoCollections.js";
 import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 
-// Functinon to create the new group sub-document
+// Functinon to create the new group sub-document.
 export const create = async (groupId, title) => {
   groupId = groupId.trim();
   title = title.trim();

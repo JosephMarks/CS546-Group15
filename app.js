@@ -50,7 +50,7 @@ configRoutes(app);
 // console.log(myGroup);
 
 // let myNewGroup = await groupData.create(
-//   "MASTER GROUP",
+//   "A second group",
 //   "The coolest group ever!"
 // );
 // let myGroups = await groupData.getAll();
