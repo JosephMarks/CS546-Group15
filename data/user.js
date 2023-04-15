@@ -37,12 +37,15 @@ const exportedMethods = {
 
     // attributes need, but to be populated later when profile filled out by user
     let gender = "";
+    let headerDescription = "";
+    let aboutMe = "";
     let locationState = "";
     let image;
     let university = "";
     let collegeMajor = "";
     let interestArea = [];
     let experience = 0;
+    let jobHistory = [];
     let seekingJob = [];
     let connections = [];
     let group = [];
@@ -56,12 +59,15 @@ const exportedMethods = {
       password,
       age: age,
       gender,
+      headerDescription,
+      aboutMe,
       locationState,
       image,
       university,
       collegeMajor,
       interestArea,
       experience,
+      jobHistory,
       seekingJob,
       connections,
       group,
@@ -91,6 +97,12 @@ const exportedMethods = {
       updateData.locationState,
       "LocationState"
     );
+
+    let headerDescription = validations.checkString(
+      updateData.headerDescription,
+      "HeaderDescription"
+    );
+    let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
     let university = validations.checkString(
       updateData.university,
       "University"
