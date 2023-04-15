@@ -38,10 +38,10 @@ configRoutes(app);
 // let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
 // console.log(myGroup);
 
-// let myNewGroup = await groupData.create(
-//   "MASTER GROUP",
-//   "The coolest group ever!"
-// );
+let myNewGroup = await groupData.create(
+  "A second group",
+  "The coolest group ever!"
+);
 // let myGroups = await groupData.getAll();
 
 // let myDescription = "This is an updated description of the grgoup!";
