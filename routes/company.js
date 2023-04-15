@@ -16,7 +16,15 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 router.route("/").get((req, res) => {
-  return res.render('createCompany', {title: "Create Company"});
+  if (!req.session.user){
+    return res.render('Auth/login', {error: "You Must Sign In First"});
+  } else {
+    if (req.session.user.candidateType === "Company"){
+      return res.render('createCompany', {title: "Create Company"});
+    } else {
+      return res.render('Auth/login', {error: "You Do not have Access for this page"});
+    }
+  }
 });
 
 router.route('/data').post(upload.array('uploadImage', 5) ,async (req, res) => {

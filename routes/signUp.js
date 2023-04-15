@@ -6,32 +6,32 @@ import bcrypt from "bcrypt";
 const router = Router();
 
 router.route('/').get(async (req, res) => {
-  return res.render('signup', {title: 'Sign Up'})
+  return res.render('Auth/signup', {title: 'Sign Up'})
 });
 
 router.route("/data").post(async (req, res) => {
   const bodyData = req.body;
-  // console.log(bodyData);
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
     return res
       .status(400)
-      .render('signup', { error: "There are no fields in the request body" });
+      .render('Auth/signup', { error: "There are no fields in the request body" });
   }
 
-  let { fname, lname, age, email, pass } = bodyData;
+  let { fname, lname, age, email, pass, candidateType } = bodyData;
 
   try {
-    if (!fname || !lname || !age || !email || !pass)
+    if (!fname || !lname || !age || !email || !pass || !candidateType)
       throw "Error: All parameters are required";
+    validations.isAge(age);
     age = Number(age);
 
-    if (!validations.isProperString([fname, lname, email, pass]))
-      throw "Error : FirstName, Last Name, Email, password can only be string not just string with empty spaces";
+    if (!validations.isProperString([fname, lname, email, pass, candidateType]))
+      throw "Error : FirstName, Last Name, Email, password, candidateType can only be string not just string with empty spaces";
     validations.isAge(age);
     pass = await bcrypt.hash(pass.trim(), 5);
   } catch (e) {
-    return res.status(400).render('signup', { error: e });
+    return res.status(400).render('Auth/signup', { error: e });
   }
 
   try {
@@ -39,14 +39,15 @@ router.route("/data").post(async (req, res) => {
       fname.trim(),
       lname.trim(),
       age,
-      email.trim(),
-      pass
+      email.trim().toLowerCase(),
+      pass,
+      candidateType.trim()
     );
-    return res.status(200).render('login', { error: " New User Registered " });
+    return res.status(200).render('Auth/login', { error: " New User Registered " });
   } catch (e) {
     if (e === "Error: User Email is already registered")
-      return res.status(404).render('login', { error: e });
-    else return res.status(500).render('signup', { error: "Sever Error" });
+      return res.status(404).render('Auth/login', { error: e });
+    else return res.status(500).render('Auth/signup', { error: "Sever Error" });
   }
 });
 

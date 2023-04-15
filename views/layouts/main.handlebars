@@ -97,12 +97,13 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/logIn">LogIn</a></li>
             <li><a class="dropdown-item" href="/signUp">signUp</a></li>
+            <li><a class="dropdown-item" href="/company">company</a></li>
           </ul>
         </li>
 
       </ul>
 
-      {{!-- <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
@@ -113,12 +114,16 @@
           >
             {{userName}}
           </a>
+
+          {{#if status}}
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="#">My Profile</a></li>
-            <li><a class="dropdown-item" href="#">Logout</a></li>
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
           </ul>
+          {{/if}}
+
         </li>
-      </ul> --}}
+      </ul>
     </div>
 
   </div>

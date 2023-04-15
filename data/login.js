@@ -12,12 +12,14 @@ const logInFunctions = {
 
     const ifAlready = await userCollection.findOne(
       { email: email },
-      { projection: { email: 1, password: 1 } }
+      { projection: { email: 1, password: 1, candidateType: 1} }
     );
     if (!ifAlready) throw "Error: User Email is not registered";
 
     if (!(await bcrypt.compare(password, ifAlready.password)))
       throw "Error : Wrong Password";
+
+    return ifAlready;
   },
 };
 
