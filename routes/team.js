@@ -9,7 +9,7 @@ router.route("/").get(async (req, res) => {
     const team = [
       { name: "Pradyumn Pundir", image: "/public/static/images/joe2.png" },
       { name: "Ruobing Liu", image: "/public/static/images/joe2.png" },
-      { name: "Tzu-Ming Lu", image: "/public/static/images/joe2.png" },
+      { name: "Tzu-Ming Lu", image: "/public/static/images/ming.png" },
       { name: "Joe Marks", image: "/public/static/images/joe2.png" },
     ];
 

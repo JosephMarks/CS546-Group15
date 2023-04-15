@@ -2,9 +2,9 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
         <div class="container-fluid">
-            <img src="/public/static/images/download.png" alt="Logo" width="50" height="50"
+            <img src="\public\images\aboutUs.png" alt="Logo" width="30" height="30"
                 class="d-inline-block align-text-top">
-            <a class="navbar-brand mb-0" href="">Better Interview Book</a>
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -19,6 +19,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="/network/post/{{id}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
 
                     <li class="nav-item dropdown">
@@ -27,31 +28,22 @@
                             Your Follower
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/follower/new/{{id}}">Create New Relation</a>
+                            <li><a class="dropdown-item" href="">Get Your Connections Info.</a></li>
+                            {{!--
+                            /network/follower/{{id}} --}}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="">Create New Relation</a>
+                                {{!--/network/follower/new/{{id}} --}}
                             </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/network/follower/remove/{{id}}">Remove Your Relation</a>
+                            <li><a class="dropdown-item" href="">Remove Your Relation</a>
+                                {{!--
+                                /network/follower/remove/{{id}} --}}
                             </li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Your Post
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/post/new/{{id}}">Add New Post</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/post/update/{{id}}">Update Your Post</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/post/remove/{{id}}">Remove Your Post</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -59,6 +51,6 @@
         </div>
     </nav>
     <br>
-    <img src="https://www.lebow.drexel.edu/sites/default/files/styles/landing_wide/public/legacy/story/1501077931-network.jpg.webp?itok=Fkaq8OgY"
-        alt="Network Img" width="100%" height="50%" class="rounded float-start center-block">
+    <img src="https://cdn.pixabay.com/photo/2018/11/29/21/51/social-media-3846597_960_720.png" alt="Network Img"
+        class="rounded float-start center-block" id="network-homepage-img">
 </div>

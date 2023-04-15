@@ -147,7 +147,8 @@ const exportedMethods = {
         {
           $project: {
             _id: "$comments._id",
-            userId: "$comments.userId",
+            fname: "$comments.fname",
+            lname: "$comments.lname",
             comments: "$comments.comments",
           },
         },
@@ -166,11 +167,13 @@ const exportedMethods = {
     postId = validations.checkId(postId);
     userId = validations.checkId(userId);
     comments = validations.checkString(comments, "Comments");
+    const userName = await usersData.getUserById(userId);
 
     const newComments = {
       _id: new ObjectId(),
       userId: userId,
-      comments,
+      fname: userName.fname,
+      lname: userName.lname,
       comments,
     };
 
