@@ -1,7 +1,6 @@
 import { ObjectId } from "mongodb";
-import * as groupData from "./groups.js";
+import * as userData from "./users.js";
 
-// Functinon to create the new group sub-document.
 export const create = async (userId, role) => {};
 
 export const getAll = async (userId) => {};

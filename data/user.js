@@ -40,7 +40,7 @@ const exportedMethods = {
     let headerDescription = "";
     let aboutMe = "";
     let locationState = "";
-    let image;
+    let image = "";
     let university = "";
     let collegeMajor = "";
     let interestArea = [];
@@ -103,6 +103,7 @@ const exportedMethods = {
       "Header Description"
     );
     let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
+    let image;
     let university = validations.checkString(
       updateData.university,
       "University"
