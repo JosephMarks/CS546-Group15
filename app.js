@@ -8,7 +8,7 @@ import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
 import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
-import { userData } from "./data/index.js";
+import { groupActivityData, userData } from "./data/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -69,6 +69,11 @@ const updateData = {
 let updatedUser = await userData.updateUsers(
   "643b2afed6271e8e940ad58e",
   updateData
+);
+
+let newActivity = await groupActivityData.create(
+  "643b00a35337ca09c94f599d",
+  "New Activitfsssfddddffy april 15"
 );
 
 // let myNewGroup = await groupData.create(

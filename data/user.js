@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Binary } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 
@@ -216,6 +216,42 @@ const exportedMethods = {
     const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
 
     return foundUser;
+  },
+
+  async updateImage(id, base64Image) {
+    id = id.trim();
+    const parsedId = new ObjectId(id);
+    if (!id || !base64Image) {
+      throw new Error("parameters must be provided");
+    }
+    // checking to make sure id is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      throw new Error("This is not a valid object ID");
+    }
+
+    // Convert base64Image to Binary
+    const bufferImage = Buffer.from(base64Image, "base64");
+    const bin = new Binary(bufferImage);
+
+    const updatedProfile = {
+      image: bin,
+    };
+    const userCollection = await users();
+    // Need to check to make sure at least one item is being changed in the band update, otherwise will throw
+    const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (foundUser === null) {
+      throw new Error("Group has not been found");
+    }
+    const updatedInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(parsedId) },
+      { $set: updatedProfile },
+      { returnDocument: "after" }
+    );
+    if (updatedInfo.lastErrorObject.n === 0) {
+      throw new Error("Could not update the band successfully.");
+    }
+    // TO DO: double check - am I returning the right thing here?
+    return await this.getUserById(id);
   },
 };
 export default exportedMethods;

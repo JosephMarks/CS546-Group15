@@ -3,7 +3,7 @@ const router = Router();
 import { groupData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 import multer from "multer";
-const upload = multer({ dest: "uploads/" });
+const upload = multer();
 import fs from "fs";
 
 router.route("/").get(async (req, res) => {
@@ -33,20 +33,37 @@ router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
 
   try {
     // Convert the image to base64
-    const imgBuffer = fs.readFileSync(req.file.path);
+    const imgBuffer = req.file.buffer;
+    // const imgBuffer = fs.readFileSync(req.file.path);
+
     const imgBase64 = imgBuffer.toString("base64");
 
     // Update the group data with the new image
     await groupData.updateImage(id, imgBase64);
 
-    // Remove the temporary file
-    fs.unlinkSync(req.file.path);
+    // // Remove the temporary file
+    // fs.unlinkSync(req.file.path);
 
     // Redirect to the group page
     res.redirect(`/groups/${id}`);
   } catch (e) {
     console.error(e); // Log the error to console
     res.status(500).send("Error uploading image.");
+  }
+});
+
+router.post("/:id/updatename", async (req, res) => {
+  const id = req.params.id;
+  const newName = req.body.name;
+
+  try {
+    let updatedGroup = await groupData.get(id);
+    await groupData.updateName(id, newName);
+
+    res.redirect(`/groups/${id}`);
+  } catch (e) {
+    console.error(e); // Log the error to console
+    res.status(500).send("Not able to update name");
   }
 });
 
@@ -66,7 +83,7 @@ router.route("/:id").get(async (req, res) => {
     // console.log(eventsArray);
 
     res.render("./groupById", {
-      _id: groupInfo._id,
+      _id: id,
       name: groupInfo.name,
       description: groupInfo.description,
       events: "the big event",
@@ -79,6 +96,14 @@ router.route("/:id").get(async (req, res) => {
       errorMessage: `We're sorry, a venue with that id does not exist .`,
     });
   }
+});
+
+router.get("/:id/edit", async (req, res) => {
+  const id = req.params.id;
+
+  res.render("./groupsEdit", {
+    _id: id,
+  });
 });
 
 export default router;

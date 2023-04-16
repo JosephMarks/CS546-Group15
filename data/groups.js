@@ -16,7 +16,7 @@ export const create = async (name, description) => {
   }
 
   let events = [];
-  let activity;
+  let activity = [];
   let users = [];
   let image;
 
@@ -127,7 +127,7 @@ export const updateName = async (id, name) => {
   if (foundGroup === null) {
     throw new Error("Group has not been found");
   }
-  if (foundGroup.name === foundGroup.name) {
+  if (foundGroup.name === name) {
     throw new Error(
       "There are no differences in the updated values compared to the current values for the group!"
     );

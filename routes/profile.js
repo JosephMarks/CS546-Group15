@@ -37,9 +37,12 @@ router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;
+  console.log("got here...");
+  console.log(id);
 
   try {
-    let userInfo = await userData.get(id);
+    let userInfo = await userData.getUserById(id);
+    console.log(userInfo);
     let image = userInfo.base64Image;
     // Pass our data over to the template to be rendered
     // let eventsArray = [];
