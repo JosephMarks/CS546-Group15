@@ -71,10 +71,7 @@ let updatedUser = await userData.updateUsers(
   updateData
 );
 
-let newActivity = await groupActivityData.create(
-  "643b00a35337ca09c94f599d",
-  "New Activitfsssfddddffy april 15"
-);
+console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
 
 // let myNewGroup = await groupData.create(
 //   "A group with an image",

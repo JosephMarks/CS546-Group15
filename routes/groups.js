@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { groupData } from "../data/index.js";
+import { groupData, groupActivityData } from "../data/index.js";
 import { ObjectId } from "mongodb";
 import multer from "multer";
 const upload = multer();
@@ -19,6 +19,7 @@ router.route("/").get(async (req, res) => {
     }
     res.render("./groups", { groups: displayArray });
   } catch (e) {
+    console.error(e);
     res.sendStatus(500);
   }
 });
@@ -86,6 +87,7 @@ router.route("/:id").get(async (req, res) => {
       _id: id,
       name: groupInfo.name,
       description: groupInfo.description,
+      activity: groupInfo.activity,
       events: "the big event",
       image: image,
     });

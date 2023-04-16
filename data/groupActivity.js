@@ -63,7 +63,7 @@ export const create = async (groupId, title) => {
 
 export const getAll = async (groupId) => {
   groupId = groupId.trim();
-  if (!groupID) {
+  if (!groupId) {
     throw new Error("You must provide a group id");
   }
   if (typeof groupId !== "string") {
@@ -79,9 +79,7 @@ export const getAll = async (groupId) => {
   if (group === null) {
     throw new Error("Grouop does not exist");
   }
-  let { events } = group;
-  for (let i = 0; i < events.length; i++) {
-    events[i]._id = events[i]._id.toString();
-  }
-  return events;
+  let { activity } = group;
+
+  return activity;
 };

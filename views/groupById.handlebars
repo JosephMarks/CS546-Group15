@@ -1,4 +1,4 @@
-  <link rel="stylesheet" href="/css/group-details.css">
+  <link rel="stylesheet" href="/public/css/group-details.css">
 
 <div class="container">
     <h1>Group Details</h1>
@@ -13,6 +13,10 @@
       {{#if image}}
         <img src="data:image/png;base64,{{image}}" alt="Group Image" />
       {{/if}}
+
+      {{#each activity}}
+      <div>{{title}}</div>
+      {{/each}}
 
       
     </div>
