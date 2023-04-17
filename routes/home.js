@@ -3,7 +3,11 @@ import { Router } from "express";
 const router = Router();
 
 router.route("/").get((req, res) => {
-  return res.render("homepage", { title: "Web Development I Group 15" });
+  if (!req.session.user){
+    return res.render("homepage", { title: "Web Development I Group 15", userName:  "Sign In First", status: false});
+  }else {
+    return res.render("homepage", { title: "Web Development I Group 15", userName:  req.session.user.email, status: true});
+  }
 });
 
 // router.route('/team').get(async (req, res) => {

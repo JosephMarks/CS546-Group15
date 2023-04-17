@@ -174,7 +174,7 @@ const exportedMethods = {
     if (updateInfo.lastErrorObject.n === 0)
       throw [
         404,
-        `Error: Update failed, could not find a user with id of ${id}`,
+        `Error: Update failed, could not find a user with id of ${userId}`,
       ];
     updateInfo.value._id = updateInfo.value._id.toString();
     return await updateInfo.value;

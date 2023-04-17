@@ -4,13 +4,13 @@ import validations from "../helpers.js";
 const userCollection = await users();
 
 const signUpFunctions = {
-  async create(fname, lname, age, email, password) {
+  async create(fname, lname, age, email, password, candidateType) {
     age = Number(age);
 
     if (
-      !validations.isProperString([fname, lname, email.toLowerCase(), password])
+      !validations.isProperString([fname, lname, email.toLowerCase(), password, candidateType])
     )
-      throw "Error : FirstName, Last Name, Email, Password can only be string not just string with empty spaces";
+      throw "Error : FirstName, Last Name, Email, Password, candidateType can only be string not just string with empty spaces";
     validations.isAge(age);
 
     const ifAlready = await userCollection.findOne({
@@ -37,6 +37,7 @@ const signUpFunctions = {
       email: email.toLowerCase(),
       password,
       age: age,
+      candidateType: candidateType,
       gender,
       locationState,
       university,

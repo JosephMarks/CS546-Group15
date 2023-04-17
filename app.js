@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import exphbs from "express-handlebars";
 import configRoutes from "./routes/index.js";
+import session from "express-session";
 import * as groupData from "./data/groups.js";
 import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
@@ -28,6 +29,16 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
   // let the next middleware run:
   next();
 };
+
+app.use(
+  session({
+    name: 'BetterInterviewBook',
+    secret: "secret-key",
+    saveUninitialized: false,
+    resave: false,
+    cookie: {maxAge: 60000}
+  })
+);
 
 app.use("/public", staticDir);
 app.use(express.json());

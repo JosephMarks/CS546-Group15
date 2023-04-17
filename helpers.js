@@ -35,7 +35,10 @@ const validations = {
         // if(!this.isNumber([param])) throw "Error: Age  must be a number"
 
         // can we rewrite it into this way
-        if(typeof param !== 'number') throw "Error: Age  must be a number";
+        if (isNaN(Number(param))) throw "Error: Age  must be a number";
+        param = Number(param);
+        
+        if(typeof (param) !== 'number' || isNaN(Number(param))) throw "Error: Age  must be a number";
         if(param < 18 || param > 100) throw "Error: Age must be with in 18 to 100";
         if(!Number.isInteger(param)) throw "Error: Age must be an Integer";
         return param
