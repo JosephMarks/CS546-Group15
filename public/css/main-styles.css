@@ -10,50 +10,6 @@ body {
   padding: 2px;
 }
 
-
-/*  Nav Bar  */
-
-#navbar-all {
-  background-color: #ed943b !important;
-}
-
-/*  Nav Bar  */
-
-/*  About us  */
-
-#about-us-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 80vh;
-  font-family: cursive;
-}
-
-/*  About us  */
-
-.signUp {
-  color: #f0a150;
-  background-color: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: auto;
-  max-width: 50vh;
-  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
-  padding: 2%;
-  border: 2px solid white;
-  border-radius: 35px;
-  animation: fadeInAnimation ease 2s;
-}
-
-.signUp form input {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid #f0a150;
-  border-radius: 0px;
-}
-
 h1 {
   color: white !important;
   text-align: center;
@@ -94,6 +50,85 @@ button:hover {
   max-height: 100%;
 }
 
+/*  Nav Bar  */
+
+#navbar-all {
+  background-color: #ed943b !important;
+}
+
+/*  Nav Bar  */
+
+/*  About us  */
+
+#about-us-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-family: cursive;
+}
+
+/*  About us  */
+
+/*  sign up  */
+.signup-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signUp {
+  color: #f0a150;
+  background-color: white;
+  width: auto;
+  max-width: 50vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
+}
+
+.signUp form input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #f0a150;
+  border-radius: 0px;
+}
+
+/*  sign up  */
+
+/*  log in  */
+
+.login-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login {
+  color: #f0a150;
+  background-color: white;
+  width: auto;
+  max-width: 50vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
+}
+
+.login form input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #f0a150;
+  border-radius: 0px;
+}
+
+/*  log in  */
+
+
+
 /* --- Company's CSS ---  */
 
 .company form input {
@@ -103,13 +138,15 @@ button:hover {
   border-radius: 0px;
 }
 
+.company-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .company {
   color: #F0A150;
   background-color: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: auto;
   max-width: 100vh;
   box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
@@ -119,6 +156,7 @@ button:hover {
   animation: fadeInAnimation ease 2s;
 }
 
+/* --- Company's CSS ---  */
 
 @keyframes fadeInAnimation {
   0% {
