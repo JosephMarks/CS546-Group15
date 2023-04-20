@@ -3,7 +3,8 @@ import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 
 const exportedMethods = {
-  async getAllUser() { //get all users data from collectoin
+  async getAllUser() {
+    //get all users data from collectoin
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
     for (let ele of userList) {
@@ -46,7 +47,9 @@ const exportedMethods = {
     let group = [];
     let createdAt = new Date().toLocaleDateString("en-GB"); // the first time user's registeration
     let updatedAt = new Date().toLocaleDateString("en-GB"); // update date that user modify their profile
-
+    let likedPost = [];
+    let collectedPost = [];
+    let socialPost = [];
     const newCreateUser = await userCollection.insertOne({
       fname,
       lname,
@@ -64,6 +67,9 @@ const exportedMethods = {
       group,
       createdAt,
       updatedAt,
+      socialPost,
+      likedPost,
+      collectedPost,
     });
     if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(
@@ -121,7 +127,10 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
-
+    let oldInfo = await getUserById(userId);
+    let oldLikedPost = oldInfo.likedPost;
+    let oldCollectedPost = oldInfo.collectedPost;
+    let oldSocialPost = oldInfo.socialPost;
     const userUpdateInfo = {
       fname: fname,
       lname: lname,
@@ -139,6 +148,9 @@ const exportedMethods = {
       group: group,
       createdAt: createdAt,
       updatedAt: new Date().toLocaleDateString("en-GB"),
+      likedPost: oldLikedPost,
+      collectedPost: oldCollectedPost,
+      socialPost: oldSocialPost,
     };
 
     const userCollection = await users();
