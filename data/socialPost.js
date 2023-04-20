@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { users, skills } from "../config/mongoCollections.js";
+import { users, socialPost } from "../config/mongoCollections.js";
 import validation from "../helpers.js";
 import userData from "./user.js";
 import { create, remove } from "./groups.js";
@@ -24,14 +24,25 @@ const exportedMethods = {
     const postCollection = await socialPost();
     return await postCollection.find({ tags: tag }).toArray();
   },
-  async addPost(title, body, posterId, tags) {
+  async addPost(title, body, posterId, eventdate, fields, company, category) {
     title = validation.checkString(title, "Title");
     body = validation.checkString(body, "Body");
     posterId = validation.checkId(posterId, "Poster ID");
-    if (!Array.isArray(tags)) {
-      tags = [];
+    eventdate = validation.checkString(eventdate, "eventdate");
+    if (!Array.isArray(fields)) {
+      fields = [];
     } else {
-      tags = validation.checkStringArray(tags, "Tags");
+      fields = validation.checkStringArray(fields, "fields");
+    }
+    if (!Array.isArray(company)) {
+      company = [];
+    } else {
+      company = validation.checkStringArray(company, "company");
+    }
+    if (!Array.isArray(category)) {
+      category = [];
+    } else {
+      category = validation.checkStringArray(category, "category");
     }
     const userThatPosted = await userData.getUserById(posterId);
 
@@ -42,7 +53,11 @@ const exportedMethods = {
         id: ObjectId(posterId),
         name: `${userThatPosted.firstName} ${userThatPosted.lastName}`,
       },
-      tags: tags,
+      eventdate: eventdate,
+      fields: fields,
+      category: category,
+      company: company,
+      likes: [],
     };
     const postCollection = await socialPost();
     const newInsertInformation = await postCollection.insertOne(newPost);
@@ -64,22 +79,48 @@ const exportedMethods = {
     updatedPost.title = validation.checkString(updatedPost.title, "title");
     updatedPost.body = validation.checkString(updatedPost.body, "body");
     updatedPost.posterId = validation.checkId(updatedPost.posterId);
-    if (!Array.isArray(updatedPost.tags)) {
-      updatedPost.tags = [];
+    updatedPost.eventdate = validation.checkString(
+      updatedPost.eventdate,
+      "eventdate"
+    );
+    if (!Array.isArray(updatedPost.fields)) {
+      updatedPost.fields = [];
     } else {
-      updatedPost.tags = validation.checkStringArray(updatedPost.tags, "Tags");
+      updatedPost.fields = validation.checkStringArray(
+        updatedPost.fields,
+        "fields"
+      );
+    }
+    if (!Array.isArray(updatedPost.category)) {
+      updatedPost.category = [];
+    } else {
+      updatedPost.category = validation.checkStringArray(
+        updatedPost.category,
+        "category"
+      );
+    }
+    if (!Array.isArray(updatedPost.company)) {
+      updatedPost.company = [];
+    } else {
+      updatedPost.company = validation.checkStringArray(
+        updatedPost.company,
+        "company"
+      );
     }
     const userThatPosted = await userData.getUserById(updatedPost.posterId);
 
     let updatedPostData = {
       title: updatedPost.title,
       body: updatedPost.body,
+      eventdate: updatedPost.eventdate,
       poster: {
         id: updatedPost.posterId,
         firstName: userThatPosted.firstName,
         lastName: userThatPosted.lastName,
       },
-      tags: updatedPost.tags,
+      fields: updatedPost.fields,
+      company: updatedPost.company,
+      category: updatedPost.category,
     };
     const postCollection = await socialPost();
     const updateInfo = await postCollection.findOneAndReplace(
@@ -103,10 +144,22 @@ const exportedMethods = {
       updatedPostData["poster.firstName"] = userThatPosted.firstName;
       updatedPostData["poster.lastName"] = userThatPosted.lastName;
     }
-    if (updatedPost.tags) {
-      updatedPostData.tags = validation.checkStringArray(
-        updatedPost.tags,
-        "Tags"
+    if (updatedPost.fields) {
+      updatedPostData.fields = validation.checkStringArray(
+        updatedPost.fields,
+        "fields"
+      );
+    }
+    if (updatedPost.category) {
+      updatedPostData.category = validation.checkStringArray(
+        updatedPost.category,
+        "category"
+      );
+    }
+    if (updatedPost.company) {
+      updatedPostData.company = validation.checkStringArray(
+        updatedPost.company,
+        "company"
       );
     }
 
@@ -116,7 +169,12 @@ const exportedMethods = {
         "Title"
       );
     }
-
+    if (updatedPost.eventdate) {
+      updatedPostData.eventdate = validation.checkString(
+        updatedPost.eventdate,
+        "eventdate"
+      );
+    }
     if (updatedPost.body) {
       updatedPostData.body = validation.checkString(updatedPost.body, "Body");
     }
@@ -131,20 +189,20 @@ const exportedMethods = {
 
     return newPost.value;
   },
-  async renameTag(oldTag, newTag) {
+  async renameFieldsTag(oldTag, newTag) {
     oldTag = validation.checkString(oldTag, "Old Tag");
     newTag = validation.checkString(newTag, "New Tag");
-    if (oldTag === newTag) throw "tags are the same";
+    if (oldTag === newTag) throw "fields are the same";
     let findDocuments = {
-      tags: oldTag,
+      fields: oldTag,
     };
 
     let firstUpdate = {
-      $addToSet: { tags: newTag },
+      $addToSet: { fields: newTag },
     };
 
     let secondUpdate = {
-      $pull: { tags: oldTag },
+      $pull: { fields: oldTag },
     };
     const postCollection = await socialPost();
     let updateOne = await postCollection.updateMany(findDocuments, firstUpdate);
@@ -156,6 +214,111 @@ const exportedMethods = {
     );
     if (updateTwo.modifiedCount === 0) throw [500, "Could not update tags"];
     return await this.getPostsByTag(newTag);
+  },
+  async renameCategoryTag(oldTag, newTag) {
+    oldTag = validation.checkString(oldTag, "Old Tag");
+    newTag = validation.checkString(newTag, "New Tag");
+    if (oldTag === newTag) throw "category are the same";
+    let findDocuments = {
+      category: oldTag,
+    };
+
+    let firstUpdate = {
+      $addToSet: { category: newTag },
+    };
+
+    let secondUpdate = {
+      $pull: { category: oldTag },
+    };
+    const postCollection = await socialPost();
+    let updateOne = await postCollection.updateMany(findDocuments, firstUpdate);
+    if (updateOne.matchedCount === 0)
+      throw [404, `Could not find any posts with old tag: ${oldTag}`];
+    let updateTwo = await postCollection.updateMany(
+      findDocuments,
+      secondUpdate
+    );
+    if (updateTwo.modifiedCount === 0) throw [500, "Could not update tags"];
+    return await this.getPostsByTag(newTag);
+  },
+  async renameCompanyTag(oldTag, newTag) {
+    oldTag = validation.checkString(oldTag, "Old Tag");
+    newTag = validation.checkString(newTag, "New Tag");
+    if (oldTag === newTag) throw "company are the same";
+    let findDocuments = {
+      company: oldTag,
+    };
+
+    let firstUpdate = {
+      $addToSet: { company: newTag },
+    };
+
+    let secondUpdate = {
+      $pull: { company: oldTag },
+    };
+    const postCollection = await socialPost();
+    let updateOne = await postCollection.updateMany(findDocuments, firstUpdate);
+    if (updateOne.matchedCount === 0)
+      throw [404, `Could not find any posts with old tag: ${oldTag}`];
+    let updateTwo = await postCollection.updateMany(
+      findDocuments,
+      secondUpdate
+    );
+    if (updateTwo.modifiedCount === 0) throw [500, "Could not update tags"];
+    return await this.getPostsByTag(newTag);
+  },
+  //  Likes
+  async getLikes(postId) {
+    postId = validation.checkId(postId);
+    const post = await this.getPostById(postId);
+    const likesList = post.likes;
+    return likesList;
+  },
+
+  async addLikes(postId, userId) {
+    postId = validation.checkId(postId);
+    userId = validation.checkId(userId);
+
+    //check is there is a duplicates user press like button
+    const socialPostCollection = await socialPost();
+    let duplicateUser = await socialPostCollection.findOne(
+      { likes: userId },
+      { projection: { _id: 0 } }
+    );
+    if (duplicateUser !== null) {
+      const userName = (await userData.getUserById(userId)).fname;
+      throw `Error: ${userName} can not press likes more than twice!!`;
+    }
+
+    let newsocialPosts = await socialPostCollection.findOneAndUpdate(
+      { _id: new ObjectId(postId) },
+      { $addToSet: { likes: userId } },
+      { returnDocument: "after" }
+    );
+    const returnValue = newsocialPosts.value;
+    returnValue._id = returnValue._id.toString();
+    for (let ele of returnValue.comments) {
+      ele._id = ele._id.toString();
+    }
+    return returnValue;
+  },
+
+  async removeLikes(postId, userId) {
+    postId = validation.checkId(postId);
+    userId = validation.checkId(userId);
+    const posts = this.getPostById(postId);
+    const socialPostCollection = await socialPost();
+    const deletionInfo = await socialPostCollection.findOneAndUpdate(
+      { _id: new ObjectId(postId) },
+      { $pull: { likes: userId } },
+      { new: true },
+      { returnDocument: "after" }
+    );
+    if (deletionInfo.lastErrorObject.n === 0)
+      throw `Error: Could not delete post with id of ${commentId}`;
+    deletionInfo.value._id = deletionInfo.value._id.toString();
+
+    return deletionInfo.value;
   },
 };
 
