@@ -48,41 +48,56 @@ app.use(rewriteUnsupportedBrowserMethods);
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
+// Authorizing and authenticating the routes
+
+app.use("/company", (req, res, next) => {
+  if (! req.session.user) {
+    return res.render('Auth/login', {error: "You Must Sign In First", title: "Login"});
+  } else {
+      if (req.session.user.candidateType === "Company"){
+        next();
+
+      } else {
+        return res.render('Auth/login', {error: "You Do not have Access for this page", title: "Login"});
+      }  
+  }
+});
+
 configRoutes(app);
 
 // let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
 // console.log(myGroup);
-const theUser = await userData.getUserById("643b2afed6271e8e940ad58e");
+// const theUser = await userData.getUserById("643b2afed6271e8e940ad58e");
 
-const updateData = {
-  fname: "  Joe  ",
-  lname: " Marks ",
-  email: "jmarks@stevens.edu",
-  password: "eee",
-  age: 29,
-  gender: "  MaLE  ",
-  headerDescription: "Stevens Alumni - Software Developer",
-  aboutMe: "I am a CPA that likes to build things!",
-  locationState: "NJ",
-  university: "SIT",
-  image: "",
-  collegeMajor: "Computer Science",
-  interestArea: ["Machine Learning"],
-  experience: 0,
-  jobHistory: [],
-  seekingJob: ["Software Engineer"],
-  connections: [],
-  group: [],
-  createdAt: "05/13/2022",
-  updatedAt: "05/13/2022",
-};
+// const updateData = {
+//   fname: "  Joe  ",
+//   lname: " Marks ",
+//   email: "jmarks@stevens.edu",
+//   password: "eee",
+//   age: 29,
+//   gender: "  MaLE  ",
+//   headerDescription: "Stevens Alumni - Software Developer",
+//   aboutMe: "I am a CPA that likes to build things!",
+//   locationState: "NJ",
+//   university: "SIT",
+//   image: "",
+//   collegeMajor: "Computer Science",
+//   interestArea: ["Machine Learning"],
+//   experience: 0,
+//   jobHistory: [],
+//   seekingJob: ["Software Engineer"],
+//   connections: [],
+//   group: [],
+//   createdAt: "05/13/2022",
+//   updatedAt: "05/13/2022",
+// };
 
-let updatedUser = await userData.updateUsers(
-  "643b2afed6271e8e940ad58e",
-  updateData
-);
+// let updatedUser = await userData.updateUsers(
+//   "643b2afed6271e8e940ad58e",
+//   updateData
+// );
 
-console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
+// console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
 
 // let myNewGroup = await groupData.create(
 //   "A group with an image",
