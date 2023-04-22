@@ -52,7 +52,32 @@
             </div>
         </div>
     </nav>
+    {{!-- --}}
     <br>
-    <img src="https://cdn.pixabay.com/photo/2018/11/29/21/51/social-media-3846597_960_720.png" alt="Network Img"
-        class="rounded float-start center-block" id="network-homepage-img">
+    {{!-- --}}
+    <div class="card" style="width: 50%;">
+        <form method="POST" id="network-post-update">
+            <!-- Add a hidden input field with the _method attribute set to PATCH -->
+            <h6 class="card-subtitle mb-2 badge bg-warning text-wrap fs-6" style="width: 100%;">Your Post</h6>
+            <div class="form-floating">
+                <label for="network-comments">
+                </label>
+                <input type="text" id="post" name="post" class="form-control" aria-label="Large"
+                    aria-describedby="inputGroup-sizing-sm" value="{{post}}">
+                <br>
+                <div class="text-center">
+                    <button class="network-post-button mb-3" type="submit">submit</button>
+                </div>
+            </div>
+        </form>
+        {{#if hasErrors}}
+        <ul class="error-list">
+            {{#each errors}}
+            <li>
+                {{this}}
+            </li>
+            {{/each}}
+        </ul>
+        {{/if}}
+    </div>
 </div>

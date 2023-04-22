@@ -52,7 +52,40 @@
             </div>
         </div>
     </nav>
+
     <br>
-    <img src="https://cdn.pixabay.com/photo/2018/11/29/21/51/social-media-3846597_960_720.png" alt="Network Img"
-        class="rounded float-start center-block" id="network-homepage-img">
+
+    {{!-- All connections --}}
+    <div class="accordion" id="all-conections">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                All Connections
+            </p>
+        </div>
+        {{#if connectionList.length}}
+        {{#each connectionList}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne" data-bs-target="{{_id}}">
+                    {{fname}},&nbsp;{{lname}}
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <p class="card-text mb-0 ">University: {{university}}</p>
+                    <p class="card-text mb-0 ">Join at: {{createdAt}}</p>
+                </div>
+                <form method="POST" id="network-post-update">
+                    <input type="hidden" name="_method" value="POST">
+                    <input type="hidden" name="followerId" value="{{_id}}">
+                    <button type="submit" class="btn btn-link btn-lg"
+                        onclick="if (!confirm('Are you sure?')) { return false }"
+                        style="position: relative;   top: 50%;  left:30%; width: 30rem"><span>Add</span></button>
+                </form>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
 </div>
