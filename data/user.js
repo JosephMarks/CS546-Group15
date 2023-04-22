@@ -1,9 +1,10 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Binary } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 
 const exportedMethods = {
-  async getAllUser() { //get all users data from collectoin
+  async getAllUser() {
+    //get all users data from collectoin
     const userCollection = await users();
     const userList = await userCollection.find({}).toArray();
     for (let ele of userList) {
@@ -36,17 +37,23 @@ const exportedMethods = {
 
     // attributes need, but to be populated later when profile filled out by user
     let gender = "";
+    let headerDescription = "";
+    let aboutMe = "";
     let locationState = "";
+    let image = "";
     let university = "";
     let collegeMajor = "";
     let interestArea = [];
     let experience = 0;
+    let jobHistory = [];
     let seekingJob = [];
     let connections = [];
     let group = [];
     let createdAt = new Date().toLocaleDateString("en-GB"); // the first time user's registeration
     let updatedAt = new Date().toLocaleDateString("en-GB"); // update date that user modify their profile
-
+    let likedPost = [];
+    let collectedPost = [];
+    let socialPost = [];
     const newCreateUser = await userCollection.insertOne({
       fname,
       lname,
@@ -54,16 +61,23 @@ const exportedMethods = {
       password,
       age: age,
       gender,
+      headerDescription,
+      aboutMe,
       locationState,
+      image,
       university,
       collegeMajor,
       interestArea,
       experience,
+      jobHistory,
       seekingJob,
       connections,
       group,
       createdAt,
       updatedAt,
+      socialPost,
+      likedPost,
+      collectedPost,
     });
     if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(
@@ -88,6 +102,13 @@ const exportedMethods = {
       updateData.locationState,
       "LocationState"
     );
+
+    let headerDescription = validations.checkString(
+      updateData.headerDescription,
+      "Header Description"
+    );
+    let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
+    let image;
     let university = validations.checkString(
       updateData.university,
       "University"
@@ -104,6 +125,10 @@ const exportedMethods = {
       updateData.experience,
       "Experience year"
     ); // experience year from 0 to 80
+    let jobHistory = validations.checkStringArray(
+      updateData.jobHistory,
+      "Job History"
+    );
     let seekingJob = validations.checkStringArray(
       updateData.seekingJob,
       "Seeking job"
@@ -121,7 +146,10 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
-
+    let oldInfo = await getUserById(userId);
+    let oldLikedPost = oldInfo.likedPost;
+    let oldCollectedPost = oldInfo.collectedPost;
+    let oldSocialPost = oldInfo.socialPost;
     const userUpdateInfo = {
       fname: fname,
       lname: lname,
@@ -129,16 +157,23 @@ const exportedMethods = {
       password: password,
       age: age,
       gender: gender,
+      headerDescription: headerDescription,
+      aboutMe: aboutMe,
       locationState: locationState,
+      image: image,
       university: university,
       collegeMajor: collegeMajor,
       interestArea: interestArea,
       experience: experience,
+      jobHistory: jobHistory,
       seekingJob: seekingJob,
       connections: connections,
       group: group,
       createdAt: createdAt,
       updatedAt: new Date().toLocaleDateString("en-GB"),
+      likedPost: oldLikedPost,
+      collectedPost: oldCollectedPost,
+      socialPost: oldSocialPost,
     };
 
     const userCollection = await users();
@@ -150,7 +185,7 @@ const exportedMethods = {
     if (updateInfo.lastErrorObject.n === 0)
       throw [
         404,
-        `Error: Update failed, could not find a user with id of ${id}`,
+        `Error: Update failed, could not find a user with id of ${userId}`,
       ];
     updateInfo.value._id = updateInfo.value._id.toString();
     return await updateInfo.value;
@@ -192,6 +227,42 @@ const exportedMethods = {
     const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
 
     return foundUser;
+  },
+
+  async updateImage(id, base64Image) {
+    id = id.trim();
+    const parsedId = new ObjectId(id);
+    if (!id || !base64Image) {
+      throw new Error("parameters must be provided");
+    }
+    // checking to make sure id is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      throw new Error("This is not a valid object ID");
+    }
+
+    // Convert base64Image to Binary
+    const bufferImage = Buffer.from(base64Image, "base64");
+    const bin = new Binary(bufferImage);
+
+    const updatedProfile = {
+      image: bin,
+    };
+    const userCollection = await users();
+    // Need to check to make sure at least one item is being changed in the band update, otherwise will throw
+    const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (foundUser === null) {
+      throw new Error("Group has not been found");
+    }
+    const updatedInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(parsedId) },
+      { $set: updatedProfile },
+      { returnDocument: "after" }
+    );
+    if (updatedInfo.lastErrorObject.n === 0) {
+      throw new Error("Could not update the band successfully.");
+    }
+    // TO DO: double check - am I returning the right thing here?
+    return await this.getUserById(id);
   },
 };
 export default exportedMethods;

@@ -4,10 +4,11 @@ import userDataFunctions from "./user.js";
 import networkDataFunctions from "./network.js";
 import skillsDataFunctions from "./skills.js";
 import socialPostDataFunctions from "./socialPost.js";
-
+import * as groupActivityFunctions from "./groupActivity.js";
 
 export const userData = userDataFunctions;
 export const groupData = groupDataFunctions;
+export const groupActivityData = groupActivityFunctions;
 export const teamData = teamDataFunctions;
 export const networkData = networkDataFunctions;
 export const skillsData = skillsDataFunctions;

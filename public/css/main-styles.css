@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
   height: 100vh;
   overflow: auto;
@@ -159,4 +160,199 @@ button:hover {
   #about-us-container {
     height: auto;
   }
+=======
+body {
+  height: 100vh;
+  overflow: auto;
+  background-repeat: no-repeat;
+  background-color: #f0a150 !important;
+}
+
+.container {
+  font-family: "Gill Sans Extrabold", sans-serif;
+  padding: 2px;
+}
+
+h1 {
+  color: white !important;
+  text-align: center;
+}
+
+button {
+  color: #f0a150 !important;
+  border-color: #f0a150 !important;
+}
+
+button:hover {
+  background-color: #f0a150 !important;
+  color: white !important;
+}
+
+#logoImage {
+  width: 15vh;
+  height: 10vh;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  justify-items: center;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.team-member img {
+  margin-bottom: 5px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/*  Nav Bar  */
+
+#navbar-all {
+  background-color: #ed943b !important;
+}
+
+/*  Nav Bar  */
+
+/*  About us  */
+
+#about-us-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-family: cursive;
+}
+
+/*  About us  */
+
+/*  sign up  */
+.signup-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signUp {
+  color: #f0a150;
+  background-color: white;
+  width: auto;
+  max-width: 50vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
+}
+
+.signUp form input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #f0a150;
+  border-radius: 0px;
+}
+
+/*  sign up  */
+
+/*  log in  */
+
+.login-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login {
+  color: #f0a150;
+  background-color: white;
+  width: auto;
+  max-width: 50vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
+}
+
+.login form input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #f0a150;
+  border-radius: 0px;
+}
+
+/*  log in  */
+
+
+
+/* --- Company's CSS ---  */
+
+.company form input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid #F0A150;
+  border-radius: 0px;
+}
+
+.company-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company {
+  color: #F0A150;
+  background-color: white;
+  width: auto;
+  max-width: 100vh;
+  box-shadow: 0px 10px 10px black(0, 0, 0, 0.3);
+  padding: 2%;
+  border: 2px solid white;
+  border-radius: 35px;
+  animation: fadeInAnimation ease 2s;
+}
+
+/* --- Company's CSS ---  */
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@media(max-width: 1200px) {
+  #about-us-container {
+    height: auto;
+  }
+}
+
+#network-homepage-img {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.container .card {
+  border: none;
+  margin: auto;
+  width: 100%;
+  padding: 5px;
+}
+
+@media(max-width: 1200px) {
+  #about-us-container {
+    height: auto;
+  }
+>>>>>>> 7ca3a9f255130e8bb8806c6d984409ad49669fc7
 }
