@@ -2,7 +2,7 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
         <div class="container-fluid">
-            <img src="\public\images\aboutUs.png" alt="Logo" width="30" height="30"
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
                 class="d-inline-block align-text-top">
             <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -10,7 +10,7 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
@@ -18,7 +18,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/network/post/{{id}}">Post</a>
+                        <a class="nav-link" href="/network/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
 
@@ -28,29 +28,33 @@
                             Your Follower
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="">Get Your Connections Info.</a></li>
-                            {{!--
-                            /network/follower/{{id}} --}}
+                            <li><a class="dropdown-item" href="/network/follower/{{userId}}">Get & Remove Your
+                                    Connections
+                                    Info.</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="">Create New Relation</a>
-                                {{!--/network/follower/new/{{id}} --}}
+                            <li><a class="dropdown-item" href="/network/follower/{{userId}}/create">Create New
+                                    Connections</a>
                             </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="">Remove Your Relation</a>
-                                {{!--
-                                /network/follower/remove/{{id}} --}}
-                            </li>
+
                         </ul>
+                    </li>
+                    <li class="nav-item">
+                        <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
+                                style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
+                                Create New Post
+                            </button>
+                        </form>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
     <br>
+
     {{!--Your Post --}}
     <div class="accordion" id="your-post">
         <div class="accordion-item">
@@ -67,28 +71,34 @@
                     {{content}}
                 </button>
             </h2>
-            {{#if comments.length}}
+
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button" target="_blank">
-                        See this post & leave comments
+                    {{!-- Check comments and leave comments --}}
+                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
+                        target="_blank">
+                        Leave comments
                     </a>
-                    <a class="btn btn-primary" href="" role="button">
+                    {{!-- Edit comments --}}
+                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
+                        target="_blank">
                         Edit this post
                     </a>
-                    <a class="btn btn-primary" href="" role="button">
+                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
+                        target="_blank">
                         Remove this post
                     </a>
                 </div>
             </div>
-            {{/if}}
+
         </div>
         {{/each}}
         {{/if}}
     </div>
 
     <br>
+
     {{!-- Followers Post --}}
     <div class="accordion" id="follower-post">
         <div class="accordion-item">
@@ -105,22 +115,15 @@
                     {{content}}
                 </button>
             </h2>
-            {{#if comments.length}}
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <a class="btn btn-primary" href="" role="button">
-                        See this post & leave comments
-                    </a>
-                    <a class="btn btn-primary" href="" role="button">
-                        Edit your comment in this post
-                    </a>
-                    <a class="btn btn-primary" href="" role="button">
-                        Remove your comment in this post
+                    <a class="btn btn-primary" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
+                        role="button">
+                        Leave comments
                     </a>
                 </div>
             </div>
-            {{/if}}
         </div>
         {{/each}}
         {{/if}}

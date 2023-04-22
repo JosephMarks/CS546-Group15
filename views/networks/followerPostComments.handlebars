@@ -52,7 +52,54 @@
             </div>
         </div>
     </nav>
+
     <br>
-    <img src="https://cdn.pixabay.com/photo/2018/11/29/21/51/social-media-3846597_960_720.png" alt="Network Img"
-        class="rounded float-start center-block" id="network-homepage-img">
+
+    <div class="card" style="width: 50%;">
+        <div class="card-body">
+            <div class="text-center">
+                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h6>
+            </div>
+            <h5 class="card-title">{{post.content}}</h5>
+            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
+                {{author.fname}},&nbsp;{{author.lname}}</h6>
+            <div class="text-center">
+                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Comments</h6>
+            </div>
+            {{#if post.comments.length}}
+            {{#each post.comments}}
+            <p class="card-text mb-0 ">{{comments}}</p>
+            <p class="text-body-secondary fst-italic text-decoration-underline">{{fname}},&nbsp;{{lname}} </p>
+            {{/each}}
+            {{/if}}
+
+
+            <div class="text-center">
+                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Likes</h6>
+            </div>
+            <p class="card-text text-center">{{post.likes.length}}</p>
+        </div>
+
+        <form method="post" id="network-post-commit">
+            <div class="form-floating">
+                <label for="network-comments">
+                </label>
+                <textarea id="network-comments" class="form-control mb-2" rows="4" placeholder="Leave Your Comments"
+                    style="height: 100px" name="comments">{{newComments}}</textarea>
+                <div class="text-center">
+                    <button class="network-post-button mb-3" type="submit">submit</button>
+                </div>
+            </div>
+        </form>
+        {{#if hasErrors}}
+        <ul class="error-list">
+            {{#each errors}}
+            <li>
+                {{this}}
+            </li>
+            {{/each}}
+        </ul>
+        {{/if}}
+    </div>
+
 </div>

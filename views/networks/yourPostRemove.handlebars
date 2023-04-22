@@ -53,6 +53,20 @@
         </div>
     </nav>
     <br>
-    <img src="https://cdn.pixabay.com/photo/2018/11/29/21/51/social-media-3846597_960_720.png" alt="Network Img"
-        class="rounded float-start center-block" id="network-homepage-img">
+    {{!--Your Post --}}
+    <div class="card" style="width: 50%;">
+        <div class="card-body">
+            <div class="text-center">
+                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h6>
+            </div>
+            <h5 class="card-title">{{post.content}}</h5>
+        </div>
+        <form method="POST" id="network-post-update">
+            <!-- Add a hidden input field with the _method attribute set to PATCH -->
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="the_token">
+            <button type="submit" class="btn btn-link"
+                onclick="if (!confirm('Are you sure?')) { return false }"><span>Delete</span></button>
+        </form>
+    </div>
 </div>
