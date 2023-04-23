@@ -3,6 +3,7 @@ const router = Router();
 import { networkData, userData } from '../data/index.js';
 import validation from '../helpers.js';
 
+
 router
     .route('/')
     .get(async (req, res) =>
@@ -11,7 +12,8 @@ router
         {
             const h1 = "Network";
             const title = "Network";
-            res.render('networks/network', { title: title, h1: h1 });
+            res.redirect(`/network/post/${req.session.user.userId}`)
+            // return res.render('networks/network', { title: title, h1: h1 });
         } catch(e)
         {
             res.status(500).json({ error: e });
@@ -35,7 +37,7 @@ router.route('/post/:userid')
             const h1 = "Post";
             const userPostList = await networkData.getPostByUserId(req.params.userid);
             const followerPostList = await networkData.getPostByConnections(req.params.userid);
-            res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
+            return res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
         } catch(error)
         {
             return res.status(404).json({ error: error });

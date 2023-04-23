@@ -8,20 +8,21 @@ const router = Router();
 router.route('/')
     .get(async (req, res) =>
     {
+        console.log(req.session.user.userId)
         let skills = await skillsData.getAllSkills();
-        res.render("skills/skillsHome", { title: "Skills Home", h1: "Skills Home", skills: skills })
+        return res.render("skills/skillsHome", { title: "Skills Home", h1: "Skills Home", Id: req.session.user.userId, skills: skills })
     })
 
-router.route('/:userId')
+router.route('/create/:userId')
     .get(async (req, res) =>
     {
-        res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", userId: req.params.userId })
+        return res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.params.userId })
     })
     .post(async (req, res) =>
     {
         const body = req.body;
         let { postTitle, article, interest, url } = body;
-        let userId = req.params.userId;
+        let userId = req.session.user.userId;
         let errors = []
 
         try
@@ -65,7 +66,7 @@ router.route('/:userId')
 
         if(errors.length > 0)
         {
-            return res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", userId: userId, postTitle: postTitle, article: article, url: url, errors: errors });
+            return res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: userId, postTitle: postTitle, article: article, url: url, errors: errors });
         }
 
         try
@@ -81,7 +82,7 @@ router.route('/:userId')
 router.route("/search/api")
     .get(async (req, res) =>
     {
-        return res.render("skills/skillsApi", { title: "API Search", h1: "API Search" })
+        res.render("skills/skillsApi", { title: "API Search", h1: "API Search", Id: req.session.user.userId })
     })
     .post(async (req, res) =>
     {
