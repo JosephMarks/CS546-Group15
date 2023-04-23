@@ -1,0 +1,145 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills">Skills Article</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills/search/api" target="_blank">API Search</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills/{{userId}}" target="_blank">Create New Post</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+
+    {{#if jobSearch}}
+    <div class="row row-cols-1 row-cols-md-2 g-4" style="margin: auto;">
+        {{#each jobSearch}}
+        <div class="col">
+            <div class="card">
+                {{#if employer_logo}}
+                <img src="{{employer_logo}}" class="card-img-top" alt="{{employer_name}}"
+                    style="width:8rem; height:3rem;">
+                {{else}}
+                <img src="/public/images/image_not_found.png" class="card-img-top" alt="{{employer_name}}"
+                    style="width:8rem; height:3rem;">
+                {{/if}}
+                <div class="card-body">
+                    <h5 class="card-title">{{employer_name}}</h5>
+                    <a href="{{employer_website}}" target="_blank">Employer Website</a>
+                    <p class="card-text" style="margin: 3px;">Location: {{job_city}} {{job_state}}, {{job_country}}</p>
+                    <p class="card-text" style="margin: 3px;">Job Title: {{job_title}}</p>
+                    <a href="{{job_apply_link}}" target="_blank">Job Apply & Detail</a>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+        <form action="/skills/search/api" method="POST">
+            <div class="mb-2">
+                <label for="job_title" style="display: inline;">
+                    Job Title
+                    <br>
+                    <input type="text" name="job_title" placeholder="Job Title" value="{{job_title}}"
+                        class="full-width-input">
+                </label>
+            </div>
+
+            <div class="mb-2">
+                <label for="location" style="display: inline;">
+                    Location
+                    <br>
+                    <input type="text" name="location" placeholder="Location" value="{{location}}"
+                        class="full-width-input">
+                </label>
+            </div>
+
+            <div class="mb-2">
+                <label for="page">Page</label>
+                <select id="page" name="page">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="date_post">Date Posted</label>
+                <select id="date_post" name="date_post">
+                    <option value="all" selected>All</option>
+                    <option value="today">Today</option>
+                    <option value="3days">3 Days</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="employment_types">Employment Types</label>
+                <select id="employment_types" name="employment_types">
+                    <option value="FULLTIME" selected>Full-Time</option>
+                    <option value="PARTTIME">Part-Time</option>
+                    <option value="CONTRACTOR">Contractor</option>
+                    <option value="INTERN">Intern</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="job_requirements">Job Requirements</label>
+                <select id="job_requirements" name="job_requirements">
+                    <option value="more_than_3_years_experience" selected>More than 3 Years</option>
+                    <option value="under_3_years_experience">Under 3 Years</option>
+                    <option value="no_experience">No Experience</option>
+                    <option value="no_degree">No Degree</option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label for="remote_jobs_only">Remote Jobs Only</label>
+                <select id="remote_jobs_only" name="remote_jobs_only">
+                    <option value="true" selected>True</option>
+                    <option value="false">False</option>
+                </select>
+            </div>
+
+            <button type="submit">Search</button>
+            <br>
+            <br>
+            {{#if errorsList.length}}
+            <ul class="error-list">
+                {{#each errorsList}}
+                <li>
+                    {{this}}
+                </li>
+                {{/each}}
+            </ul>
+            {{/if}}
+        </form>
+
+    </div>
+    {{/if}}
+</div>
