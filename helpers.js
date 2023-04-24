@@ -35,20 +35,22 @@ const validations = {
         // if(!this.isNumber([param])) throw "Error: Age  must be a number"
 
         // can we rewrite it into this way
-        if (isNaN(Number(param))) throw "Error: Age  must be a number";
+        if(isNaN(Number(param))) throw "Error: Age  must be a number";
         param = Number(param);
-        
+
         if(typeof (param) !== 'number' || isNaN(Number(param))) throw "Error: Age  must be a number";
         if(param < 18 || param > 100) throw "Error: Age must be with in 18 to 100";
         if(!Number.isInteger(param)) throw "Error: Age must be an Integer";
         return param
     },
 
-    isArrayWithTheNonEmptyString (param) { //check if the incoming array of strings contains only valid strings
-        if (!Array.isArray(param)) throw "Error: The Tags must be an Array"
-        
-        for (let i = 0; i < param.length; i++) {
-            if (this.isProperString(param[i]) === 0) throw "Error: The Tags must contains only non empty strings"
+    isArrayWithTheNonEmptyString (param)
+    { //check if the incoming array of strings contains only valid strings
+        if(!Array.isArray(param)) throw "Error: The Tags must be an Array"
+
+        for(let i = 0; i < param.length; i++)
+        {
+            if(this.isProperString(param[i]) === 0) throw "Error: The Tags must contains only non empty strings"
         }
     },
 
@@ -71,6 +73,7 @@ const validations = {
     checkString (strVal, varName)
     {
         if(!strVal) throw `Error: You must supply a ${varName}!`;
+        strVal = strVal.toString();
         if(typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
         strVal = strVal.trim();
         if(strVal.length === 0)
@@ -189,24 +192,25 @@ const validations = {
             throw `Error: ${strVal} is not a valid date for ${varName}`;
         return strVal;
     },
-    checkVideoUrl (strVal)
+    checkVideoUrl (strVal, varName)
     {
-        if(!strVal) throw `Error: You must supply a ${varName}!`;
+        if(strVal === "") return "";
         if(typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
         strVal = strVal.trim();
-        linkCheck(strVal, function(err)
-        {
-            if(err) throw `Error: Video link is not a valid address!`
-        })
+        const regex = /(http|https):\/\/(\w{3,}\.|\www\.)(\w{2,})(\.com|\S+)/g;
+        if(!regex.test(strVal)) throw `Error: ${varName} is not a valid link!`
         if(!isNaN(strVal))
-            throw `Error: ${strVal} is not a valid value for video link as it only contains digits`;
+            throw `Error: ${varName} is not a valid value for video link as it only contains digits`;
+        return strVal;
     },
     checkTags (arr)
     {
-        //We will allow an empty array for this,
         //if it's not empty, we will make sure all tags are strings
-        if(!arr || !Array.isArray(arr))
-            throw `Error: You must provide an array of tags`;
+        if(arr === undefined) throw "Error: You must provide at least one interest area"
+        if(arr.length < 1) throw `Error: You must provide at least one interest area`;
+        if(typeof arr === "string") return arr;
+        if(!Array.isArray(arr))
+            throw `Error: Interest area is not valid type`;
         for(let i in arr)
         {
             if(typeof arr[i] !== 'string' || arr[i].trim().length === 0)
@@ -215,7 +219,24 @@ const validations = {
             }
             arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
         }
-        const tags = ["frond-end", "back-end", "full-stack", "cybersecurity", "ai", "software development", "finance quantitative analysis", "data science", "medical", "biology", "chemistry", "law", "business", "engineering", "art", "music"]
+        const tags = [
+            'front-end',
+            'back-end',
+            'full-stack',
+            'cybersecurity',
+            'ai',
+            'software development',
+            'finance quantitative analysis',
+            'data science',
+            'medical',
+            'biology',
+            'chemistry',
+            'law',
+            'business',
+            'engineering',
+            'art',
+            'music'
+        ]
         const checker = (desired, target) => target.every(ele => desired.includes(ele));
         if(!checker(tags, arr)) throw `Error: tags is not valid tags`;
         return arr;

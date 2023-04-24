@@ -56,6 +56,10 @@
     <br>
 
     {{!--Your Follower --}}
+    <div class="input-group mb-5">
+        <label class="input-group-text mb-5 bg-primary-subtle border border-primary-subtle rounded-2" for="searchbox">Search</label>
+        <input class='input mb-5' type="text" id="searchbox" placeholder="Search keyword..">
+    </div>
 
     <div class="accordion" id="followerInfo" style="width: 40%; margin: 0 auto;">
         {{#each connectionsList}}
@@ -63,7 +67,7 @@
             <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                     aria-expanded="true" aria-controls="collapseOne">
-                    {{fname}},&nbsp;{{lname}}
+                    {{fname}}&nbsp;{{lname}}
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -89,3 +93,4 @@
         {{/each}}
     </div>
 </div>
+<script src="/public/js/networkSearchBox.js"></script>

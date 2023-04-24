@@ -17,11 +17,13 @@ const staticDir = express.static(__dirname + "/public");
 
 const app = express();
 
-const rewriteUnsupportedBrowserMethods = (req, res, next) => {
+const rewriteUnsupportedBrowserMethods = (req, res, next) =>
+{
   // If the user posts to the server with a property called _method, rewrite the request's method
   // To be that method; so if they post _method=PUT you can now allow browsers to POST to a route that gets
   // rewritten in this middleware to a PUT route
-  if (req.body && req.body._method) {
+  if(req.body && req.body._method)
+  {
     req.method = req.body._method;
     delete req.body._method;
   }
@@ -36,7 +38,7 @@ app.use(
     secret: "secret-key",
     saveUninitialized: false,
     resave: false,
-    cookie: {maxAge: 60000}
+    cookie: { maxAge: 3600000 }
   })
 );
 
@@ -50,18 +52,41 @@ app.set("view engine", "handlebars");
 
 // Authorizing and authenticating the routes
 
-app.use("/company", (req, res, next) => {
-  if (! req.session.user) {
-    return res.render('Auth/login', {error: "You Must Sign In First", title: "Login"});
-  } else {
-      if (req.session.user.candidateType === "Company"){
-        next();
+app.use("/company", (req, res, next) =>
+{
+  if(!req.session.user)
+  {
+    return res.render('Auth/login', { error: "You Must Sign In First", title: "Login" });
+  } else
+  {
+    if(req.session.user.candidateType === "Company")
+    {
+      next();
 
-      } else {
-        return res.render('Auth/login', {error: "You Do not have Access for this page", title: "Login"});
-      }  
+    } else
+    {
+      return res.render('Auth/login', { error: "You Do not have Access for this page", title: "Login" });
+    }
   }
 });
+
+app.use("/network", (req, res, next) =>
+{
+  if(!req.session.user || (req.session.user.candidateType !== "Student" && req.session.user.candidateType !== "Company"))
+  {
+    return res.redirect("/login");
+  }
+  next();
+})
+
+app.use("/skills", (req, res, next) =>
+{
+  if(!req.session.user || (req.session.user.candidateType !== "Student" && req.session.user.candidateType !== "Company"))
+  {
+    return res.redirect("/login");
+  }
+  next();
+})
 
 configRoutes(app);
 
@@ -119,7 +144,8 @@ configRoutes(app);
 //   "64250150f2b4c8421ef908c7"
 // );
 
-app.listen(3000, () => {
+app.listen(3000, () =>
+{
   console.log("We've now got a server!");
   console.log("Your routes will be running on http://localhost:3000");
 });

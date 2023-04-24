@@ -56,8 +56,12 @@
     <br>
 
     {{!-- All connections --}}
+    <div class="input-group mb-5">
+        <label class="input-group-text mb-5 bg-primary-subtle border border-primary-subtle rounded-2" for="searchbox">Search</label>
+        <input class='input mb-5' type="search" id="searchbox" placeholder="Search keyword.."> {{!-- has bugs when clear the search bar --}}
+    </div>
     <div class="accordion" id="all-conections">
-        <div class="accordion-item">
+        <div class="accordion-item1">
             <p class="alert alert-primary fs-4 font-monospace text-center">
                 All Connections
             </p>
@@ -68,7 +72,7 @@
             <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
                     aria-expanded="true" aria-controls="collapseOne" data-bs-target="{{_id}}">
-                    {{fname}},&nbsp;{{lname}}
+                    {{fname}}&nbsp;{{lname}}
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -89,3 +93,4 @@
         {{/if}}
     </div>
 </div>
+<script src="/public/js/networkSearchBox.js"></script>

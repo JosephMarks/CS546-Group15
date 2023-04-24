@@ -62,14 +62,14 @@
             </div>
             <h5 class="card-title">{{post.content}}</h5>
             <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
-                {{author.fname}},&nbsp;{{author.lname}}</h6>
+                {{author.fname}}&nbsp;{{author.lname}}</h6>
             <div class="text-center">
                 <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Comments</h6>
             </div>
             {{#if post.comments.length}}
             {{#each post.comments}}
             <p class="card-text mb-0 ">{{comments}}</p>
-            <p class="text-body-secondary fst-italic text-decoration-underline">{{fname}},&nbsp;{{lname}} </p>
+            <p class="text-body-secondary fst-italic text-decoration-underline">{{fname}}&nbsp;{{lname}} </p>
             {{/each}}
             {{/if}}
 

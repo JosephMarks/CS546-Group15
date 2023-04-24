@@ -8,8 +8,10 @@ import teamRoutes from "./team.js";
 import socialPostRoutes from "./socialPost.js";
 import networkRoutes from "./network.js";
 import profileRoutes from "./profile.js";
+import skillsRoutes from "./skills.js";
 
-const constructorMethod = (app) => {
+const constructorMethod = (app) =>
+{
   app.use("/", homeRoutes);
   app.use("/logIn", logInRoutes);
   app.use("/signUp", signUpRoutes);
@@ -18,11 +20,13 @@ const constructorMethod = (app) => {
   app.use("/team", teamRoutes);
   app.use("/socialposts", socialPostRoutes);
   app.use("/network", networkRoutes);
+  app.use("/skills", skillsRoutes);
   app.use("/profile", profileRoutes);
 
   // app.use("/profile", profileRoutes); Will update momentarily
 
-  app.use("*", (req, res) => {
+  app.use("*", (req, res) =>
+  {
     res.status(404).json({ error: "Page Not Found" });
   });
 };
