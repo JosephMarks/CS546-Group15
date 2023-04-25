@@ -1,0 +1,12 @@
+
+{{#*inline "title"}}
+  Group Master Page
+{{/inline}}
+<h1>Groups</h1>
+<h3>Below are all the groups that you have the option of joining!! What are you waiting for, check them out!</h3>
+  <ol>
+{{#each groups}}
+<li><a href="groups/{{this._id}}">{{this.name}}</a></li>
+{{/each}}
+  </ol>
+<a class="search-again" href="/">Back to Home Page</a>

@@ -51,7 +51,7 @@ router.route("/:id").get(async (req, res) => {
     // }
     // console.log(eventsArray);
 
-    res.render("./profile", {
+    res.render("./profile/profile", {
       _id: id,
       name: userInfo.name,
       description: userInfo.aboutMe,
@@ -72,7 +72,7 @@ router.get("/:id/edit", async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
 
-    res.render("./profileEdit", {
+    res.render("./profile/profileEdit", {
       _id: id,
       name: userInfo.name,
       aboutMe: userInfo.aboutMe,

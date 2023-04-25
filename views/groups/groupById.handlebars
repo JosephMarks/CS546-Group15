@@ -1,0 +1,22 @@
+  <link rel="stylesheet" href="/public/css/group-details.css">
+
+<div class="container">
+    <h1>Group Details</h1>
+    <div>
+      <a href="javascript:history.back();">Back to Search Results</a>
+      <a href="/groups/{{_id}}/edit"><button>Edit</button></a>
+      <h2>id: {{_id}}</h2>
+      <h2>Group Name: {{name}}</h2>
+      <h2>Group Description: {{description}}</h2>
+      <h2>Upcoming Events: {{events}}</h2>
+
+      {{#if image}}
+        <img src="data:image/png;base64,{{image}}" alt="Group Image" />
+      {{/if}}
+
+      {{#each activity}}
+      <div>{{title}}</div>
+      {{/each}}
+
+      
+    </div>
