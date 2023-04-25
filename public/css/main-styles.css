@@ -156,6 +156,22 @@ button:hover {
   animation: fadeInAnimation ease 2s;
 }
 
+.main-company-main {
+  width:100%;
+  display: flex;
+  justify-content: center;
+}
+
+.main-company {
+  
+}
+
+#my-company-src {
+  width: 80vh;
+  height: 50vh;
+  border-radius: 5px;
+}
+
 /* --- Company's CSS ---  */
 
 @keyframes fadeInAnimation {
