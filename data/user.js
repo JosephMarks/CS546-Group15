@@ -152,7 +152,8 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
-    let oldInfo = await getUserById(userId);
+    const userCollection = await users();
+    let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
     let oldCollectedPost = oldInfo.collectedPost;
     let oldSocialPost = oldInfo.socialPost;
@@ -182,7 +183,6 @@ const exportedMethods = {
       socialPost: oldSocialPost,
     };
 
-    const userCollection = await users();
     const updateInfo = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
       { $set: userUpdateInfo },

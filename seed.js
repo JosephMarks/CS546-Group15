@@ -1069,8 +1069,38 @@ await networkData.addComments(tryPost2._id, pid, "This is my first comments in D
 // console.log(await networkData.getPostByConnections(did))
 
 
-/* ------[ Skills ]------*/
-/* ----- create skills ----- */
+/* ------[ Group ]------*/
+const joe = await usersData.createUser("Joe", "Marks", 29, "jmarks@stevens.edu", "eee");
+const joeId = joe._id;
+
+const updateInfo = {
+    fname: "  Joe  ",
+    lname: " Marks ",
+    email: "jmarks@stevens.edu",
+    password: "eee",
+    age: 29,
+    gender: "  MaLE  ",
+    headerDescription: "Stevens Alumni - Software Developer",
+    aboutMe: "I am a CPA that likes to build things!",
+    locationState: "NJ",
+    university: "SIT",
+    image: "",
+    collegeMajor: "Computer Science",
+    interestArea: ["Machine Learning"],
+    experience: 0,
+    jobHistory: [],
+    seekingJob: ["Software Engineer"],
+    connections: [],
+    group: [],
+    createdAt: "05/13/2022",
+    updatedAt: "05/13/2022",
+};
+
+let foundUser = await usersData.updateUsers(joeId, updateInfo);
+console.log(foundUser);
+
+
+
 
 console.log('Done seeding database');
 await closeConnection();

@@ -31,7 +31,8 @@ router.route("/data").post(async (req, res) =>
   {
     return res.status(400).render('Auth/login', { error: e });
   }
-
+    const newData = await logInFunctions.logIn(email.trim().toLowerCase(), pass);
+    
   try
   {
     const newData = await logInFunctions.logIn(email.trim().toLowerCase(), pass);

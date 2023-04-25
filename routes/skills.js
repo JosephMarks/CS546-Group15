@@ -8,7 +8,6 @@ const router = Router();
 router.route('/')
     .get(async (req, res) =>
     {
-        console.log(req.session.user.userId)
         let skills = await skillsData.getAllSkills();
         return res.render("skills/skillsHome", { title: "Skills Home", h1: "Skills Home", Id: req.session.user.userId, skills: skills })
     })
@@ -82,7 +81,7 @@ router.route('/create/:userId')
 router.route("/search/api")
     .get(async (req, res) =>
     {
-        res.render("skills/skillsApi", { title: "API Search", h1: "API Search", Id: req.session.user.userId })
+        return res.render("skills/skillsApi", { title: "API Search", h1: "API Search", Id: req.session.user.userId })
     })
     .post(async (req, res) =>
     {

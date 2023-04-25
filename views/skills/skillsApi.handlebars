@@ -58,7 +58,7 @@
     {{else}}
     <div class="w-100 h-100 d-flex align-items-center justify-content-center">
         <form action="/skills/search/api" method="POST">
-            <div class="mb-2">
+            <div class="col-auto mb-2 text-center fs-5">
                 <label for="job_title" style="display: inline;">
                     Job Title
                     <br>
@@ -67,7 +67,7 @@
                 </label>
             </div>
 
-            <div class="mb-2">
+            <div class="col-auto mb-2 text-center fs-5">
                 <label for="location" style="display: inline;">
                     Location
                     <br>
@@ -76,9 +76,9 @@
                 </label>
             </div>
 
-            <div class="mb-2">
-                <label for="page">Page</label>
-                <select id="page" name="page">
+            <div class="col-auto mb-2 text-center fs-5">
+                <label for="page" class="form-label">Page</label>
+                <select id="page" name="page" class="form-select">
                     <option value="1" selected>1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -87,9 +87,9 @@
                 </select>
             </div>
 
-            <div class="mb-2">
-                <label for="date_post">Date Posted</label>
-                <select id="date_post" name="date_post">
+            <div class="col-auto mb-2 text-center fs-5">
+                <label for="date_post" class="form-label">Date Posted</label>
+                <select id="date_post" name="date_post" class="form-select">
                     <option value="all" selected>All</option>
                     <option value="today">Today</option>
                     <option value="3days">3 Days</option>
@@ -98,9 +98,9 @@
                 </select>
             </div>
 
-            <div class="mb-2">
-                <label for="employment_types">Employment Types</label>
-                <select id="employment_types" name="employment_types">
+            <div class="col-auto mb-2 text-center fs-5">
+                <label for="employment_types" class="form-label">Employment Types</label>
+                <select id="employment_types" name="employment_types" class="form-select">
                     <option value="FULLTIME" selected>Full-Time</option>
                     <option value="PARTTIME">Part-Time</option>
                     <option value="CONTRACTOR">Contractor</option>
@@ -108,9 +108,9 @@
                 </select>
             </div>
 
-            <div class="mb-2">
-                <label for="job_requirements">Job Requirements</label>
-                <select id="job_requirements" name="job_requirements">
+            <div class="col-auto mb-2 text-center fs-5">
+                <label for="job_requirements" class="form-label">Job Requirements</label>
+                <select id="job_requirements" name="job_requirements" class="form-select">
                     <option value="more_than_3_years_experience" selected>More than 3 Years</option>
                     <option value="under_3_years_experience">Under 3 Years</option>
                     <option value="no_experience">No Experience</option>
@@ -118,15 +118,17 @@
                 </select>
             </div>
 
-            <div class="mb-2">
-                <label for="remote_jobs_only">Remote Jobs Only</label>
-                <select id="remote_jobs_only" name="remote_jobs_only">
+            <div class="col-auto mb-2 text-center fs-5">
+                <label for="remote_jobs_only" class="form-label">Remote Jobs Only</label>
+                <select id="remote_jobs_only" name="remote_jobs_only" class="form-select">
                     <option value="true" selected>True</option>
                     <option value="false">False</option>
                 </select>
             </div>
-
-            <button type="submit">Search</button>
+            <div class="row">
+                <button type="submit" class="col text-center btn btn-light"
+                    style="margin-top: 5px; display:block;">Search</button>
+            </div>
             <br>
             <br>
             {{#if errorsList.length}}
