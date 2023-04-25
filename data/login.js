@@ -3,8 +3,6 @@ import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import bcryptjs from "bcryptjs";
 
-const userCollection = await users();
-
 const logInFunctions = {
   async logIn(email, password) {
     if (!validations.isProperString([email, password]))
@@ -16,7 +14,7 @@ const logInFunctions = {
     );
     if (!ifAlready) throw "Error: User Email is not registered";
 
-    if (!(await bcrypt.compare(password, ifAlready.password)))
+    if (!(await bcryptjs.compare(password, ifAlready.password)))
       throw "Error : Wrong Password";
 
     return ifAlready;
@@ -24,3 +22,6 @@ const logInFunctions = {
 };
 
 export default logInFunctions;
+
+
+

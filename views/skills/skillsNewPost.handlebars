@@ -1,0 +1,141 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills">Skills Article</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills/search/api" target="_blank">API Search</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/skills/create/{{Id}}" target="_blank">Create New Post</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+            <form action="/skills/create/{{Id}}" method="POST" class="new-post-form">
+                <div class="mb-2">
+                    <label>
+                        Post Title
+                        <br>
+                        <input type="text" name="postTitle" placeholder="Post Title" value="{{postTitle}}"
+                            class="full-width-input">
+                    </label>
+                </div>
+
+                <div class="mb-2">
+                    <label for="post-body" style="display: inline;">
+                        Post Body
+                    </label>
+                    <br>
+                    <textarea id="post-body" name="article" rows="4" placeholder="Post Content"
+                        class="form-control full-width-input">{{article}}</textarea>
+                </div>
+
+                <fieldset class="mb-2">
+                    <legend style="font-size: Medium;">Interest Area</legend>
+                    <div>
+                        <input type="checkbox" id="Front-end" name="interest" value="Front-end" />
+                        <label for="Front-end">Front-end</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Back-end" name="interest" value="Back-end" />
+                        <label for="Back-end">Back-end</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Full-stack" name="interest" value="Full-stack" />
+                        <label for="Full-stack">Full-stack</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Cybersecurity" name="interest" value="Cybersecurity" />
+                        <label for="Cybersecurity">Cybersecurity</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="AI" name="interest" value="AI" />
+                        <label for="AI">AI</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Software-Development" name="interest" value="Software Development" />
+                        <label for="Software-Development">Software Development</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Finance-Quantitative-Analysis" name="interest"
+                            value="Finance Quantitative Analysis" />
+                        <label for="Finance-Quantitative-Analysis">Finance Quantitative Analysis</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Data-Science" name="interest" value="Data Science" />
+                        <label for="Data-Science">Data Science</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Medical" name="interest" value="Medical" />
+                        <label for="Medical">Medical</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Biology" name="interest" value="Biology" />
+                        <label for="Biology">Biology</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Chemistry" name="interest" value="Chemistry" />
+                        <label for="Chemistry">Chemistry</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Law" name="interest" value="Law" />
+                        <label for="Law">Law</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Business" name="interest" value="Business" />
+                        <label for="Business">Business</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Engineering" name="interest" value="Engineering" />
+                        <label for="Engineering">Engineering</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Art" name="interest" value="Art" />
+                        <label for="Art">Art</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="Music" name="interest" value="Music" />
+                        <label for="Music">Music</label>
+                    </div>
+                </fieldset>
+                <div class="mb-2">
+                    <label>
+                        Video Link
+                        <br>
+                        <input type="text" name="url" placeholder="Video Link" value="{{url}}"
+                            class="full-width-input" />
+                    </label>
+                </div>
+                <button type="submit">Create New Post</button>
+            </form>
+            {{#if errors.length}}
+            <ul class="error-list">
+                {{#each errors}}
+                <li>
+                    {{this}}
+                </li>
+                {{/each}}
+            </ul>
+            {{/if}}
+    </div>
+</div>

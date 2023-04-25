@@ -1,0 +1,96 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/network/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Your Follower
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/network/follower/{{userId}}">Get & Remove Your
+                                    Connections
+                                    Info.</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/network/follower/{{userId}}/create">Create New
+                                    Connections</a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
+                                style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
+                                Create New Post
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+
+    {{!-- All connections --}}
+    <div class="input-group mb-5">
+        <label class="input-group-text mb-5 bg-primary-subtle border border-primary-subtle rounded-2" for="searchbox">Search</label>
+        <input class='input mb-5' type="search" id="searchbox" placeholder="Search keyword.."> {{!-- has bugs when clear the search bar --}}
+    </div>
+    <div class="accordion" id="all-conections">
+        <div class="accordion-item1">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                All Connections
+            </p>
+        </div>
+        {{#if connectionList.length}}
+        {{#each connectionList}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne" data-bs-target="{{_id}}">
+                    {{fname}}&nbsp;{{lname}}
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <p class="card-text mb-0 ">University: {{university}}</p>
+                    <p class="card-text mb-0 ">Join at: {{createdAt}}</p>
+                </div>
+                <form method="POST" id="network-post-update">
+                    <input type="hidden" name="_method" value="POST">
+                    <input type="hidden" name="followerId" value="{{_id}}">
+                    <button type="submit" class="btn btn-link btn-lg"
+                        onclick="if (!confirm('Are you sure?')) { return false }"
+                        style="position: relative;   top: 50%;  left:30%; width: 30rem"><span>Add</span></button>
+                </form>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+</div>
+<script src="/public/js/networkSearchBox.js"></script>
