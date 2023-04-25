@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const userCollection = await users();
 

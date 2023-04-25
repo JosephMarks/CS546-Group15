@@ -1,7 +1,7 @@
 import { Router } from "express";
 import signUpFunctions from "../data/signUp.js";
 import validations from "../helpers.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const router = Router();
 
