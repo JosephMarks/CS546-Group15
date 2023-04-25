@@ -37,8 +37,6 @@ router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;
-  console.log("got here...");
-  console.log(id);
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -56,6 +54,7 @@ router.route("/:id").get(async (req, res) => {
       name: userInfo.name,
       description: userInfo.aboutMe,
       image: image,
+      gitHubUserName: userInfo.gitHubUserName,
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -98,6 +97,19 @@ router.post("/:id/updatename", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send("Not able to update name");
+  }
+});
+
+router.post("/:id/updategithubusername", async (req, res) => {
+  const id = req.params.id;
+  const newGitHubUserName = req.body.gitHubUserName;
+
+  try {
+    await userData.updateGitHubUserName(id, newGitHubUserName);
+    res.redirect(`/profile/${id}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Not able to update GitHub username");
   }
 });
 
