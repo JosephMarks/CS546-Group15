@@ -53,7 +53,7 @@ router.route("/:id").get(async (req, res) => {
 
     res.render("./profile", {
       _id: id,
-      name: userInfo.userInfo,
+      name: userInfo.name,
       description: userInfo.aboutMe,
       image: image,
     });
@@ -63,6 +63,41 @@ router.route("/:id").get(async (req, res) => {
       title: "Error Page",
       errorMessage: `We're sorry, a venue with that id does not exist .`,
     });
+  }
+});
+
+router.get("/:id/edit", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profileEdit", {
+      _id: id,
+      name: userInfo.name,
+      aboutMe: userInfo.aboutMe,
+      image: userInfo.base64Image,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
+router.post("/:id/updatename", async (req, res) => {
+  const id = req.params.id;
+  const newName = req.body.name;
+
+  try {
+    await userData.updateName(id, newName);
+    res.redirect(`/profile/${id}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Not able to update name");
   }
 });
 
