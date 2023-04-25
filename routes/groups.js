@@ -17,7 +17,7 @@ router.route("/").get(async (req, res) => {
       displayArray.push(groupObject);
       console.log(displayArray);
     }
-    res.render("./groups", { groups: displayArray });
+    res.render("./groups/groups", { groups: displayArray });
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
@@ -83,7 +83,7 @@ router.route("/:id").get(async (req, res) => {
     // }
     // console.log(eventsArray);
 
-    res.render("./groupById", {
+    res.render("./groups/groupById", {
       _id: id,
       name: groupInfo.name,
       description: groupInfo.description,

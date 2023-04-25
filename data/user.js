@@ -20,6 +20,10 @@ const exportedMethods = {
     const userCollection = await users();
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
     if (!user) throw "Error: user not found!";
+    // Convert the Binary image data to base64 format
+    if (user.image) {
+      user.base64Image = user.image.buffer.toString("base64");
+    }
     user._id = user._id.toString();
     return user;
   },
@@ -43,6 +47,7 @@ const exportedMethods = {
     let image = "";
     let university = "";
     let collegeMajor = "";
+    let gitHubUserName = "";
     let interestArea = [];
     let experience = 0;
     let jobHistory = [];
@@ -67,6 +72,7 @@ const exportedMethods = {
       image,
       university,
       collegeMajor,
+      gitHubUserName,
       interestArea,
       experience,
       jobHistory,
@@ -264,5 +270,58 @@ const exportedMethods = {
     // TO DO: double check - am I returning the right thing here?
     return await this.getUserById(id);
   },
+
+  async updateName(id, newName) {
+    if (!id || !newName) {
+      throw new Error("parameters must be provided");
+    }
+    if (!ObjectId.isValid(id)) {
+      throw new Error("This is not a valid object ID");
+    }
+
+    const userCollection = await users();
+    const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (foundUser === null) {
+      throw new Error("User has not been found");
+    }
+
+    const updatedInfo = await userCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { name: newName } }
+    );
+
+    if (updatedInfo.modifiedCount === 0) {
+      throw new Error("Could not update the user's name successfully.");
+    }
+
+    return await this.getUserById(id);
+  },
+
+  async updateGitHubUserName(id, userName) {
+    if (!id || !userName) {
+      throw new Error("parameters must be provided");
+    }
+    if (!ObjectId.isValid(id)) {
+      throw new Error("This is not a valid object ID");
+    }
+
+    const userCollection = await users();
+    const foundUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (foundUser === null) {
+      throw new Error("User has not been found");
+    }
+
+    const updatedInfo = await userCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { gitHubUserName: userName } }
+    );
+
+    if (updatedInfo.modifiedCount === 0) {
+      throw new Error("Could not update the user's name successfully.");
+    }
+
+    return await this.getUserById(id);
+  },
 };
+
 export default exportedMethods;

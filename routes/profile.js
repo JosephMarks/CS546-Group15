@@ -37,8 +37,6 @@ router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;
-  console.log("got here...");
-  console.log(id);
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -51,11 +49,12 @@ router.route("/:id").get(async (req, res) => {
     // }
     // console.log(eventsArray);
 
-    res.render("./profile", {
+    res.render("./profile/profile", {
       _id: id,
-      name: userInfo.userInfo,
+      name: userInfo.name,
       description: userInfo.aboutMe,
       image: image,
+      gitHubUserName: userInfo.gitHubUserName,
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -63,6 +62,54 @@ router.route("/:id").get(async (req, res) => {
       title: "Error Page",
       errorMessage: `We're sorry, a venue with that id does not exist .`,
     });
+  }
+});
+
+router.get("/:id/edit", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileEdit", {
+      _id: id,
+      name: userInfo.name,
+      aboutMe: userInfo.aboutMe,
+      image: userInfo.base64Image,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
+router.post("/:id/updatename", async (req, res) => {
+  const id = req.params.id;
+  const newName = req.body.name;
+
+  try {
+    await userData.updateName(id, newName);
+    res.redirect(`/profile/${id}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Not able to update name");
+  }
+});
+
+router.post("/:id/updategithubusername", async (req, res) => {
+  const id = req.params.id;
+  const newGitHubUserName = req.body.gitHubUserName;
+
+  try {
+    await userData.updateGitHubUserName(id, newGitHubUserName);
+    res.redirect(`/profile/${id}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Not able to update GitHub username");
   }
 });
 

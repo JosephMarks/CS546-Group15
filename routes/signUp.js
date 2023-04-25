@@ -1,7 +1,7 @@
 import { Router } from "express";
 import signUpFunctions from "../data/signUp.js";
 import validations from "../helpers.js";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 const router = Router();
 
@@ -29,7 +29,7 @@ router.route("/data").post(async (req, res) => {
     if (!validations.isProperString([fname, lname, email, pass, candidateType]))
       throw "Error : FirstName, Last Name, Email, password, candidateType can only be string not just string with empty spaces";
     validations.isAge(age);
-    pass = await bcrypt.hash(pass.trim(), 5);
+    pass = await bcryptjs.hash(pass.trim(), 5);
   } catch (e) {
     return res.status(400).render('Auth/signup', { error: e });
   }
