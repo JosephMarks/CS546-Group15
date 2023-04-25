@@ -32,11 +32,11 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
 
 app.use(
   session({
-    name: 'BetterInterviewBook',
+    name: "BetterInterviewBook",
     secret: "secret-key",
     saveUninitialized: false,
     resave: false,
-    cookie: {maxAge: 60000}
+    cookie: { maxAge: 60000 },
   })
 );
 
@@ -77,12 +77,13 @@ const updateData = {
   updatedAt: "05/13/2022",
 };
 
-let updatedUser = await userData.updateUsers(
-  "643b2afed6271e8e940ad58e",
+let foundUser = await userData.getUserById(
+  "64250150f2b4c8421ef908c7",
   updateData
 );
+console.log(foundUser);
 
-console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
+// console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
 
 // let myNewGroup = await groupData.create(
 //   "A group with an image",
