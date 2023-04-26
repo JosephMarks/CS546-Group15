@@ -101,6 +101,42 @@ const validations = {
 
         return arr;
     },
+    checkStringArray2 (arr, varName)
+    {
+        //We will not allow an empty array for this,
+
+        if(!arr || !Array.isArray(arr))
+            throw `Error: You must provide an array of ${varName}`;
+        if(arr.length < 1)
+            throw `Error: You must provide an array of ${varName} with at least on element`;
+        for(let i in arr)
+        {
+            if(typeof arr[i] !== "string" || arr[i].trim().length === 0)
+            {
+                throw `Error: One or more elements in ${varName} array is not a string or is an empty string`;
+            }
+            arr[i] = arr[i].trim();
+        }
+        return arr;
+    },
+
+    checkArrofId (arr, varName)
+    {
+        if(!arr || !Array.isArray(arr))
+            throw `Error: You must provide an array of ${varName}`;
+        if(arr.length < 1)
+            throw `Error: You must provide an array of ${varName} with at least on element`;
+        for(let i in arr)
+        {
+            if(!arr[i]) throw "Error: You must provide an id to search for";
+            if(typeof arr[i] !== "string") throw "Error: id must be a string";
+            arr[i] = arr[i].trim();
+            if(arr[i].length === 0)
+                throw "Error: id cannot be an empty string or just spaces";
+            if(!ObjectId.isValid(arr[i])) throw "Error: invalid object ID";
+        }
+        return arr;
+    },
 
     checkGender (strVal, varName)
     {
@@ -241,7 +277,7 @@ const validations = {
         if(!checker(tags, arr)) throw `Error: tags is not valid tags`;
         return arr;
     },
-    checkPage (varName, strVal)
+    chechPage (varName, strVal)
     {
         if(!varName) throw `Error: You must supply ${strVal}`
         varName = Number(varName)
