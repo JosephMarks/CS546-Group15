@@ -84,12 +84,12 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray(fields, "fields");
+      fields = validation.checkStringArray2(fields, "fields");
     }
     if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
-      companyName = validation.checkStringArray(companyName, "company");
+      companyName = validation.checkStringArray2(companyName, "company");
     }
 
     const postCollection = await referral();
@@ -105,7 +105,7 @@ const exportedMethods = {
     if (!Array.isArray(company)) {
       companyName = [];
     } else {
-      companyName = validation.checkStringArray(companyName, "company");
+      companyName = validation.checkStringArray2(companyName, "company");
     }
     const postCollection = await referral();
     return await postCollection
@@ -117,7 +117,7 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray(fields, "fields");
+      fields = validation.checkStringArray2(fields, "fields");
     }
     const postCollection = await referral();
     return await postCollection.find({ fields: { $in: fields } }).toArray();
@@ -144,13 +144,13 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray(fields, "fields");
+      fields = validation.checkStringArray2(fields, "fields");
     }
 
     if (!Array.isArray(jobFields)) {
       jobFields = [];
     } else {
-      jobFields = validation.checkStringArray(jobFields, "jobFields");
+      jobFields = validation.checkStringArray2(jobFields, "jobFields");
     }
 
     const userThatPosted = await userData.getUserById(posterId);
