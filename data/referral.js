@@ -380,7 +380,7 @@ const exportedMethods = {
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
-      throw [404, `Could not update the post with id ${id}`];
+      throw [404, `Could not update the post with id ${postId}`];
 
     const returnValue = newreferrals.value;
     returnValue._id = returnValue._id.toString();
@@ -414,7 +414,7 @@ const exportedMethods = {
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
-      throw [404, `Could not delete the post with id ${id}`];
+      throw [404, `Could not delete the post with id ${postId}`];
 
     deletionInfo.value._id = deletionInfo.value._id.toString();
 
