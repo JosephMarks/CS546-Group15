@@ -1,17 +1,17 @@
 import { ObjectId } from "mongodb";
-import { users, socialPost } from "../config/mongoCollections.js";
+import { users, referral, company } from "../config/mongoCollections.js";
 import validation from "../helpers.js";
 import userData from "./user.js";
 
 const exportedMethods = {
   async getAllPosts() {
-    const postCollection = await socialPost();
+    const postCollection = await referral();
     return await postCollection.find({}).toArray();
   },
 
   async getPostById(id) {
     id = validation.checkId(id);
-    const postCollection = await socialPost();
+    const postCollection = await referral();
     const post = await postCollection.findOne({ _id: new ObjectId(id) });
 
     if (!post) throw "Error: Post not found";
@@ -80,101 +80,37 @@ const exportedMethods = {
     return res;
   },
 
-  async getPostsByAllTag(fields, company, category) {
+  async getPostsByAllTag(fields, companyName) {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
       fields = validation.checkStringArray2(fields, "fields");
     }
-    if (!Array.isArray(company)) {
-      company = [];
+    if (!Array.isArray(companyName)) {
+      companyName = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      companyName = validation.checkStringArray2(companyName, "company");
     }
-    if (!Array.isArray(category)) {
-      category = [];
-    } else {
-      category = validation.checkStringArray2(category, "category");
-    }
-    const postCollection = await socialPost();
+
+    const postCollection = await referral();
     return await postCollection
       .find({
         fields: { $in: fields },
-        company: { $in: company },
-        category: { $in: category },
+        company: { $in: companyName },
       })
       .toArray();
   },
 
-  async getPostsByFieldsCompanyTag(fields, company) {
-    if (!Array.isArray(fields)) {
-      fields = [];
-    } else {
-      fields = validation.checkStringArray2(fields, "fields");
-    }
+  async getPostsByCompanyTag(companyName) {
     if (!Array.isArray(company)) {
-      company = [];
+      companyName = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      companyName = validation.checkStringArray2(companyName, "company");
     }
-    const postCollection = await socialPost();
+    const postCollection = await referral();
     return await postCollection
-      .find({ fields: { $in: fields }, company: { $in: company } })
+      .find({ company: { $in: companyName } })
       .toArray();
-  },
-
-  async getPostsByFieldsCategoryTag(fields, category) {
-    if (!Array.isArray(fields)) {
-      fields = [];
-    } else {
-      fields = validation.checkStringArray2(fields, "fields");
-    }
-    if (!Array.isArray(category)) {
-      category = [];
-    } else {
-      category = validation.checkStringArray2(category, "category");
-    }
-    const postCollection = await socialPost();
-    return await postCollection
-      .find({ fields: { $in: fields }, category: { $in: category } })
-      .toArray();
-  },
-
-  async getPostsByCompanyCategoryTag(company, category) {
-    if (!Array.isArray(company)) {
-      company = [];
-    } else {
-      company = validation.checkStringArray2(company, "company");
-    }
-    if (!Array.isArray(category)) {
-      category = [];
-    } else {
-      category = validation.checkStringArray2(category, "category");
-    }
-    const postCollection = await socialPost();
-    return await postCollection
-      .find({ company: { $in: company }, category: { $in: category } })
-      .toArray();
-  },
-
-  async getPostsByCompanyTag(company) {
-    if (!Array.isArray(company)) {
-      company = [];
-    } else {
-      company = validation.checkStringArray2(company, "company");
-    }
-    const postCollection = await socialPost();
-    return await postCollection.find({ company: { $in: company } }).toArray();
-  },
-
-  async getPostsByCategoryTag(category) {
-    if (!Array.isArray(category)) {
-      category = [];
-    } else {
-      category = validation.checkStringArray2(category, "category");
-    }
-    const postCollection = await socialPost();
-    return await postCollection.find({ category: { $in: category } }).toArray();
   },
 
   async getPostsByFieldsTag(fields) {
@@ -183,31 +119,40 @@ const exportedMethods = {
     } else {
       fields = validation.checkStringArray2(fields, "fields");
     }
-    const postCollection = await socialPost();
+    const postCollection = await referral();
     return await postCollection.find({ fields: { $in: fields } }).toArray();
   },
 
-  async addPost(title, body, posterId, eventdate, fields, company, category) {
+  async addPost(
+    title,
+    body,
+    posterId,
+    duedate,
+    fields,
+    companyName,
+    jobTitle,
+    jobDes,
+    jobFields
+  ) {
     title = validation.checkString(title, "Title");
     body = validation.checkString(body, "Body");
     posterId = validation.checkId(posterId, "Poster ID");
-    eventdate = validation.checkString(eventdate, "eventdate");
-
+    duedate = validation.checkString(duedate, "duedate");
+    jobTitle = validation.checkString(jobTitle, "jobTitle");
+    jobDes = validation.checkString(jobDes, "jobDes");
+    companyName = validation.checkString(companyName, "company");
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
       fields = validation.checkStringArray2(fields, "fields");
     }
-    if (!Array.isArray(company)) {
-      company = [];
+
+    if (!Array.isArray(jobFields)) {
+      jobFields = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      jobFields = validation.checkStringArray2(jobFields, "jobFields");
     }
-    if (!Array.isArray(category)) {
-      category = [];
-    } else {
-      category = validation.checkStringArray2(category, "category");
-    }
+
     const userThatPosted = await userData.getUserById(posterId);
     let postdate = new Date().toUTCString();
     const newPost = {
@@ -217,17 +162,27 @@ const exportedMethods = {
         id: new ObjectId(posterId),
         name: `${userThatPosted.fname} ${userThatPosted.lname}`,
       },
-      eventdate: eventdate,
+      duedate: duedate,
       fields: fields,
-      category: category,
-      company: company,
+      company: companyName,
+      jobs: { jobTitle: jobTitle, jobDes: jobDes, jobFields: jobFields },
       likes: [],
       comments: [],
       postdate: postdate,
     };
-    const postCollection = await socialPost();
+    const postCollection = await referral();
     const newInsertInformation = await postCollection.insertOne(newPost);
     const newId = newInsertInformation.insertedId;
+
+    //job in company database
+    let companyCollection = await company();
+    let newJobInser = await companyCollection.findOneAndUpdate(
+      { companyName: companyName },
+      { $addToSet: { jobs: newPost.jobs } },
+      { returnDocument: "after" }
+    );
+    if (newJobInser.lastErrorObject.n === 0)
+      throw [404, `Could not update the post with id ${id}`];
 
     //user post in user database
     let usersCollection = await users();
@@ -244,7 +199,8 @@ const exportedMethods = {
 
   async removePost(id, userId) {
     id = validation.checkId(id);
-    const postCollection = await socialPost();
+    let oldinfo = await this.getPostById(id);
+    const postCollection = await referral();
     const deletionInfo = await postCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
@@ -260,134 +216,31 @@ const exportedMethods = {
     );
     if (newPost.lastErrorObject.n === 0)
       throw [404, `Could not delete the post with id ${id}`];
-    return { ...deletionInfo.value, deleted: true };
-  },
 
-  async updatePostPut(id, updatedPost) {
-    id = validation.checkId(id);
-    updatedPost.title = validation.checkString(updatedPost.title, "title");
-    updatedPost.body = validation.checkString(updatedPost.body, "body");
-    updatedPost.posterId = validation.checkId(updatedPost.posterId);
-    updatedPost.eventdate = validation.checkString(
-      updatedPost.eventdate,
-      "eventdate"
-    );
-    if (!Array.isArray(updatedPost.fields)) {
-      updatedPost.fields = [];
-    } else {
-      updatedPost.fields = validation.checkStringArray2(
-        updatedPost.fields,
-        "fields"
-      );
-    }
-    if (!Array.isArray(updatedPost.category)) {
-      updatedPost.category = [];
-    } else {
-      updatedPost.category = validation.checkStringArray2(
-        updatedPost.category,
-        "category"
-      );
-    }
-    if (!Array.isArray(updatedPost.company)) {
-      updatedPost.company = [];
-    } else {
-      updatedPost.company = validation.checkStringArray2(
-        updatedPost.company,
-        "company"
-      );
-    }
-    const userThatPosted = await userData.getUserById(updatedPost.posterId);
-
-    let updatedPostData = {
-      title: updatedPost.title,
-      body: updatedPost.body,
-      eventdate: updatedPost.eventdate,
-      poster: {
-        id: updatedPost.posterId,
-        firstName: userThatPosted.firstName,
-        lastName: userThatPosted.lastName,
-      },
-      fields: updatedPost.fields,
-      company: updatedPost.company,
-      category: updatedPost.category,
-    };
-    const postCollection = await socialPost();
-    const updateInfo = await postCollection.findOneAndReplace(
-      { _id: new ObjectId(id) },
-      updatedPostData,
+    //job in company database
+    const companyCollection = await company();
+    let companyName = oldinfo.company;
+    let job = oldinfo.jobs;
+    console.log(job);
+    let newJobInser = await companyCollection.findOneAndUpdate(
+      { companyName: companyName },
+      { $pull: { jobs: job } },
       { returnDocument: "after" }
     );
-    if (updateInfo.lastErrorObject.n === 0)
-      throw [404, `Error: Update failed! Could not update post with id ${id}`];
-    return updateInfo.value;
-  },
-
-  async updatePostPatch(id, updatedPost) {
-    const updatedPostData = {};
-    if (updatedPost.posterId) {
-      updatedPostData["poster.id"] = validation.checkId(
-        updatedPost.posterId,
-        "Poster ID"
-      );
-
-      const userThatPosted = await userData.getUserById(updatedPost.posterId);
-      updatedPostData["poster.firstName"] = userThatPosted.fname;
-      updatedPostData["poster.lastName"] = userThatPosted.lname;
-    }
-    if (updatedPost.fields) {
-      updatedPostData.fields = validation.checkStringArray2(
-        updatedPost.fields,
-        "fields"
-      );
-    }
-    if (updatedPost.category) {
-      updatedPostData.category = validation.checkStringArray2(
-        updatedPost.category,
-        "category"
-      );
-    }
-    if (updatedPost.company) {
-      updatedPostData.company = validation.checkStringArray2(
-        updatedPost.company,
-        "company"
-      );
-    }
-
-    if (updatedPost.title) {
-      updatedPostData.title = validation.checkString(
-        updatedPost.title,
-        "Title"
-      );
-    }
-    if (updatedPost.eventdate) {
-      updatedPostData.eventdate = validation.checkString(
-        updatedPost.eventdate,
-        "eventdate"
-      );
-    }
-    if (updatedPost.body) {
-      updatedPostData.body = validation.checkString(updatedPost.body, "Body");
-    }
-    const postCollection = await socialPost();
-    let newPost = await postCollection.findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: updatedPostData },
-      { returnDocument: "after" }
-    );
-    if (newPost.lastErrorObject.n === 0)
+    if (newJobInser.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
 
-    return newPost.value;
+    return { ...deletionInfo.value, deleted: true };
   },
 
   //  Comments
   async getCommentsByUserId(userId) {
     userId = validation.checkId(userId);
-    const socialPostCollection = await socialPost();
-    const userComment = await socialPostCollection
+    const referralCollection = await referral();
+    const userComment = await referralCollection
       .aggregate([
         { $unwind: "$comments" },
-        { $match: { "comments.userId": new ObjectId(userId) } },
+        { $match: { "comments.userId": userId } },
         {
           $project: {
             _id: "$comments._id",
@@ -407,8 +260,8 @@ const exportedMethods = {
 
   async getCommentsByCommentId(commentId) {
     commentId = validation.checkId(commentId);
-    const socialPostCollection = await socialPost();
-    const userComment = await socialPostCollection
+    const referralCollection = await referral();
+    const userComment = await referralCollection
       .aggregate([
         { $unwind: "$comments" },
         { $match: { "comments._id": new ObjectId(commentId) } },
@@ -443,13 +296,13 @@ const exportedMethods = {
       comments,
     };
 
-    const socialPostCollection = await socialPost();
-    let newsocialPosts = await socialPostCollection.findOneAndUpdate(
+    const referralCollection = await referral();
+    let newreferrals = await referralCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $addToSet: { comments: newComments } },
       { returnDocument: "after" }
     );
-    const returnValue = newsocialPosts.value;
+    const returnValue = newreferrals.value;
     returnValue._id = returnValue._id.toString();
     for (let ele of returnValue.comments) {
       ele._id = ele._id.toString();
@@ -460,8 +313,8 @@ const exportedMethods = {
   async removeComments(commentId) {
     commentId = validation.checkId(commentId);
     const comments = this.getCommentsByCommentId(commentId);
-    const socialPostCollection = await socialPost();
-    const deletionInfo = await socialPostCollection.findOneAndUpdate(
+    const referralCollection = await referral();
+    const deletionInfo = await referralCollection.findOneAndUpdate(
       { "comments._id": new ObjectId(commentId) },
       { $pull: { comments: { _id: new ObjectId(commentId) } } },
       { new: true },
@@ -478,8 +331,8 @@ const exportedMethods = {
     commentId = validation.checkId(commentId);
     content = validation.checkString(content, "Content");
     const comments = this.getCommentsByCommentId(commentId);
-    const socialPostCollection = await socialPost();
-    const updateInfo = await socialPostCollection.findOneAndUpdate(
+    const referralCollection = await referral();
+    const updateInfo = await referralCollection.findOneAndUpdate(
       { "comments._id": new ObjectId(commentId) },
       { $set: { "comments.$.comments": content } },
       { returnDocument: "after" }
@@ -503,9 +356,9 @@ const exportedMethods = {
     userId = validation.checkId(userId);
 
     //check is there is a duplicates user press like button
-    const socialPostCollection = await socialPost();
-    let duplicateUser = await socialPostCollection.findOne(
-      { _id: new ObjectId(postId), likes: { $in: [new ObjectId(userId)] } },
+    const referralCollection = await referral();
+    let duplicateUser = await referralCollection.findOne(
+      { _id: new ObjectId(postId), likes: { $in: [userId] } },
       { projection: { _id: 0 } }
     );
     if (duplicateUser !== null) {
@@ -513,20 +366,11 @@ const exportedMethods = {
       throw `Error: ${userName} can not press likes more than twice!!`;
     }
 
-    let newsocialPosts = await socialPostCollection.findOneAndUpdate(
+    let newreferrals = await referralCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $addToSet: { likes: userId } },
       { returnDocument: "after" }
     );
-    const returnValue = newsocialPosts.value;
-    returnValue._id = returnValue._id.toString();
-    console.log(returnValue.likes);
-    if (returnValue.comments.length > 0) {
-      for (let ele of returnValue.comments) {
-        ele._id = ele._id.toString();
-      }
-    }
-
     //user liked posts stored in user history
     let usersCollection = await users();
 
@@ -537,6 +381,15 @@ const exportedMethods = {
     );
     if (newPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${postId}`];
+
+    const returnValue = newreferrals.value;
+    returnValue._id = returnValue._id.toString();
+    console.log(returnValue.likes);
+    if (returnValue.comments.length > 0) {
+      for (let ele of returnValue.comments) {
+        ele._id = ele._id.toString();
+      }
+    }
     return returnValue;
   },
 
@@ -544,16 +397,15 @@ const exportedMethods = {
     postId = validation.checkId(postId);
     userId = validation.checkId(userId);
     const posts = this.getPostById(postId);
-    const socialPostCollection = await socialPost();
-    const deletionInfo = await socialPostCollection.findOneAndUpdate(
+    const referralPostCollection = await referral();
+    const deletionInfo = await referralPostCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $pull: { likes: userId } },
       { new: true },
       { returnDocument: "after" }
     );
     if (deletionInfo.lastErrorObject.n === 0)
-      throw `Error: Could not delete post with id of ${commentId}`;
-    deletionInfo.value._id = deletionInfo.value._id.toString();
+      throw `Error: Could not delete post with id of ${postId}`;
     //user liked posts stored in user history
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
@@ -565,6 +417,7 @@ const exportedMethods = {
       throw [404, `Could not delete the post with id ${postId}`];
 
     deletionInfo.value._id = deletionInfo.value._id.toString();
+
     return deletionInfo.value;
   },
 };
