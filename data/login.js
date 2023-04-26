@@ -14,6 +14,7 @@ const logInFunctions = {
       { email: email },
       { projection: { _id: 1, email: 1, password: 1, candidateType: 1 } }
     );
+
     if(!ifAlready) throw "Error: User Email is not registered";
     ifAlready._id = ifAlready._id.toString();
     if(!(await bcryptjs.compare(password, ifAlready.password)))

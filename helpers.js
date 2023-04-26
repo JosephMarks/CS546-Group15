@@ -240,6 +240,15 @@ const validations = {
         const checker = (desired, target) => target.every(ele => desired.includes(ele));
         if(!checker(tags, arr)) throw `Error: tags is not valid tags`;
         return arr;
+    },
+    checkPage (varName, strVal)
+    {
+        if(!varName) throw `Error: You must supply ${strVal}`
+        varName = Number(varName)
+        if(isNaN(varName))`Error: ${strVal} cannot be not a number type`
+        if(Number.isInteger(varName))`Error: ${strVal} must be an integer type`
+        if(varName < 0 || varName > 5) throw `Error: ${strVal} cannot less than one page or over 5 pages`
+        return varName;
     }
 }
 

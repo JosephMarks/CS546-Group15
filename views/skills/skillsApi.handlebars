@@ -33,7 +33,7 @@
     <br>
 
     {{#if jobSearch}}
-    <div class="row row-cols-1 row-cols-md-2 g-4" style="margin: auto;">
+    <div class="row row-cols-1 row-cols-md-3 g-4" style="margin: auto;">
         {{#each jobSearch}}
         <div class="col">
             <div class="card">
@@ -41,7 +41,7 @@
                 <img src="{{employer_logo}}" class="card-img-top" alt="{{employer_name}}"
                     style="width:8rem; height:3rem;">
                 {{else}}
-                <img src="/public/images/image_not_found.png" class="card-img-top" alt="{{employer_name}}"
+                <img src="/public/images/image-not-found.png" class="card-img-top" alt="{{employer_name}}"
                     style="width:8rem; height:3rem;">
                 {{/if}}
                 <div class="card-body">

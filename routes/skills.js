@@ -50,6 +50,8 @@ router.route('/create/:userId')
         try
         {
             url = validations.checkVideoUrl(url, "Video link")
+            url = url.replace(/(\http|https)\:\/\/(www)\.(youtube)\.(com)\/(watch)\?(v=)/gi, "https://www.youtube.com/embed/")
+            url = url.replace(/(\http|https)\:\/\/(youtu\.be)\//gi, "https://www.youtube.com/embed/")
         } catch(error)
         {
             errors.push(error)
@@ -103,6 +105,14 @@ router.route("/search/api")
             errorsList.push(error)
         }
 
+        try
+        {
+            page = validations.checkPage(page, "Page")
+        } catch(error)
+        {
+            errorsList.push(error)
+        }
+
         if(errorsList.length > 0)
             return res.render("skills/skillsApi",
                 {
@@ -114,10 +124,10 @@ router.route("/search/api")
                 });
 
 
-        const query = job_title.concat(' ', location)
+        let query = job_title.concat(' in ', location)
         const params = {
             query: query,
-            page: page,
+            num_pages: page,
             date_post: date_post,
             employment_types: employment_types,
             job_requirements: job_requirements,
