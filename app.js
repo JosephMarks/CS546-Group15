@@ -62,7 +62,6 @@ app.use("/company", (req, res, next) =>
     if(req.session.user.candidateType === "Company")
     {
       next();
-
     } else
     {
       return res.render('Auth/login', { error: "You Do not have Access for this page", title: "Login" });
