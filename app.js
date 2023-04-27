@@ -51,6 +51,22 @@ app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Authorizing and authenticating the routes
+app.use("/login", (req, res, next)=> {
+  if (req.session && req.session.user){
+    return res.redirect('/')
+  }else{
+    next();
+  }
+})
+
+app.use("/signup", (req, res, next)=> {
+  if (req.session && req.session.user){
+    return res.redirect('/')
+  }else{
+    next();
+  }
+})
+
 
 app.use("/company", (req, res, next) =>
 {
@@ -62,7 +78,6 @@ app.use("/company", (req, res, next) =>
     if(req.session.user.candidateType === "Company")
     {
       next();
-
     } else
     {
       return res.render('Auth/login', { error: "You Do not have Access for this page", title: "Login" });
@@ -86,6 +101,26 @@ app.use("/skills", (req, res, next) =>
     return res.redirect("/login");
   }
   next();
+})
+
+app.use("/logout", (req, res, next) => {
+  console.log('hi')
+  if (req.session && !req.session.user){
+    return res.redirect('/login');
+  }else {
+    next();
+  }
+})
+
+app.use('/', (req, res, next) => {
+  let auth = "";
+  if (req.session && req.session.user){
+    auth = "Authenticated User";
+  } else {
+    auth = "Non Authenticated User";
+  }
+  console.log(new Date().toUTCString() + ": " + req.method + " " + req.originalUrl + " " + auth);
+  return next();
 })
 
 configRoutes(app);

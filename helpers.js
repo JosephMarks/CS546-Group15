@@ -7,6 +7,25 @@ import { ObjectId } from "mongodb";
 // Valid date would be DD/MM/YYYY
 
 const validations = {
+
+  validateIsString (param) {
+    for (let element of param) {
+        if (typeof(element) !== 'string') return 0
+        if (element.trim().length === 0) return 0
+    }
+    return 1
+  },
+
+  validateName (param) {
+    if (param.trim().length < 2 || param.trim().length > 25) throw "Error : Enter a valid firstName and the lastName";
+    
+    for (let i = 0; i < param.length; i++) {
+        if (!Boolean(param[i].match(/^[A-Za-z]*$/))) {
+            if ((param[i] !== ' ') && !param[i].match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)) throw "Error : Enter a valid firstName and the lastName";
+        }
+    }
+  },
+
   isProperString(param) {
     // check if the parameters are string or not takes an array as an input
 
@@ -36,7 +55,7 @@ const validations = {
 
     if (typeof param !== "number" || isNaN(Number(param)))
       throw "Error: Age  must be a number";
-    if (param < 18 || param > 100) throw "Error: Age must be with in 18 to 100";
+    if (param < 18 || param > 70) throw "Error: Age must be with in 18 to 70";
     if (!Number.isInteger(param)) throw "Error: Age must be an Integer";
     return param;
   },
