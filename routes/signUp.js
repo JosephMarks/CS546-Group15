@@ -28,7 +28,7 @@ router.route("/data").post(async (req, res) => {
   if (!bodyData || Object.keys(bodyData).length === 0) {
     return res
       .status(400)
-      .render('error', { error: "There are no fields in the request body" });
+      .render('error', { error: "There are no fields in the request body", title : 'Error' });
   }
 
   let { firstName, lastName, age, emailAddress, password, candidateType } = bodyData;
@@ -50,7 +50,7 @@ router.route("/data").post(async (req, res) => {
     rules.validate(password);
 
   } catch (e) {
-    return res.status(400).render('Auth/signup', { error : e });
+    return res.status(400).render('Auth/signup', { error : e, title: 'Error' });
   }
 
   try {
@@ -63,11 +63,11 @@ router.route("/data").post(async (req, res) => {
       candidateType.trim()
     );
 
-    return res.status(200).render('Auth/login', { error: " New User Registered " });
+    return res.status(200).render('Auth/login', { error: " New User Registered ", title : 'Error' });
   } catch (e) {
     if (e === "Error : User Email is already registered")
-      return res.status(404).render('Auth/login', { error: e });
-    else return res.status(500).render('error', { error: "Sever Error" });
+      return res.status(404).render('Auth/login', { error: e, title : 'Error' });
+    else return res.status(500).render('error', { error: "Sever Error", title : 'Server Error' });
   }
 });
 

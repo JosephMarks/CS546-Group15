@@ -10,6 +10,11 @@ body {
   padding: 2px;
 }
 
+#icon {
+  height: 55px;
+  width: 55px
+}
+
 h1 {
   color: white !important;
   text-align: center;
