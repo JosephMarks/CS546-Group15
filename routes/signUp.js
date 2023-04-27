@@ -32,7 +32,6 @@ router.route("/data").post(async (req, res) => {
   }
 
   let { firstName, lastName, age, emailAddress, password, candidateType } = bodyData;
-  console.log(firstName, lastName, age, emailAddress, password, candidateType)
   try {
     
     if (!firstName || !lastName || !emailAddress || !password || !candidateType || !age) throw "Error : You should provide all the parameters";
@@ -66,7 +65,6 @@ router.route("/data").post(async (req, res) => {
 
     return res.status(200).render('Auth/login', { error: " New User Registered " });
   } catch (e) {
-    console.log(e);
     if (e === "Error : User Email is already registered")
       return res.status(404).render('Auth/login', { error: e });
     else return res.status(500).render('error', { error: "Sever Error" });

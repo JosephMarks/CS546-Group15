@@ -61,8 +61,7 @@ router.route("/data").post(async (req, res) =>
     return res.render('welcome', { message: `You are Logged In as ${email}}` });
   } catch(e)
   {
-    console.log(e)
-    if(e === "Error : Email is not registered or Wrong Password") return res.status(400).render('Auth/signup', { error: e });
+    if(e === "Error : Email is not registered or Wrong Password") return res.status(400).render('Auth/login', { error: e });
     else return res.status(500).render('error', { error: "Server Error" });
   }
 });
