@@ -11,6 +11,7 @@ import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
 import { groupActivityData, userData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
+import * as userJobHistoryData from "./data/userJobHistory.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -153,6 +154,16 @@ app.use("/", (req, res, next) => {
 });
 
 configRoutes(app);
+
+let newJob = await userJobHistoryData.create(
+  "643b2afed6271e8e940ad58e",
+  "Controller",
+  "Masterworks",
+  "05/13/1985",
+  "present",
+  "In charge of the finance department"
+);
+console.log(newJob);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
