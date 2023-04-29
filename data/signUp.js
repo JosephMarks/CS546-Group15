@@ -1,23 +1,48 @@
-import { ObjectId } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
+import bcrypt from 'bcryptjs';
+import emailValidator from "email-validator"; //use to validate email address
+
+// Setting the rules of validations for the password.
+
+import passwordValidator from "password-validator";
+let rules = new passwordValidator();
+rules.is().min(8)                                    
+.is().max(100)                                  
+.has().uppercase()                              
+.has().digits()                                
+.has().not().spaces()                           
+.has().symbols()
+
+// Setting the rules of validations for the password.
+
 const userCollection = await users();
 
 const signUpFunctions = {
-  async create(fname, lname, age, email, password, candidateType) {
+
+  async createUser(firstName, lastName, age, emailAddress, password, candidateType) {
+
+    validations.isAge(age);
     age = Number(age);
 
-    if (
-      !validations.isProperString([fname, lname, email.toLowerCase(), password, candidateType])
-    )
-      throw "Error : FirstName, Last Name, Email, Password, candidateType can only be string not just string with empty spaces";
-    validations.isAge(age);
-
-    const ifAlready = await userCollection.findOne({
-      email: email.toLowerCase(),
-    });
-    if (ifAlready) throw "Error: User Email is already registered";
-
+    if (!firstName || !lastName || !emailAddress || !password || !candidateType) throw "Error : You should provide all the parameters";
+    validations.validateIsString([firstName, lastName, emailAddress, password, candidateType]);
+  
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    emailAddress = emailAddress.trim().toLowerCase();
+    password = password;
+  
+    validations.validateName(firstName);
+    validations.validateName(lastName);
+    if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
+    rules.validate(password);
+  
+    password = await bcrypt.hash(password, 10);
+  
+    const ifExists = await userCollection.findOne({ emailAddress: emailAddress });
+    if (ifExists) throw "Error : User Email is already registered";
+    
     // attributes need, but to be populated later when profile filled out by user
     let gender = "";
     let locationState = "";
@@ -32,9 +57,9 @@ const signUpFunctions = {
     let updatedAt = "";
 
     const finalPush = await userCollection.insertOne({
-      fname,
-      lname,
-      email: email.toLowerCase(),
+      firstName,
+      lastName,
+      emailAddress: emailAddress.toLowerCase(),
       password,
       age: age,
       candidateType: candidateType,
@@ -50,7 +75,9 @@ const signUpFunctions = {
       createdAt,
       updatedAt,
     });
+
     return await userCollection.findOne({ _id: finalPush.insertedId });
+
   },
 };
 

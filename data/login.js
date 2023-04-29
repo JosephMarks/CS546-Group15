@@ -1,30 +1,70 @@
 import { ObjectId } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcryptjs";
+import * as emailValidator from "email-validator";
+
+const userCollection = await users();
+
+// Setting the rules of validations for the password.
+
+import passwordValidator from "password-validator";
+let rules = new passwordValidator();
+rules
+  .is()
+  .min(8)
+  .is()
+  .max(100)
+  .has()
+  .uppercase()
+  .has()
+  .digits()
+  .has()
+  .not()
+  .spaces()
+  .has()
+  .symbols();
+
+// Setting the rules of validations for the password.
 
 const logInFunctions = {
-  async logIn (email, password)
-  {
-    if(!validations.isProperString([email, password]))
-      throw "Error : Email and Password can only be string not just string with empty spaces";
+  async checkUser(emailAddress, password) {
+    if (!emailAddress || !password)
+      throw "Error : You should provide all the parameters";
+    if (validations.validateIsString([emailAddress, password]) === 0) {
+      throw "Error : All inputs must be valid String";
+    }
+    emailAddress = emailAddress.trim().toLowerCase();
+    password = password;
 
     const userCollection = await users();
     const ifAlready = await userCollection.findOne(
-      { email: email },
+      { email: emailAddress },
       { projection: { _id: 1, email: 1, password: 1, candidateType: 1 } }
     );
 
     if(!ifAlready) throw "Error: User Email is not registered";
     ifAlready._id = ifAlready._id.toString();
-    if(!(await bcryptjs.compare(password, ifAlready.password)))
+    if(!(await bcrypt.compare(password, ifAlready.password)))
       throw "Error : Wrong Password";
 
-    return ifAlready;
+    if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
+    rules.validate(password);
+
+    const ifExists = await userCollection.findOne({
+      emailAddress: emailAddress,
+    });
+
+    if (!ifExists) {
+      throw "Error : Email is not registered or Wrong Password";
+    } else {
+      if (!(await bcrypt.compare(password, ifExists.password))) {
+        throw "Error : Email is not registered or Wrong Password";
+      }
+    }
+
+    return ifExists;
   },
 };
 
 export default logInFunctions;
-
-
-

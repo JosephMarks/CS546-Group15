@@ -1,40 +1,40 @@
-<h1>{{ title }}</h1>
+<h1>Sign Up</h1>
 
 <div class="signup-container">
         <div class="signUp">
 
             <form class="row g-3 needs-validation" action="/signUp/data" method="post">
                 <span id="errorDisplay" style="color: red"> {{error}} </span>
-                <img id = "icon" src='../public/static/images/user.svg' alt="" height="55px", width="55px">
+                <img id = "icon" src='../public/static/images/user.svg' alt="user icon">
 
                 <div class="col-md-12">
-                <label class="fname">First name</label>
-                <input type="text" class="form-control" id = "fname" name="fname" required>
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" id = "firstName" name="firstName">
                 </div>
 
                 <div class="col-md-12">
-                    <label for="validationCustom01" class="lname">Last name</label>
-                    <input type="text" class="form-control" id="lname" name="lname" required>
+                    <label for="lastName">Last name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName">
                 </div>
 
                 <div class="col-md-12">
                     <label for="age" class="form-label">Age</label>
-                    <input type="number" class="form-control" id="age" placeholder="Must be older than 18 years" min="12" max="65" name="age" required>
+                    <input type="number" class="form-control" id="age" placeholder="Must be older than 18 years" name="age">
                 </div>
 
                 <div class="col-md-12">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <label for="emailAddress" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="emailAddress" name="emailAddress">
                 </div>
 
                 <div class="col-md-12">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" placeholder="Must be atleast 8 characters" minlength="8" id="pass" name="pass" required>
+                    <input type="password" class="form-control" placeholder="Must be atleast 8 characters" id="password" name="password">
                 </div> 
 
                 <div class="col-md-12">
                     <label for="candidateType" class="form-label">Candidate Type</label>
-                    <select name="candidateType" id="candidateType" required>
+                    <select name="candidateType" id="candidateType">
 
                         <option value="Student">Student</option>
                         <option value="Company">Company</option>
