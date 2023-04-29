@@ -8,19 +8,12 @@ import * as emailValidator from "email-validator";
 import passwordValidator from "password-validator";
 let rules = new passwordValidator();
 rules
-  .is()
-  .min(8)
-  .is()
-  .max(100)
-  .has()
-  .uppercase()
-  .has()
-  .digits()
-  .has()
-  .not()
-  .spaces()
-  .has()
-  .symbols();
+.is().min(8)                                    
+.is().max(100)                                  
+.has().uppercase()                              
+.has().digits()                                
+.has().not().spaces()                           
+.has().symbols()
 
 // Setting the rules of validations for the password.
 
@@ -34,12 +27,10 @@ router.route("/data").post(async (req, res) => {
   const bodyData = req.body;
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
-    return res
-      .status(400)
-      .render("error", {
-        error: "There are no fields in the request body",
-        title: "Error",
-      });
+    return res.status(400).render("error", {
+      error: "There are no fields in the request body",
+      title: "Error",
+    });
   }
 
   let { email, pass } = bodyData;
