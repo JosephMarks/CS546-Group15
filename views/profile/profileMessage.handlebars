@@ -28,12 +28,13 @@
             class="messages border p-3"
             style="height: 300px; overflow-y: scroll;"
           >
-            {{#each messageInput}}
-              <div class="mb-3">
-                <strong>{{this.sender}}</strong>
-                <p>{{this.content}}</p>
+            {{#each messages}}
+              <div class="message">
+                <h3>{{subject}}</h3>
+                <p>{{message}}</p>
               </div>
             {{/each}}
+
           </div>
           <form
             action="/profile/{{_id}}/messaging"

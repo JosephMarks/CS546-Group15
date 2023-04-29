@@ -34,8 +34,8 @@ export const create = async (originUserId, targetUserId, subject, message) => {
   }
 
   let newMessage = {
-    originUserId: originUserId,
-    targetUserId: targetUserId,
+    originUserId: new ObjectId(originUserId),
+    targetUserId: new ObjectId(targetUserId),
     subject: subject,
     message: message,
   };
@@ -73,4 +73,31 @@ export const get = async (id) => {
   }
   message._id = message._id.toString();
   return message;
+};
+
+export const getAll = async (originUserId) => {
+  if (!originUserId) {
+    throw new Error("Must provide an id");
+  }
+  // if the id provided is not a string, or is an empty string, the method should throw
+  if (typeof originUserId !== "string" || originUserId.trim().length === 0) {
+    throw new Error("id input is not of type string or is an empty string");
+  }
+  // if the id provided is not a valid ObjectId, the method should throw
+  originUserId = originUserId.trim();
+  console.log("Origin User ID: ", originUserId);
+  if (!ObjectId.isValid(originUserId)) {
+    throw new Error("Invalid object id");
+  }
+  const messageCollection = await messages();
+  console.log("Message Collection: ", messageCollection);
+  const allMessages = await messageCollection
+    .find({ originUserId: new ObjectId(originUserId) })
+    .toArray();
+
+  console.log("All Messages: ", allMessages);
+  if (allMessages === null) {
+    throw new Error("There are no messages with that id");
+  }
+  return allMessages;
 };

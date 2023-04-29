@@ -148,15 +148,16 @@ router
         receivedInput.subjectInput,
         receivedInput.messageInput
       );
-      console.log(newMessage);
+      let allMessages = await messageData.getAll(id);
+      console.log(allMessages);
+
+      res.render("./profile/profileMessage", {
+        _id: id,
+        messages: allMessages, // Pass all messages to the template
+      });
     } catch (e) {
       console.error(e); // Log the error to console
       res.status(500).send("Error sending message.");
     }
-    res.render("./profile/profileMessage", {
-      _id: id,
-      subjectInput: receivedInput.subjectInput,
-      messageInput: receivedInput.messageInput,
-    });
   });
 export default router;

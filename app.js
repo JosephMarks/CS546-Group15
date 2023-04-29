@@ -93,6 +93,9 @@ app.use("/skills", (req, res, next) => {
 
 configRoutes(app);
 
+let myMessages = await messageData.getAll("644875bd4802f3f88bad37f7");
+console.log(myMessages);
+
 // let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
 // console.log(myGroup);
 // const theUser = await userData.getUserById("643b2afed6271e8e940ad58e");
