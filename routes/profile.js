@@ -6,6 +6,7 @@ import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import fs from "fs";
 import { io } from "socket.io-client";
+import network from "../data/network.js";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -117,8 +118,11 @@ router
   .route("/:id/messaging")
   .get(async (req, res) => {
     const id = req.params.id;
-    console.log(id);
-    res.render("./profile/profileMessage", { _id: id });
+    const connections = await network.getConnections(id);
+    res.render("./profile/profileMessage", {
+      _id: id,
+      connections: connections,
+    });
   })
   .post(async (req, res) => {
     const receivedInput = req.body;
@@ -127,7 +131,7 @@ router
     res.render("./profile/profileMessage", {
       _id: id,
       subjectInput: receivedInput.subjectInput,
-      messages: receivedInput.messageInput,
+      messageInput: receivedInput.messageInput,
     });
   });
 export default router;

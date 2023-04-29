@@ -41,6 +41,15 @@
             <input id="subjectInput" type="text" name="subjectInput" />
             <label for="messageInput">Message</label>
             <input id="messageInput" type="text" name="messageInput" />
+            <label for="userInput">Send Message To:</label>
+<select name="connection">
+  {{#each connections}}
+    <option value="{{this}}">{{this}}</option>
+  {{/each}}
+</select><option value
+            </select>
+
+
             <input type="submit" value="Send" />
           </form>
           <p>Last submitted subject {{subjectInput}}</p>

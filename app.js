@@ -178,12 +178,12 @@ configRoutes(app);
 // );
 // console.log(foundUser);
 
-let newMessage = messageData.create(
-  "644875bd4802f3f88bad37f7",
-  "64486f8c0b2134aa26721d9e",
-  "Hey, how are you?!",
-  "I just wanted to send you a quick note to see who you are doing? How is the new job?"
-);
+// let newMessage = messageData.create(
+//   "644875bd4802f3f88bad37f7",
+//   "64486f8c0b2134aa26721d9e",
+//   "Hey, how are you?!",
+//   "I just wanted to send you a quick note to see who you are doing? How is the new job?"
+// );
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
