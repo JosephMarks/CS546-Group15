@@ -56,28 +56,22 @@
     <br>
     {{!-- --}}
     <div class="card" style="width: 50%;">
-        <form method="POST" id="network-post-update">
+        <form method="POST" id="network-post-create">
             <!-- Add a hidden input field with the _method attribute set to PATCH -->
             <h6 class="card-subtitle mb-2 badge bg-warning text-wrap fs-6" style="width: 100%;">Your Post</h6>
             <div class="form-floating">
-                <label for="network-comments">
+                <label for="post">
                 </label>
                 <input type="text" id="post" name="post" class="form-control" aria-label="Large"
-                    aria-describedby="inputGroup-sizing-sm" value="{{post}}">
+                    aria-describedby="post" value="{{post}}">
                 <br>
                 <div class="text-center">
                     <button class="network-post-button mb-3" type="submit">submit</button>
                 </div>
             </div>
         </form>
-        {{#if hasErrors}}
-        <ul class="error-list">
-            {{#each errors}}
-            <li>
-                {{this}}
-            </li>
-            {{/each}}
-        </ul>
-        {{/if}}
+        
+        <div id="error"></div>
+        {{error}}
     </div>
 </div>

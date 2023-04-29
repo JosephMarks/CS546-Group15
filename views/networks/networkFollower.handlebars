@@ -57,32 +57,54 @@
 
     {{!--Your Follower --}}
     <div class="input-group mb-5">
-        <label class="input-group-text mb-5 bg-primary-subtle border border-primary-subtle rounded-2" for="searchbox">Search</label>
-        <input class='input mb-5' type="text" id="searchbox" placeholder="Search keyword..">
+        <label class="input-group-text bg-primary-subtle border border-primary-subtle rounded-2"
+            for="searchbox">Search</label>
+        <input class='input' type="text" id="searchbox" placeholder="Search keyword.." onkeyup="searchYour()">
     </div>
-
     <div class="accordion" id="followerInfo" style="width: 40%; margin: 0 auto;">
         {{#each connectionsList}}
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                    aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls="{{_id}}">
                     {{fname}}&nbsp;{{lname}}
                 </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <p class="card-text mb-0 ">Email: {{email}}</p>
-                    <p class="card-text mb-0 ">Age: {{age}}</p>
-                    <p class="card-text mb-0 ">Gender: {{gender}}</p>
-                    <p class="card-text mb-0 ">State: {{locationState}}</p>
-                    <p class="card-text mb-0 ">University: {{university}}</p>
-                    <p class="card-text mb-0 ">Major: {{collegeMajor}}</p>
-                    <p class="card-text mb-0 ">InterestArea: {{interestArea}}</p>
-                    <p class="card-text mb-0 ">Experience: {{experience}}</p>
-                    <p class="card-text mb-0 ">Join at: {{createdAt}}</p>
+                    <div>Email:
+                        <p class="card-text mb-0 email" style="display:inline">
+                            {{email}}
+                        </p>
+                    </div>
+                    <div>Age:
+                        <p class="card-text mb-0 age" style="display:inline">
+                            {{age}}
+                        </p>
+                    </div>
+                    <div>Gender:
+                        <p class="card-text mb-0 gender" style="display:inline">{{gender}}</p>
+                    </div>
+                    <div>State:
+                        <p class="card-text mb-0 state" style="display:inline">{{locationState}}</p>
+                    </div>
+                    <div>University:
+                        <p class="card-text mb-0 university" style="display:inline">{{university}}</p>
+                    </div>
+                    <div>Major:
+                        <p class="card-text mb-0 major" style="display:inline">{{collegeMajor}}</p>
+                    </div>
+                    <div>Interest Area:
+                        <p class="card-text mb-0 interest" style="display:inline">{{interestArea}}</p>
+                    </div>
+                    <div>Experience:
+                        <p class="card-text mb-0 experiecne" style="display:inline">{{experience}}</p>
+                    </div>
+                    <div>Join at:
+                        <p class="card-text mb-0 join"  style="display:inline">{{createdAt}}</p>
+                    </div>
                 </div>
-                <form method="POST" id="network-post-update">
+                <form method="POST">
                     <input type="hidden" name="_method" value="DELETE">
                     <input type="hidden" name="followerId" value="{{_id}}">
                     <button type="submit" class="btn btn-link" onclick="if (!confirm('Are you sure?')) { return false }"
@@ -93,4 +115,4 @@
         {{/each}}
     </div>
 </div>
-<script src="/public/js/networkSearchBox.js"></script>
+<script src="/public/js/searchBox.js"></script>

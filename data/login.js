@@ -34,9 +34,19 @@ const logInFunctions = {
     if (validations.validateIsString([emailAddress, password]) === 0) {
       throw "Error : All inputs must be valid String";
     }
-
     emailAddress = emailAddress.trim().toLowerCase();
     password = password;
+
+    const userCollection = await users();
+    const ifAlready = await userCollection.findOne(
+      { email: emailAddress },
+      { projection: { _id: 1, email: 1, password: 1, candidateType: 1 } }
+    );
+
+    if(!ifAlready) throw "Error: User Email is not registered";
+    ifAlready._id = ifAlready._id.toString();
+    if(!(await bcrypt.compare(password, ifAlready.password)))
+      throw "Error : Wrong Password";
 
     if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
     rules.validate(password);

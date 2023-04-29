@@ -26,14 +26,17 @@ rules
 
 const router = Router();
 
-router.route("/").get(async (req, res) => {
+router.route("/").get(async (req, res) =>
+{
   return res.render("Auth/login", { title: "Login" });
 });
 
-router.route("/data").post(async (req, res) => {
+router.route("/data").post(async (req, res) =>
+{
   const bodyData = req.body;
 
-  if (!bodyData || Object.keys(bodyData).length === 0) {
+  if(!bodyData || Object.keys(bodyData).length === 0)
+  {
     return res
       .status(400)
       .render("error", {
@@ -44,42 +47,56 @@ router.route("/data").post(async (req, res) => {
 
   let { email, pass } = bodyData;
 
-  try {
-    if (!email || !pass) throw "Error : You should provide all the parameters";
-    if (validations.validateIsString([email, pass]) === 0) {
+  try
+  {
+    if(!email || !pass) throw "Error : You should provide all the parameters";
+    if(validations.validateIsString([email, pass]) === 0)
+    {
       throw "Error : All inputs must be valid String";
     }
-    if (!emailValidator.validate(email)) throw "Error : Invalid Email";
-    if (!rules.validate(pass))
+    if(!emailValidator.validate(email)) throw "Error : Invalid Email";
+    if(!rules.validate(pass))
       throw "Error : Password Must be atleast 8 characters with a capital letter, number, and special character";
-  } catch (e) {
+  } catch(e)
+  {
     return res.status(400).render("Auth/login", { error: e, title: "Error" });
   }
 
-  email = email.trim().toLowerCase();
-  pass = pass;
+  try
+  {
+    const newData = await logInFunctions.logIn(email.trim().toLowerCase(), pass);
+    req.session.user = { userId: newData._id, email: email, candidateType: newData.candidateType };
+    return res.render('welcome', { message: `You are Logged In as ${email}}` });
+  } catch(e)
+  {
 
-  try {
-    const newData = await logInFunctions.checkUser(email, pass);
+    email = email.trim().toLowerCase();
+    pass = pass;
 
-    // setting up the session variables at the time of login
-    req.session.user = {
-      userId: newData._id,
-      email: email,
-      candidateType: newData.candidateType,
-    };
+    try
+    {
+      const newData = await logInFunctions.checkUser(email, pass);
 
-    return res.render("welcome", {
-      message: `You are Logged In as ${email}}`,
-      title: "Welcome",
-    });
-  } catch (e) {
-    if (e === "Error : Email is not registered or Wrong Password")
-      return res.status(400).render("Auth/login", { error: e });
-    else
-      return res
-        .status(500)
-        .render("error", { error: "Server Error", title: "Error" });
+      // setting up the session variables at the time of login
+      req.session.user = {
+        userId: newData._id,
+        email: email,
+        candidateType: newData.candidateType,
+      };
+
+      return res.render("welcome", {
+        message: `You are Logged In as ${email}}`,
+        title: "Welcome",
+      });
+    } catch(e)
+    {
+      if(e === "Error : Email is not registered or Wrong Password")
+        return res.status(400).render("Auth/login", { error: e });
+      else
+        return res
+          .status(500)
+          .render("error", { error: "Server Error", title: "Error" });
+    }
   }
 });
 
