@@ -1,6 +1,6 @@
 import { Router } from "express";
 const router = Router();
-import { userData } from "../data/index.js";
+import userData from "../data/user.js";
 import { ObjectId } from "mongodb";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
@@ -119,9 +119,20 @@ router
   .get(async (req, res) => {
     const id = req.params.id;
     const connections = await network.getConnections(id);
+    const userFullNames = [];
+
+    for (let i = 0; i < connections.length; i++) {
+      const connectionId = connections[i];
+      const userFullName = await userData.getUserFullNameById(connectionId);
+      const userInfo = {
+        id: connectionId,
+        fullName: `${userFullName.fname} ${userFullName.lname}`,
+      };
+      userFullNames.push(userInfo);
+    }
     res.render("./profile/profileMessage", {
       _id: id,
-      connections: connections,
+      userFullNames: userFullNames,
     });
   })
   .post(async (req, res) => {

@@ -36,20 +36,20 @@
             {{/each}}
           </div>
           <form
-<form action="/profile/{{_id}}/messaging" method="POST" id="send-message">
+            action="/profile/{{_id}}/messaging"
+            method="POST"
+            id="send-message"
+          >
             <label for="subjectInput">subjectLine</label>
             <input id="subjectInput" type="text" name="subjectInput" />
             <label for="messageInput">Message</label>
             <input id="messageInput" type="text" name="messageInput" />
             <label for="userInput">Send Message To:</label>
-<select name="connection">
-  {{#each connections}}
-    <option value="{{this}}">{{this}}</option>
-  {{/each}}
-</select><option value
+            <select name="connection" id="userConnections">
+              {{#each userFullNames}}
+                <option value="{{this.id}}">{{this.fullName}}</option>
+              {{/each}}
             </select>
-
-
             <input type="submit" value="Send" />
           </form>
           <p>Last submitted subject {{subjectInput}}</p>
