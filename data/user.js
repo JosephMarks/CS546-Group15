@@ -322,6 +322,18 @@ const exportedMethods = {
 
     return await this.getUserById(id);
   },
+  async getUserFullNameById(userId) {
+    userId = validations.checkId(userId);
+    const userCollection = await users();
+    const objectId = new ObjectId(userId);
+    const query = { _id: objectId };
+    const options = { projection: { fname: 1, lname: 1 } };
+    const user = await userCollection.findOne(query, options);
+
+    if (!user) throw `Error: No user found with the given id: ${userId}`;
+
+    return { fname: user.fname, lname: user.lname };
+  },
 };
 
 export default exportedMethods;
