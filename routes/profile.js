@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import fs from "fs";
+import { io } from "socket.io-client";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -40,7 +41,6 @@ router.route("/:id").get(async (req, res) => {
 
   try {
     let userInfo = await userData.getUserById(id);
-    console.log(userInfo);
     let image = userInfo.base64Image;
     // Pass our data over to the template to be rendered
     // let eventsArray = [];
@@ -113,4 +113,21 @@ router.post("/:id/updategithubusername", async (req, res) => {
   }
 });
 
+router
+  .route("/:id/messaging")
+  .get(async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    res.render("./profile/profileMessage", { _id: id });
+  })
+  .post(async (req, res) => {
+    const receivedInput = req.body;
+    const id = req.params.id;
+    console.log(receivedInput);
+    res.render("./profile/profileMessage", {
+      _id: id,
+      subjectInput: receivedInput.subjectInput,
+      messages: receivedInput.messageInput,
+    });
+  });
 export default router;
