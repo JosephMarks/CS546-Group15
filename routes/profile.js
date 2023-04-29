@@ -5,7 +5,6 @@ import { ObjectId } from "mongodb";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import fs from "fs";
-import { io } from "socket.io-client";
 import network from "../data/network.js";
 import * as messageData from "../data/messages.js";
 
@@ -46,12 +45,6 @@ router.route("/:id").get(async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
     let image = userInfo.base64Image;
-    // Pass our data over to the template to be rendered
-    // let eventsArray = [];
-    // for (let i = 0; i < groupInfo.groups.length; i++) {
-    //   eventsArray.push(roupInfo.groups[i]);
-    // }
-    // console.log(eventsArray);
 
     res.render("./profile/profile", {
       _id: id,
@@ -149,7 +142,6 @@ router
         receivedInput.messageInput
       );
       let allMessages = await messageData.getAll(id);
-      console.log(allMessages);
 
       res.render("./profile/profileMessage", {
         _id: id,
