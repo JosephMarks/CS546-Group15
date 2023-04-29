@@ -107,20 +107,23 @@ app.use("/skills", (req, res, next) => {
 });
 
 app.use("/company/job", (req, res, next) => {
-  if(req.session && !req.session.user)
-  {
-    return res.render('Auth/login', { error: "You Must Sign In First", title: "Login" });
-  } else
-  {
-    if(req.session.user.candidateType === "Company")
-    {
+  if (req.session && !req.session.user) {
+    return res.render("Auth/login", {
+      error: "You Must Sign In First",
+      title: "Login",
+    });
+  } else {
+    if (req.session.user.candidateType === "Company") {
       next();
-    } else
-    {
-      return res.render('error', { error: "You Do not have Access for this page. Logout and Signup as Company.", title: "Error" });
+    } else {
+      return res.render("error", {
+        error:
+          "You Do not have Access for this page. Logout and Signup as Company.",
+        title: "Error",
+      });
     }
   }
-})
+});
 
 app.use("/logout", (req, res, next) => {
   if (req.session && !req.session.user) {
