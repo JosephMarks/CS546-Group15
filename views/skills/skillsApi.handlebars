@@ -55,25 +55,27 @@
         </div>
         {{/each}}
     </div>
+
+
     {{else}}
     <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-        <form action="/skills/search/api" method="POST">
+        <form id="api-search" action="/skills/search/api" method="POST">
             <div class="col-auto mb-2 text-center fs-5">
                 <label for="job_title" style="display: inline;">
                     Job Title
                     <br>
-                    <input type="text" name="job_title" placeholder="Job Title" value="{{job_title}}"
-                        class="full-width-input">
                 </label>
+                <input id="job_title" type="text" name="job_title" placeholder="Job Title" value="{{job_title}}"
+                    class="full-width-input">
             </div>
 
             <div class="col-auto mb-2 text-center fs-5">
                 <label for="location" style="display: inline;">
                     Location
                     <br>
-                    <input type="text" name="location" placeholder="Location" value="{{location}}"
-                        class="full-width-input">
                 </label>
+                <input id="location" type="text" name="location" placeholder="Location" value="{{location}}"
+                    class="full-width-input">
             </div>
 
             <div class="col-auto mb-2 text-center fs-5">
@@ -131,17 +133,9 @@
             </div>
             <br>
             <br>
-            {{#if errorsList.length}}
-            <ul class="error-list">
-                {{#each errorsList}}
-                <li>
-                    {{this}}
-                </li>
-                {{/each}}
-            </ul>
-            {{/if}}
         </form>
-
+        <div id="error"></div>
+        {{error}}
     </div>
     {{/if}}
 </div>

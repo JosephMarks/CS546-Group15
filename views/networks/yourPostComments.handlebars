@@ -79,7 +79,7 @@
             <p class="card-text text-center">{{post.likes.length}}</p>
         </div>
 
-        <form method="post" id="network-post-commit">
+        <form method="post" id="network-post-your-commit">
             <div class="form-floating">
                 <label for="network-comments">
                 </label>
@@ -90,14 +90,7 @@
                 </div>
             </div>
         </form>
-        {{#if hasErrors}}
-        <ul class="error-list">
-            {{#each errors}}
-            <li>
-                {{this}}
-            </li>
-            {{/each}}
-        </ul>
-        {{/if}}
+        <div id="error"></div>
+        {{error}}
     </div>
 </div>

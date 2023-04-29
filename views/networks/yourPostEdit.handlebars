@@ -63,18 +63,19 @@
             <h5 class="card-title">{{post.content}}</h5>
         </div>
 
-        <form method="POST" id="network-post-update">
+        <form method="POST" id="network-post-edit">
             <!-- Add a hidden input field with the _method attribute set to PATCH -->
-            <input type="hidden" name="_method" value="PATCH">
             <h6 class="card-subtitle mb-2 badge bg-warning text-wrap fs-6">Change Your Post</h6>
             <label for="network-post-update"></label>
             <div class="input-group input-group-lg">
+                <input type="hidden" name="_method" value="patch">
                 <input type="text" id="content" name="content" class="form-control" aria-label="Large"
-                    aria-describedby="inputGroup-sizing-sm">
+                    aria-describedby="inputGroup-sizing-sm" value="{{post.content}}">
             </div>
             <br>
             <button type="submit">Update</button>
         </form>
-
+        <div id="error"></div>
+        {{error}}
     </div>
 </div>

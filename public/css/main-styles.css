@@ -203,6 +203,7 @@ button:hover {
   padding: 5px;
 }
 
+
 @media(max-width: 1200px) {
   #about-us-container {
     height: auto;

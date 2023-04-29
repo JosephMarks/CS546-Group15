@@ -30,13 +30,18 @@
     </nav>
 
     <br>
+    <div class="input-group">
+        <label class="input-group-text bg-primary-subtle border border-primary-subtle rounded-2"
+            for="searchbox">Search</label>
+        <input class='input' type="search" id="searchbox" placeholder="Search tags.." onkeyup="searchTag()">
+    </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-4" style="margin: auto;">
         {{#each skills}}
         <div class="col">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">{{title}}</h5>
+                    <h5 class="card-title " style="width: 10ch; overflow: hidden; white-space: nowrap;">{{title}}</h5>
                     <p class="card-text"
                         style="width: 30ch; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
                         {{article}}</p>
@@ -45,10 +50,16 @@
                         style="margin-bottom: auto;">Click
                         here to see all article</button>
                     <br><br>
-                    <iframe width="100%" height="320" src="{{videoUrl}}">
-                    </iframe>
-                    {{#each tag}}
-                    <a class="tag" href="#">{{this}}</a>
+                    {{#if videoUrl}}
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{videoUrl}}" allowfullscreen>
+                        </iframe>
+                    </div>
+                    <a href="{{videoUrl}}" target="_blank">Web. Link</a>
+                    {{/if}}
+                    <br>
+                    {{#each tags}}
+                    <a class="tag">#{{this}}</a>
                     {{/each}}
                 </div>
             </div>
@@ -61,3 +72,4 @@
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 </script>
+<script src="/public/js/searchBox.js"></script>

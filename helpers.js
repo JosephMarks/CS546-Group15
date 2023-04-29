@@ -247,6 +247,7 @@ const validations = {
         if(typeof arr === "string") return arr;
         if(!Array.isArray(arr))
             throw `Error: Interest area is not valid type`;
+
         for(let i in arr)
         {
             if(typeof arr[i] !== 'string' || arr[i].trim().length === 0)
@@ -255,6 +256,7 @@ const validations = {
             }
             arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
         }
+
         const tags = [
             'front-end',
             'back-end',
@@ -277,7 +279,7 @@ const validations = {
         if(!checker(tags, arr)) throw `Error: tags is not valid tags`;
         return arr;
     },
-    chechPage (varName, strVal)
+    checkPage (varName, strVal)
     {
         if(!varName) throw `Error: You must supply ${strVal}`
         varName = Number(varName)
@@ -285,6 +287,10 @@ const validations = {
         if(Number.isInteger(varName))`Error: ${strVal} must be an integer type`
         if(varName < 0 || varName > 5) throw `Error: ${strVal} cannot less than one page or over 5 pages`
         return varName;
+    },
+    checkParamsAndSessionId (params, session)
+    {
+        if(params !== session) throw `Error: You are not allow to access this. Please log out and try again!`
     }
 }
 
