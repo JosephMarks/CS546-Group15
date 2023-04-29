@@ -8,12 +8,19 @@ import * as emailValidator from "email-validator";
 import passwordValidator from "password-validator";
 let rules = new passwordValidator();
 rules
-.is().min(8)                                    
-.is().max(100)                                  
-.has().uppercase()                              
-.has().digits()                                
-.has().not().spaces()                           
-.has().symbols()
+  .is()
+  .min(8)
+  .is()
+  .max(100)
+  .has()
+  .uppercase()
+  .has()
+  .digits()
+  .has()
+  .not()
+  .spaces()
+  .has()
+  .symbols();
 
 // Setting the rules of validations for the password.
 
@@ -46,13 +53,12 @@ router.route("/data").post(async (req, res) => {
   } catch (e) {
     return res.status(400).render("Auth/login", { error: e, title: "Error" });
   }
-
   email = email.trim().toLowerCase();
   pass = pass;
 
   try {
     const newData = await logInFunctions.checkUser(email, pass);
-    //
+
     // setting up the session variables at the time of login
     req.session.user = {
       userId: newData._id,

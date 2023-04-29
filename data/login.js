@@ -34,12 +34,17 @@ const logInFunctions = {
     if (validations.validateIsString([emailAddress, password]) === 0) {
       throw "Error : All inputs must be valid String";
     }
-
     emailAddress = emailAddress.trim().toLowerCase();
     password = password;
 
+    const userCollection = await users();
+    const ifAlready = await userCollection.findOne(
+      { email: emailAddress },
+      { projection: { _id: 1, email: 1, password: 1, candidateType: 1 } }
+    );
+
     if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
-    rules.validate(password);
+    if (!rules.validate(password)) throw "Error : Invalid Password";
 
     const ifExists = await userCollection.findOne({
       emailAddress: emailAddress,

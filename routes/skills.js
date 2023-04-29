@@ -2,6 +2,7 @@ import { Router } from "express";
 import skillsData from "../data/skills.js";
 import validations from "../helpers.js";
 import axios from 'axios';
+import xss from "xss";
 
 const router = Router();
 
@@ -9,34 +10,55 @@ router.route('/')
     .get(async (req, res) =>
     {
         let skills = await skillsData.getAllSkills();
+        skills.map((ele)=>{
+            ele.tags = ele.tags.split(",");
+        });
         return res.render("skills/skillsHome", { title: "Skills Home", h1: "Skills Home", Id: req.session.user.userId, skills: skills })
     })
 
 router.route('/create/:userId')
     .get(async (req, res) =>
     {
+        try
+        {
+            validations.checkParamsAndSessionId(req.params.userId, req.session.user.userId);
+        } catch(error)
+        {
+            return res.status(400).render("skills/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
         return res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.params.userId })
     })
     .post(async (req, res) =>
     {
         const body = req.body;
         let { postTitle, article, interest, url } = body;
+        postTitle = xss(postTitle)
+        article = xss(article)
+        interest = xss(interest)
+        url = xss(url)
         let userId = req.session.user.userId;
-        let errors = []
+        try
+        {
+            validations.checkParamsAndSessionId(req.params.userId, req.session.user.userId);
+        } catch(error)
+        {
+            return res.status(400).render("skills/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
 
         try
         {
             userId = validations.checkId(userId)
         } catch(error)
         {
-            errors.push(error)
+            return res.status(400).render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.session.user.userId, postTitle: postTitle, article: article, interest: interest, url: url, error: error });
         }
+
         try
         {
             postTitle = validations.checkString(postTitle, "Title");
         } catch(error)
         {
-            errors.push(error)
+            return res.status(400).render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.session.user.userId, postTitle: postTitle, article: article, interest: interest, url: url, error: error });
         }
 
         try
@@ -44,15 +66,17 @@ router.route('/create/:userId')
             article = validations.checkString(article, "Article");
         } catch(error)
         {
-            errors.push(error)
+            return res.status(400).render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.session.user.userId, postTitle: postTitle, article: article, interest: interest, url: url, error: error });
         }
 
         try
         {
             url = validations.checkVideoUrl(url, "Video link")
+            url = url.replace(/(\http|https)\:\/\/(www)\.(youtube)\.(com)\/(watch)\?(v=)/gi, "https://www.youtube.com/embed/")
+            url = url.replace(/(\http|https)\:\/\/(youtu\.be)\//gi, "https://www.youtube.com/embed/")
         } catch(error)
         {
-            errors.push(error)
+            return res.status(400).render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.session.user.userId, postTitle: postTitle, article: article, interest: interest, url: url, error: error });
         }
 
         try
@@ -60,22 +84,16 @@ router.route('/create/:userId')
             interest = validations.checkTags(interest, "Interest")
         } catch(error)
         {
-            errors.push(error)
+            return res.status(400).render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: req.session.user.userId, postTitle: postTitle, article: article, interest: interest, url: url, error: error });
         }
-
-        if(errors.length > 0)
-        {
-            return res.render("skills/skillsNewPost", { title: "New Post", h1: "New Post", Id: userId, postTitle: postTitle, article: article, url: url, errors: errors });
-        }
-
         try
         {
-            let createInfo = await skillsData.createSkills(userId, postTitle, article, url, interest);
-            res.redirect("/skills");
+            await skillsData.createSkills(userId, postTitle, article, url, interest);
         } catch(error)
         {
             return res.status(404).json(error)
         }
+        res.redirect("/skills");
     })
 
 router.route("/search/api")
@@ -87,12 +105,25 @@ router.route("/search/api")
     {
         let errorsList = [];
         let { job_title, location, page, date_post, employment_types, job_requirements, remote_jobs_only } = req.body;
+        job_title = xss(job_title)
+        location = xss(location)
+        page = xss(page)
+        date_post = xss(date_post)
+        employment_types = xss(employment_types)
+        job_requirements = xss(job_requirements)
+        remote_jobs_only = xss(remote_jobs_only)
         try
         {
             job_title = validations.checkString(job_title, "Job Title")
         } catch(error)
         {
-            errorsList.push(error)
+            return res.status(400).render("/skills/skillsApi", {
+                title: "API Search",
+                h1: "API Search",
+                job_title: job_title,
+                location: location,
+                error: error
+            })
         }
 
         try
@@ -100,24 +131,33 @@ router.route("/search/api")
             location = validations.checkString(location, "Location")
         } catch(error)
         {
-            errorsList.push(error)
+            return res.status(400).render("/skills/skillsApi", {
+                title: "API Search",
+                h1: "API Search",
+                job_title: job_title,
+                location: location,
+                error: error
+            })
         }
 
-        if(errorsList.length > 0)
-            return res.render("skills/skillsApi",
-                {
-                    title: "API Search",
-                    h1: "API Search",
-                    job_title: job_title,
-                    location: location,
-                    errorsList: errorsList
-                });
+        try
+        {
+            page = validations.checkPage(page, "Page");
+        } catch(error)
+        {
+            return res.status(400).render("/skills/skillsApi", {
+                title: "API Search",
+                h1: "API Search",
+                job_title: job_title,
+                location: location,
+                error: error
+            })
+        }
 
-
-        const query = job_title.concat(' ', location)
+        let query = job_title.concat(' in ', location)
         const params = {
             query: query,
-            page: page,
+            num_pages: page,
             date_post: date_post,
             employment_types: employment_types,
             job_requirements: job_requirements,
@@ -143,7 +183,7 @@ router.route("/search/api")
             errorsList = errorsList.push(error);
         });
         if(errorsList.length > 0)
-            return res.render("skills/skillsApi", { title: "API Search", h1: "API Search", errorsList: errorsList });
+            return res.render("skills/skillsApi", { title: "API Search", h1: "API Search", errorsList: errorsList, job_title: job_title, location: location });
         return res.render("skills/skillsApi", { title: "API Search", h1: "API Search", jobSearch: jobSearch })
     })
 
