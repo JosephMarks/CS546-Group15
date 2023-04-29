@@ -61,7 +61,7 @@ router.route("/data").post(async (req, res) => {
 
   try {
     const newData = await logInFunctions.checkUser(email, pass);
-
+    //
     // setting up the session variables at the time of login
     req.session.user = {
       userId: newData._id,
