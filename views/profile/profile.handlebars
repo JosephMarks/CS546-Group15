@@ -1,44 +1,60 @@
-  <link rel="stylesheet" href="/public/css/group-details.css">
-
-<div class="container">
-    <h1>Profile:</h1>
-    {{#if image}}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile</title>
+    <link rel="stylesheet" href="/public/css/group-details.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css"
+    />
+    <script
+      src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Profile:</h1>
+      {{#if image}}
         <img src="data:image/png;base64,{{image}}" alt="Group Image" />
       {{/if}}
-    <div>
-      <a href="/profile/{{_id}}/edit"><button>Edit</button></a>
-      <h2>{{name}}</h2>
-      <h2>Description: {{description}}</h2>
+      <div>
+        <a href="/profile/{{_id}}/edit"><button>Edit</button></a>
+        <a href="/profile/{{_id}}/messaging">
+          <button class="btn btn-primary">
+            <i class="fas fa-comments"></i>
+            Messaging
+          </button>
+        </a>
+        <h2>{{name}}</h2>
+        <h2>Description: {{description}}</h2>
 
-      
+        {{#each activity}}
+          <div>{{title}}</div>
+        {{/each}}
 
-      {{#each activity}}
-      <div>{{title}}</div>
-      {{/each}}
+        {{#if gitHubUserName}}
+          <p>Github profile for {{gitHubUserName}}</p>
 
-      <!-- Include the library. -->
-<script
-  src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
-></script>
+          <!-- Prepare a container for your calendar. -->
+          <div class="calendar">
+            <!-- Loading stuff -->
+            Loading the data just for you.
+          </div>
 
-<!-- Optionally, include the theme (if you don't want to struggle to write the CSS) -->
-<link
-   rel="stylesheet"
-   href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css"
-/>
-
-<!-- Prepare a container for your calendar. -->
-<div class="calendar">
-    <!-- Loading stuff -->
-    Loading the data just for you.
-</div>
-
-<script>
-  const gitHubUsername = '{{gitHubUserName}}';
-    GitHubCalendar(".calendar", gitHubUsername);
-    // or enable responsive functionality
-    GitHubCalendar(".calendar", gitHubUsername, { responsive: true });
-</script>
-
-      
+          <script>
+            document.addEventListener('DOMContentLoaded', function() { const
+            gitHubUsername = '{{gitHubUserName}}'; GitHubCalendar(".calendar",
+            gitHubUsername); // or enable responsive functionality
+            GitHubCalendar(".calendar", gitHubUsername, { responsive: true });
+            });
+          </script>
+        {{/if}}
+      </div>
     </div>
+  </body>
+</html>
