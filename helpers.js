@@ -60,6 +60,17 @@ const validations = {
     return param;
   },
 
+  isNumberOfEmployee (param) {
+    if (isNaN(Number(param))) throw "Error: Number of Employee must be a number";
+    param = Number(param);
+
+    if (typeof param !== "number" || isNaN(Number(param)))
+      throw "Error: Number Of Employee must be a number";
+    if (param < 1 || param > 100000) throw "Error: Number Of Employee with in 1 to 100000";
+    if (!Number.isInteger(param)) throw "Error: Number Of Employee an Integer";
+    return param;
+  },
+
   isArrayWithTheNonEmptyString(param) {
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Tags must be an Array";
@@ -67,6 +78,16 @@ const validations = {
     for (let i = 0; i < param.length; i++) {
       if (this.isProperString(param[i]) === 0)
         throw "Error: The Tags must contains only non empty strings";
+    }
+  },
+
+  isArrayWithTheNonEmptyStringForLocation(param) {
+    //check if the incoming array of strings contains only valid strings
+    if (!Array.isArray(param)) throw "Error: The Location must be an Array";
+
+    for (let i = 0; i < param.length; i++) {
+      if (this.isProperString(param[i]) === 0)
+        throw "Error: The Location must contains only valid non empty strings";
     }
   },
 

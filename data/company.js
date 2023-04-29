@@ -6,8 +6,10 @@ const companyCollection = await company();
 
 const companyFunctions = {
 
-    async createComapny(companyName, industry, locations, numberOfEmployees, description, createdAt, imgSrc) {
-      numberOfEmployees = Number(numberOfEmployees); // TODO : needs to check if or not the string coming can be converted into a number.
+    async createComapny(companyName, companyEmail, industry, locations, numberOfEmployees, description, createdAt, imgSrc) {
+      validations.isNumberOfEmployee(numberOfEmployees);
+      validations.checkEmail(companyEmail);
+      numberOfEmployees = Number(numberOfEmployees);
   
       if (!validations.isProperString([companyName, industry, description]))
         throw "Error : Parameters can only be string not just string with empty spaces";
@@ -16,15 +18,22 @@ const companyFunctions = {
         
       const ifAlready = await companyCollection.findOne({ companyName: companyName });
       if (ifAlready) throw "Error: User Company Name is already registered";
-  
+      
+      companyName = companyName.trim().toLowerCase();
+      industry = industry.trim().toLowerCase();
+      locations = locations.map(x => x.trim()); // TODO : Must fall in the states array.
+      description = description.trim().toLowerCase();
+
       const finalPush = await companyCollection.insertOne({
         companyName,
+        companyEmail,
         industry, 
         locations,
         numberOfEmployees,
         jobs: [],
         description,
-        imgSrc
+        imgSrc,
+        createdAt
       });
 
       return await companyCollection.findOne({ _id: finalPush.insertedId });
@@ -34,9 +43,24 @@ const companyFunctions = {
       let companyData = await companyCollection.findOne({_id: new ObjectId(id)});
       if (!companyData) throw "Error : No Company Found";
       return companyData;
+    },
+
+    async getCompanyDataFromEmail (email) {
+
+      validations.checkEmail(email);
+      let companyData = await companyCollection.findOne({companyEmail: email});
+
+      return companyData;
+    },
+
+    async getCompanyDetailsFromCompanyName (name) {
+      if (!validations.isProperString([name]))
+        throw "Error : Parameters can only be string not just string with empty spaces";
+
+      let companyData = await companyCollection.findOne({ companyName: name});
+      if (!companyData) throw "Error : No Company Found";
+      return companyData;
     }
   };
-
-  
 
 export default companyFunctions;
