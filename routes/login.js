@@ -37,12 +37,10 @@ router.route("/data").post(async (req, res) =>
 
   if(!bodyData || Object.keys(bodyData).length === 0)
   {
-    return res
-      .status(400)
-      .render("error", {
-        error: "There are no fields in the request body",
-        title: "Error",
-      });
+    return res.status(400).render("error", {
+      error: "There are no fields in the request body",
+      title: "Error",
+    });
   }
 
   let { email, pass } = bodyData;
@@ -64,12 +62,18 @@ router.route("/data").post(async (req, res) =>
 
   try
   {
-    const newData = await logInFunctions.logIn(email.trim().toLowerCase(), pass);
-    req.session.user = { userId: newData._id, email: email, candidateType: newData.candidateType };
-    return res.render('welcome', { message: `You are Logged In as ${email}}` });
+    const newData = await logInFunctions.logIn(
+      email.trim().toLowerCase(),
+      pass,
+    );
+    req.session.user = {
+      userId: newData._id,
+      email: email,
+      candidateType: newData.candidateType,
+    };
+    return res.render("welcome", { message: `You are Logged In as ${email}}` });
   } catch(e)
   {
-
     email = email.trim().toLowerCase();
     pass = pass;
 
