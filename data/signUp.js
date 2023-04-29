@@ -36,7 +36,7 @@ const signUpFunctions = {
     validations.validateName(firstName);
     validations.validateName(lastName);
     if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
-    rules.validate(password);
+    if (!rules.validate(password)) throw "Error : Invalid Password";
   
     password = await bcrypt.hash(password, 10);
   
