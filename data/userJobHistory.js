@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import * as userData from "./users.js";
 import validations from "../helpers.js";
 import { parse, isValid } from "date-fns";
+import { company } from "../config/mongoCollections.js";
 
 export const create = async (
   userId,
@@ -95,6 +96,23 @@ yearValue = Number(yearString);
 if (yearValue < 1900 || yearValue > 2023) {
   throw new Error("The date is out of the appropriate range");
 }
+description = description.trim();
+if (typeof description !== "string") {
+  throw new Error("description must be of type string");
+}
+if (description.length === 0) {
+  throw new Error("May not be of empty string");
+}
+let newObjectId = new ObjectId();
+let newJobExperience = {
+  _id: newObjectId,
+  userId: ObjectId(userId),
+  role: role,
+  company: company,
+  startDate: startDate,
+  endDate: endDate,
+  description: description,
+};
 
 export const getAll = async (userId) => {};
 
