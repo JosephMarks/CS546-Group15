@@ -144,7 +144,30 @@ export const create = async (
   return newJobExperience;
 };
 
-export const getAll = async (userId) => {};
+export const getAll = async (userId) => {
+  userId = userId.trim();
+  if (!userId) {
+    throw new Error("user id must be provided");
+  }
+  if (userId.length === 0) {
+    throw new Error("Must not be empty string");
+  }
+  if (typeof userId !== "string") {
+    throw new Error("must be of type string");
+  }
+  if (!ObjectId.isValid(userId)) {
+    throw new Error("Invalid object Id");
+  }
+  let userLookup = await userData.getUserById(userId);
+  if (userLookup === null) {
+    throw new Error("User does not exist");
+  }
+  let { jobHistory } = userLookup;
+  for (let i = 0; i < jobHistory.length; i++) {
+    jobHistory[i]._id = jobHistory[i]._id.toString();
+  }
+  return jobHistory;
+};
 
 export const updateTitle = async (groupId, eventId, title) => {};
 
