@@ -7,7 +7,8 @@ import emailValidator from "email-validator"; //use to validate email address
 
 import passwordValidator from "password-validator";
 let rules = new passwordValidator();
-rules.is().min(8)                                    
+rules
+.is().min(8)                                    
 .is().max(100)                                  
 .has().uppercase()                              
 .has().digits()                                
@@ -47,7 +48,7 @@ router.route("/data").post(async (req, res) => {
     validations.validateName(firstName);
     validations.validateName(lastName);
     if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
-    rules.validate(password);
+    if (!rules.validate(password)) throw "Error : Invalid Password";
 
   } catch (e) {
     return res.status(400).render('Auth/signup', { error : e, title: 'Error' });
