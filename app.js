@@ -50,6 +50,21 @@ app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Authorizing and authenticating the routes
+app.use("/login", (req, res, next) => {
+  if (req.session && req.session.user) {
+    return res.redirect("/");
+  } else {
+    next();
+  }
+});
+
+app.use("/signup", (req, res, next) => {
+  if (req.session && req.session.user) {
+    return res.redirect("/");
+  } else {
+    next();
+  }
+});
 
 app.use("/company", (req, res, next) => {
   if (!req.session.user) {
@@ -91,99 +106,35 @@ app.use("/skills", (req, res, next) => {
   next();
 });
 
+app.use("/logout", (req, res, next) => {
+  console.log("hi");
+  if (req.session && !req.session.user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+});
+
+app.use("/", (req, res, next) => {
+  let auth = "";
+  if (req.session && req.session.user) {
+    auth = "Authenticated User";
+  } else {
+    auth = "Non Authenticated User";
+  }
+  console.log(
+    new Date().toUTCString() +
+      ": " +
+      req.method +
+      " " +
+      req.originalUrl +
+      " " +
+      auth
+  );
+  return next();
+});
+
 configRoutes(app);
-
-// let myGroup = await groupEventsData.remove("643377afcc8ba623da17ab3c");
-// console.log(myGroup);
-// const theUser = await userData.getUserById("643b2afed6271e8e940ad58e");
-
-// const updateData = {
-//   fname: "  Joe  ",
-//   lname: " Marks ",
-//   email: "jmarks@stevens.edu",
-//   password: "eee",
-//   age: 29,
-//   gender: "  MaLE  ",
-//   headerDescription: "Stevens Alumni - Software Developer",
-//   aboutMe: "I am a CPA that likes to build things!",
-//   locationState: "NJ",
-//   university: "SIT",
-//   image: "",
-//   collegeMajor: "Computer Science",
-//   interestArea: ["Machine Learning"],
-//   experience: 0,
-//   jobHistory: [],
-//   seekingJob: ["Software Engineer"],
-//   connections: [],
-//   group: [],
-//   createdAt: "05/13/2022",
-//   updatedAt: "05/13/2022",
-// };
-
-// let updatedUser = await userData.updateUsers(
-//   "643b2afed6271e8e940ad58e",
-//   updateData
-// );
-
-// console.log(await groupActivityData.getAll("643b00a35337ca09c94f599d"));
-
-// let myNewGroup = await groupData.create(
-//   "A group with an image",
-//   "The coolest group ever!"
-// );
-// let myGroups = await groupData.getAll();
-
-// let myDescription = "This is an updated description of the grgoup!";
-// // await groupData.updateDescription("6432f0a1cffb096de591aa55", myDescription);
-
-// let myNewGroupEvent = await groupEventsData.create(
-//   "64348d1b2f4dd57a63bba048",
-//   "NEW EVENT?"
-// );
-
-// let updatedTitle = await groupEventsData.addUser(
-//   "64335155c88aeab21d99b251",
-//   "64335cbb7885a7c8b6e327b4",
-//   "64250150f2b4c8421ef908c7"
-// );
-
-// const theUser = await userData.getUserById("643b2afed6271e8e940ad58e");
-
-// const updateData = {
-//   fname: "  Joe  ",
-//   lname: " Marks ",
-//   email: "jmarks@stevens.edu",
-//   password: "eee",
-//   age: 29,
-//   gender: "  MaLE  ",
-//   headerDescription: "Stevens Alumni - Software Developer",
-//   aboutMe: "I am a CPA that likes to build things!",
-//   locationState: "NJ",
-//   university: "SIT",
-//   image: "",
-//   collegeMajor: "Computer Science",
-//   interestArea: ["Machine Learning"],
-//   experience: 0,
-//   jobHistory: [],
-//   seekingJob: ["Software Engineer"],
-//   connections: [],
-//   group: [],
-//   createdAt: "05/13/2022",
-//   updatedAt: "05/13/2022",
-// };
-
-// let foundUser = await userData.getUserById(
-//   "64250150f2b4c8421ef908c7",
-//   updateData
-// );
-// console.log(foundUser);
-
-let newMessage = messageData.create(
-  "644875bd4802f3f88bad37f7",
-  "64486f8c0b2134aa26721d9e",
-  "Hey, how are you?!",
-  "I just wanted to send you a quick note to see who you are doing? How is the new job?"
-);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

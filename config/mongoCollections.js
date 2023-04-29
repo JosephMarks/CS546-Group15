@@ -23,3 +23,4 @@ export const network = getCollectionFn("network");
 export const skills = getCollectionFn("skills");
 export const socialPost = getCollectionFn("socialPost");
 export const messages = getCollectionFn("messages");
+export const referral = getCollectionFn("referral");

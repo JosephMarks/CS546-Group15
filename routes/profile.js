@@ -1,11 +1,15 @@
 import { Router } from "express";
 const router = Router();
-import { userData } from "../data/index.js";
+import userData from "../data/user.js";
 import { ObjectId } from "mongodb";
 import multer from "multer";
 const upload = multer({ dest: "uploads/" });
 import fs from "fs";
 import { io } from "socket.io-client";
+import network from "../data/network.js";
+import * as messageData from "../data/messages.js";
+
+import { messages } from "../config/mongoCollections.js";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -117,17 +121,43 @@ router
   .route("/:id/messaging")
   .get(async (req, res) => {
     const id = req.params.id;
-    console.log(id);
-    res.render("./profile/profileMessage", { _id: id });
+    const connections = await network.getConnections(id);
+    const userFullNames = [];
+
+    for (let i = 0; i < connections.length; i++) {
+      const connectionId = connections[i];
+      const userFullName = await userData.getUserFullNameById(connectionId);
+      const userInfo = {
+        id: connectionId,
+        fullName: `${userFullName.fname} ${userFullName.lname}`,
+      };
+      userFullNames.push(userInfo);
+    }
+    res.render("./profile/profileMessage", {
+      _id: id,
+      userFullNames: userFullNames,
+    });
   })
   .post(async (req, res) => {
     const receivedInput = req.body;
     const id = req.params.id;
-    console.log(receivedInput);
-    res.render("./profile/profileMessage", {
-      _id: id,
-      subjectInput: receivedInput.subjectInput,
-      messages: receivedInput.messageInput,
-    });
+    try {
+      let newMessage = await messageData.create(
+        id,
+        receivedInput.connection,
+        receivedInput.subjectInput,
+        receivedInput.messageInput
+      );
+      let allMessages = await messageData.getAll(id);
+      console.log(allMessages);
+
+      res.render("./profile/profileMessage", {
+        _id: id,
+        messages: allMessages, // Pass all messages to the template
+      });
+    } catch (e) {
+      console.error(e); // Log the error to console
+      res.status(500).send("Error sending message.");
+    }
   });
 export default router;
