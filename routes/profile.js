@@ -7,6 +7,9 @@ const upload = multer({ dest: "uploads/" });
 import fs from "fs";
 import { io } from "socket.io-client";
 import network from "../data/network.js";
+import * as messageData from "../data/messages.js";
+
+import { messages } from "../config/mongoCollections.js";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -138,7 +141,18 @@ router
   .post(async (req, res) => {
     const receivedInput = req.body;
     const id = req.params.id;
-    console.log(receivedInput);
+    try {
+      let newMessage = await messageData.create(
+        id,
+        receivedInput.connection,
+        receivedInput.subjectInput,
+        receivedInput.messageInput
+      );
+      console.log(newMessage);
+    } catch (e) {
+      console.error(e); // Log the error to console
+      res.status(500).send("Error sending message.");
+    }
     res.render("./profile/profileMessage", {
       _id: id,
       subjectInput: receivedInput.subjectInput,
