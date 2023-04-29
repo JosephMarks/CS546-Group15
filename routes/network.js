@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import { networkData, userData } from '../data/index.js';
 import validation from '../helpers.js';
-
+import xss from "xss";
 
 router
     .route('/')
@@ -14,9 +14,9 @@ router
             const title = "Network";
             res.redirect(`/network/post/${req.session.user.userId}`)
             // return res.render('networks/network', { title: title, h1: h1 });
-        } catch(e)
+        } catch(error)
         {
-            res.status(500).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
     })
 
@@ -28,20 +28,37 @@ router.route('/post/:userid')
             req.params.userid = validation.checkId(req.params.userid)
         } catch(error)
         {
-            return res.status(400).json({ error: error });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+
         try
         {
-            const userId = req.params.userid
-            const title = "Post"
-            const h1 = "Post";
-            const userPostList = await networkData.getPostByUserId(req.params.userid);
-            const followerPostList = await networkData.getPostByConnections(req.params.userid);
-            return res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
         } catch(error)
         {
-            return res.status(404).json({ error: error });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+
+        const title = "Post"
+        const h1 = "Post";
+        let userPostList, followerPostList;
+
+        try
+        {
+            userPostList = await networkData.getPostByUserId(req.params.userid);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            followerPostList = await networkData.getPostByConnections(req.params.userid);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+        return res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
 
     })
 
@@ -49,87 +66,127 @@ router.route('/post/:userid')
 router.route('/post/:userid/new')
     .get(async (req, res) =>
     {
-        // const users = await userData.getAllUsers();
-        res.render('networks/createNewPost', { title: "New Post", h1: "New Post", userId: req.params.userid });
+        try
+        {
+            req.params.userid = validation.checkId(req.params.userid);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        return res.render('networks/createNewPost', { title: "New Post", h1: "New Post", userId: req.session.user.userId });
     })
     .post(async (req, res) =>
     {
-        let post = req.body.post;
-        let errors = [];
+        let post = xss(req.body.post);
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
+        } catch(error)
+        {
+            return res.status(500).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
         try
         {
             post = validation.checkString(post, 'Post');
-        } catch(e)
+        } catch(error)
         {
-            errors.push(e);
-        }
-
-        if(errors.length > 0)
-        {
-            res.render('createNewPost', {
-                errors: errors,
-                hasErrors: true,
+            return res.render('networks/createNewPost', {
+                error: error,
                 post: post,
                 userId: req.params.userid
             });
-            return;
         }
 
+        let newPost;
         try
         {
-            const newPost = await networkData.addPost(req.params.userid, post);
-            res.redirect(`/network/post/${req.params.userid}`);
-        } catch(e)
+            newPost = await networkData.addPost(req.params.userid, post);
+        } catch(error)
         {
-            res.status(500).json({ error: e });
+            return res.status(500).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+        res.redirect(`/network/post/${req.params.userid}`);
     })
 
 router.route('/post/:userid/postId/:id')
     .get(async (req, res) =>
     {
-        const post = await networkData.getPostById(req.params.id);
-        const author = await userData.getUserById(post.userId);
+        let post, author;
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            post = await networkData.getPostById(req.params.id);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            author = await userData.getUserById(post.userId);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
         const title = post.content;
         const h1 = post.content;
         res.render('networks/yourPostComments', { title: title, userId: req.params.userid, h1: h1, post: post, fname: author.fname, lname: author.lname });
     })
     .post(async (req, res) =>
     {
-        let updatedData = req.body.comments;
-        let errors = [];
+        let updatedData = xss(req.body.comments);
         try
         {
-            req.params.id = validation.checkId(req.params.id, 'ID url param');
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            req.params.id = validation.checkId(req.params.id, 'ID');
         } catch(e)
         {
-            errors.push(e);
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+
         try
         {
             updatedData = validation.checkString(updatedData, 'Comment');
-        } catch(e)
-        {
-            errors.push(e);
-        }
-
-        if(errors.length > 0)
+        } catch(error)
         {
             const post = await networkData.getPostById(req.params.id);
             const author = await userData.getUserById(post.userId);
             const title = post.content;
             const h1 = post.content;
-            res.render('networks/yourPostComments', {
+            return res.render('networks/yourPostComments', {
                 title: title,
                 h1: h1,
                 post: post,
                 fname: author.fname,
                 lname: author.lname,
-                errors: errors,
-                hasErrors: true,
-                newComments: updatedData,
+                error: error,
+                newComments: updatedData
             });
-            return;
         }
 
         try
@@ -139,11 +196,9 @@ router.route('/post/:userid/postId/:id')
             const author = await userData.getUserById(req.params.userid);
             const title = post.content;
             const h1 = post.content;
-        } catch(e)
+        } catch(error)
         {
-            let status = e[0];
-            let message = e[1];
-            return res.status(status).json({ error: message });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
         res.redirect(`/network/post/${req.params.userid}`)
     }
@@ -152,27 +207,66 @@ router.route('/post/:userid/postId/:id')
 router.route('/post/:userid/postId/:id/edit')
     .get(async (req, res) =>
     {
-        const post = await networkData.getPostById(req.params.id);
-        const author = await userData.getUserById(post.userId);
+        let post, author;
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            post = await networkData.getPostById(req.params.id);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            author = await userData.getUserById(post.userId);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            if(author._id !== req.params.userid) throw `You have no right to modify this post!`
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
         const title = post.content;
         const h1 = post.content;
         res.render('networks/yourPostEdit', { title: title, h1: h1, post: post, userId: req.params.userid });
     })
-
     .patch(async (req, res) =>
     {
         let userId = req.params.userid;
         let postId = req.params.id;
         let content = req.body.content;
+
         try
         {
             userId = validation.checkId(userId, 'User ID');
             postId = validation.checkId(postId, "Post ID");
             if(content)
-                content = validation.checkString(content, 'Content');
-        } catch(e)
+                content = validation.checkString(content, 'Post');
+        } catch(error)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
@@ -180,57 +274,93 @@ router.route('/post/:userid/postId/:id/edit')
             const userIdByPostId = await networkData.getPostById(postId);
             if(userIdByPostId.userId !== userId)
                 throw "Error: You have no right to modify this post!"
-        } catch(e)
+        } catch(error)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
         {
-            const updatedPost = await networkData.updatePost(
-                postId,
-                content
-            );
-            res.redirect(`/network/post/${userId}`);
-        } catch(e)
+            await networkData.updatePost(postId, content);
+        } catch(error)
         {
-            let status = e[0];
-            let message = e[1];
-            res.status(status).json({ error: message });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+        res.redirect(`/network/post/${userId}`);
     })
 
 router.route('/post/:userid/postId/:id/remove')
     .get(async (req, res) =>
     {
-        const post = await networkData.getPostById(req.params.id);
-        const author = await userData.getUserById(post.userId);
+        let post, author;
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            post = await networkData.getPostById(req.params.id);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        author = post.userId;
+
+        try
+        {
+            if(author !== req.params.userid || author !== req.session.user.userId || req.session.user.userId !== req.params.userid)
+                throw `Error: You have not right to access.`
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
         const title = post.content;
         const h1 = post.content;
-        res.render('networks/yourPostRemove', { title: title, h1: h1, post: post, userId: req.params.userid });
+        return res.render('networks/yourPostRemove', { title: title, h1: h1, post: post, userId: req.params.userid });
     })
     .delete(async (req, res) =>
     {
         let userId = req.params.userid;
         let postId = req.params.id;
+        let author;
         try
         {
             userId = validation.checkId(userId, 'User ID');
             postId = validation.checkId(postId, "Post ID");
-        } catch(e)
+        } catch(error)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
         {
-            let deletedPost = await networkData.removePost(postId);
-            return res.redirect(`/network/post/${userId}`);
-        } catch(e)
+            author = (await networkData.getPostById(postId)).userId;
+        } catch(error)
         {
-            let status = e[0];
-            let message = e[1];
-            res.status(status).json({ error: message });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            if(author !== userId || author !== req.session.user.userId || req.session.user.userId !== userId)
+                throw `Error: You have not right to access.`
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            await networkData.removePost(postId);
+            return res.redirect(`/network/post/${userId}`);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
     }
     )
@@ -239,29 +369,70 @@ router.route('/post/:userid/postId/:id/remove')
 router.route('/post/:userId/followerId/:followerId/postId/:postId')
     .get(async (req, res) =>
     {
-        let post, author;
+        let post, author, user;
+        let followerId = req.params.followerId;
+        try
+        {
+            followerId = validation.checkId(followerId);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
         try
         {
             post = await networkData.getPostById(req.params.postId);
-        } catch(e)
+        } catch(error)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+
         try
         {
             author = await userData.getUserById(req.params.followerId)
-        } catch(e)
+            if(post.userId !== followerId) throw `Error: You have no right to access.`
+        } catch(error)
         {
-            errors.push(e)
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
+        try
+        {
+            user = await userData.getUserById(req.params.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            if(!user.connections.includes(followerId)) throw `Error: Follower is not in the user's connections`
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            if(post.userId !== author._id) throw `Error: Can not found this page.`
+        } catch(error)
+        {
+            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
         const title = post.content;
         const h1 = post.content;
-        res.render('networks/followerPostComments', { title: title, h1: h1, post: post, userId: req.params.userId, followerId: post.userId, author: author });
+        res.render('networks/followerPostComments', { title: title, h1: h1, post: post, userId: req.params.userId, followerId: req.params.followerId, author: author });
     })
     .post(async (req, res) =>
     {
-        let updatedData = req.body.comments;
+        let updatedData = xss(req.body.comments);
         let errors = [];
         let post, author;
         try
@@ -283,9 +454,17 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
         try
         {
             author = await userData.getUserById(req.params.followerId)
+        } catch(error)
+        {
+            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            if(req.params.followerId !== post.userId) throw `Error: You have no right to access.`
         } catch(e)
         {
-            errors.push(e)
+            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         if(errors.length > 0)
@@ -306,12 +485,10 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
 
         try
         {
-            const updatedPost = await networkData.addComments(req.params.postId, req.params.userId, updatedData);
-        } catch(e)
+            await networkData.addComments(req.params.postId, req.params.userId, updatedData);
+        } catch(error)
         {
-            let status = e[0];
-            let message = e[1];
-            return res.status(status).json({ error: message });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
         res.redirect(`/network/post/${req.params.userId}`)
     }
@@ -326,7 +503,15 @@ router.route('/follower/:userId')
             users = await userData.getUserById(req.params.userId);
         } catch(error)
         {
-            res.status(400).json(error);
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         const connections = users.connections;
@@ -340,7 +525,7 @@ router.route('/follower/:userId')
                 follower = await userData.getUserById(ele);
             } catch(error)
             {
-                res.status(400).json(error);
+                return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
             }
             connectionsList.push(follower);
         }
@@ -354,10 +539,18 @@ router.route('/follower/:userId')
 
         try
         {
+            validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
+        try
+        {
             userId = validation.checkId(userId, 'User ID');
         } catch(e)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
@@ -365,19 +558,17 @@ router.route('/follower/:userId')
             followerId = validation.checkId(followerId, 'Follower ID');
         } catch(e)
         {
-            return res.status(400).json({ error: e });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
         {
             let removeConnections = await networkData.removeConnections(userId, followerId);
-            return res.redirect(`/network/follower/${userId}`);
         } catch(e)
         {
-            let status = e[0];
-            let message = e[1];
-            res.status(status).json({ error: message });
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
+        return res.redirect(`/network/follower/${userId}`);
     }
     )
 
@@ -388,19 +579,28 @@ router.route('/follower/:userId/create')
         let connectionList;
         let userConnections;
         const userId = req.params.userId
+
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+
         try
         {
             connectionList = await userData.getAllUser();
         } catch(error)
         {
-            res.status(400).json(error);
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
         try
         {
             userConnections = (await userData.getUserById(userId)).connections;
         } catch(error)
         {
-            res.status(400).json(error);
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
         connectionList = connectionList.filter((ele) => { return ele._id !== userId }); //remove userid in all user data
         connectionList = connectionList.filter((ele1) =>                     //remove userid's connection in all user data
@@ -415,13 +615,20 @@ router.route('/follower/:userId/create')
     {
         let followerId = req.body.followerId
         let userId = req.params.userId;
+        try
+        {
+            validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
 
         try
         {
             userId = validation.checkId(userId, 'ID url param');
         } catch(e)
         {
-            return res.status(404).json(e)
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         try
@@ -429,7 +636,7 @@ router.route('/follower/:userId/create')
             followerId = validation.checkId(followerId, 'ID url param');
         } catch(e)
         {
-            return res.status(404).json(e)
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
 
         let addConnectionsInfo;
@@ -438,7 +645,7 @@ router.route('/follower/:userId/create')
             addConnectionsInfo = await networkData.addConnections(userId, followerId)
         } catch(error)
         {
-            return res.status(404).json(e)
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
         res.redirect(`/network/follower/${userId}`);
     })

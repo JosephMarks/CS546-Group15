@@ -53,49 +53,9 @@
         </div>
     </nav>
 
-    <br>
-
-    {{!-- All connections --}}
-    <div class="input-group mb-5">
-        <label class="input-group-text bg-primary-subtle border border-primary-subtle rounded-2"
-            for="searchbox">Search</label>
-        <input class='input' type="search" id="searchbox" placeholder="Search keyword.." onkeyup="searchAll()">
-    </div>
-    <div class="accordion" id="all-conections">
-        <div class="accordion-item1">
-            <p class="alert alert-primary fs-4 font-monospace text-center">
-                All Connections
-            </p>
-        </div>
-        {{#if connectionList.length}}
-        {{#each connectionList}}
-        <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
-                    aria-expanded="true" aria-controls="{{_id}}">
-                    {{fname}}&nbsp;{{lname}}
-                </button>
-            </h2>
-            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <div>University:
-                        <p class="card-text mb-0 university" style="display:inline">{{university}}</p>
-                    </div>
-                    <div>Join at:
-                        <p class="card-text mb-0 join" style="display:inline">{{createdAt}}</p>
-                    </div>
-                </div>
-                <form method="POST" id="network-follower-create">
-                    <input type="hidden" name="_method" value="POST">
-                    <input type="hidden" name="followerId" value="{{_id}}">
-                    <button type="submit" class="btn btn-link btn-lg"
-                        onclick="if (!confirm('Are you sure?')) { return false }"
-                        style="position: relative;   top: 50%;  left:30%; width: 30rem"><span>Add</span></button>
-                </form>
-            </div>
-        </div>
-        {{/each}}
+    <div class="alert alert-danger" style="margin-top: 2%;" role="alert">
+        {{#if error}}
+        <p>{{error}}</p>
         {{/if}}
     </div>
 </div>
-<script src="/public/js/searchBox.js"></script>
