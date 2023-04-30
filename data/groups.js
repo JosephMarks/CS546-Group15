@@ -193,7 +193,7 @@ export const updateDescription = async (id, description) => {
 };
 
 export const addUser = async (id, user) => {
-  if (!id || !description) {
+  if (!id || !user) {
     throw new Error("Parameters must be provided to make the update");
   }
   // checking to make sure id is a valid ObjectId
@@ -335,4 +335,19 @@ export const updateGroup = async (groupId, updates) => {
   }
 
   return result.value;
+};
+
+export const numberOfUsers = async (id) => {
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({ _id: new ObjectId(id) });
+
+  // Must ensure that the group id is present in the db
+  if (foundGroup === null) {
+    throw new Error("Group not found");
+  }
+
+  // Get the number of users in the group
+  const numberOfUsers = foundGroup.users.length;
+
+  return numberOfUsers;
 };

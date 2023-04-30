@@ -127,16 +127,16 @@ app.use("/company/job", (req, res, next) => {
   }
 });
 
-// app.use("/groups", (req, res, next) => {
-//   if (
-//     !req.session.user ||
-//     (req.session.user.candidateType !== "Student" &&
-//       req.session.user.candidateType !== "Company")
-//   ) {
-//     return res.redirect("/login");
-//   }
-//   next();
-// });
+app.use("/groups", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
 
 app.use("/profile", (req, res, next) => {
   if (
@@ -175,7 +175,8 @@ app.use("/", (req, res, next) => {
   );
   return next();
 });
-
+let numberOfUsers = await groupData.numberOfUsers("644ea4a28464fd1eaac53c79");
+console.log(numberOfUsers);
 // let newGroup = await groupData.create(
 //   "Anja's Rocking Cats Groupwwww",
 //   "The best cats around"

@@ -164,4 +164,31 @@ router.post("/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+router.get("/:id/join", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  console.log(req.session.user);
+
+  try {
+    let joinedGroup = await groupData.addUser(id, req.session.user.userId);
+    console.log(joinedGroup);
+    if (joinedGroup) {
+      res.render("./groups/groupsJoin", {
+        message: "You have successfully joined the group!",
+        userId: req.session.user.userId,
+      });
+    } else {
+      res.render("./groups/groupsJoin", {
+        message: "You have successfully joined the group!",
+        userId: req.session.user.userId,
+      });
+    }
+  } catch (e) {
+    console.error(e);
+    res.status(400).render("./groups/groupsJoin", {
+      error: e.message,
+    });
+  }
+});
+
 export default router;
