@@ -279,3 +279,56 @@ export const doesGroupExist = async (id) => {
   }
   return true;
 };
+
+export const updateGroup = async (groupId, updates) => {
+  if (!groupId || !updates) {
+    throw new Error("Parameters must be provided to make the update");
+  }
+  if (!groupId) {
+    throw new Error("Group id must be provided");
+  }
+
+  const updatedGroup = {};
+
+  if (updates.name) {
+    if (typeof updates.name !== "string" || updates.name.trim().length === 0) {
+      throw new Error("Name must be a non-empty string");
+    }
+    updatedGroup.name = updates.name.trim();
+  }
+
+  if (updates.description) {
+    if (
+      typeof updates.description !== "string" ||
+      updates.description.trim().length === 0
+    ) {
+      throw new Error("Description must be a non-empty string");
+    }
+    updatedGroup.description = updates.description.trim();
+  }
+
+  if (updates.users) {
+    if (!Array.isArray(updates.users)) {
+      throw new Error("Users must be an array");
+    }
+    updatedGroup.users = updates.users;
+  }
+
+  if (updates.image) {
+    updatedGroup.image = new Binary(Buffer.from(updates.image, "base64"));
+  }
+
+  const groupCollection = await groups();
+
+  const result = await groupCollection.findOneAndUpdate(
+    { _id: new ObjectId(groupId) },
+    { $set: updatedGroup },
+    { returnDocument: "after" }
+  );
+
+  if (!result.ok) {
+    throw new Error("Failed to update group");
+  }
+
+  return result.value;
+};
