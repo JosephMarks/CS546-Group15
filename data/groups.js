@@ -49,16 +49,20 @@ export const get = async (id) => {
     throw new Error("Id must be of type string");
   }
   const groupCollection = await groups();
-  const group = await groupCollection.findOne({ _id: new ObjectId(id) });
-  if (group === null) {
-    throw new Error("There is no group with that id");
-  }
+  try {
+    const group = await groupCollection.findOne({ _id: new ObjectId(id) });
+    if (group === null) {
+      throw new Error("There is no group with that id");
+    }
 
-  if (group.image) {
-    group.base64Image = group.image.buffer.toString("base64");
+    if (group.image) {
+      group.base64Image = group.image.buffer.toString("base64");
+    }
+    group._id = group._id.toString();
+    return group;
+  } catch (e) {
+    throw new Error(`Could not retrieve group with id ${id}: ${e.message}`);
   }
-  group._id = group._id.toString();
-  return group;
 };
 
 export const getAll = async () => {

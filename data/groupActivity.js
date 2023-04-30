@@ -38,7 +38,6 @@ export const create = async (groupId, title) => {
     comments: comments,
     image: image,
   };
-  console.log(newActivity);
 
   const groupCollection = await groups();
 
@@ -85,7 +84,6 @@ export const getAll = async (groupId) => {
 };
 
 export const updateTitle = async (groupId, activityId, title) => {
-  console.log(groupId, activityId, title);
   groupId = groupId.trim();
   activityId = activityId.trim();
   title = title.trim();
@@ -363,104 +361,99 @@ export const removeUser = async (groupId, activityId, user) => {
 export const updateActivity = async (
   groupId,
   activityId,
-  title,
-  date,
-  author,
-  message,
-  image
+  { title, activityDate, author, message, comments, image }
 ) => {
   groupId = groupId.trim();
   activityId = activityId.trim();
 
-  if (!groupId || !activityId) {
-    throw new Error("Parameters must be provided");
+  const updateData = {};
+
+  if (title) {
+    if (typeof title !== "string") {
+      throw new Error("Title must be a string");
+    }
+    if (title.trim().length === 0) {
+      throw new Error("Title cannot be an empty string");
+    }
+    updateData["activity.$.title"] = title.trim();
   }
 
-  if (typeof groupId !== "string" || typeof activityId !== "string") {
-    throw new Error("Parameters must be of type string");
+  if (activityDate) {
+    if (typeof activityDate !== "string") {
+      throw new Error("Activity date must be a string");
+    }
+    const dateObject = parse(activityDate, "MM/dd/yyyy", new Date());
+    if (!isValid(dateObject)) {
+      throw new Error("Activity date must be a valid mm/dd/yyyy format");
+    }
+    if (new Date(activityDate) < new Date()) {
+      throw new Error("Activity date must be a future date");
+    }
+    updateData["activity.$.activityDate"] = activityDate;
   }
 
-  if (groupId.length === 0 || activityId.length === 0) {
-    throw new Error("Cannot be an empty string");
+  if (author) {
+    if (typeof author !== "string") {
+      throw new Error("Author must be a string");
+    }
+    updateData["activity.$.author"] = author;
+  }
+
+  if (message) {
+    if (typeof message !== "string") {
+      throw new Error("Message must be a string");
+    }
+    if (message.trim().length === 0) {
+      throw new Error("Message cannot be an empty string");
+    }
+    updateData["activity.$.message"] = message.trim();
+  }
+
+  if (comments) {
+    if (!Array.isArray(comments)) {
+      throw new Error("Comments must be an array");
+    }
+    updateData["activity.$.comments"] = comments;
+  }
+
+  if (image) {
+    if (typeof image !== "string") {
+      throw new Error("Image must be a string");
+    }
+    // Convert base64Image to Binary
+    const bufferImage = Buffer.from(image, "base64");
+    const bin = new Binary(bufferImage);
+    updateData["activity.$.image"] = bin;
+  }
+
+  if (Object.keys(updateData).length === 0) {
+    throw new Error("No valid fields were provided for updating");
   }
 
   const groupCollection = await groups();
   const foundGroup = await groupCollection.findOne({
     _id: new ObjectId(groupId),
+    activity: {
+      $elemMatch: { _id: new ObjectId(activityId) },
+    },
   });
 
   if (foundGroup === null) {
-    throw new Error("Group has not been found");
-  }
-
-  const foundActivity = foundGroup.activity.find(
-    (activity) => activity._id.toString() === activityId
-  );
-
-  if (!foundActivity) {
-    throw new Error("Activity has not been found");
-  }
-
-  const updatedActivity = {};
-
-  if (title) {
-    if (typeof title !== "string" || title.length === 0) {
-      throw new Error("Title must be a non-empty string");
-    }
-
-    updatedActivity.title = title.trim();
-  }
-
-  if (date) {
-    const parsedDate = parse(date, "MM/dd/yyyy", new Date());
-
-    if (!isValid(parsedDate) || parsedDate < new Date()) {
-      throw new Error("Date must be a valid date in the future");
-    }
-
-    updatedActivity.date = parsedDate;
-  }
-
-  if (author) {
-    if (typeof author !== "string" || author.length === 0) {
-      throw new Error("Author must be a non-empty string");
-    }
-
-    updatedActivity.author = author.trim();
-  }
-
-  if (message) {
-    if (typeof message !== "string" || message.length === 0) {
-      throw new Error("Message must be a non-empty string");
-    }
-
-    updatedActivity.message = message.trim();
-  }
-
-  if (image) {
-    if (typeof image !== "string" || image.length === 0) {
-      throw new Error("Image must be a non-empty string");
-    }
-
-    updatedActivity.image = image.trim();
+    throw new Error("Group or activity not found");
   }
 
   const updatedInfo = await groupCollection.findOneAndUpdate(
-    {
-      _id: new ObjectId(groupId),
-      activity: {
-        $elemMatch: {
-          _id: new ObjectId(activityId),
-        },
-      },
-    },
-    { $set: updatedActivity },
+    { _id: new ObjectId(groupId), "activity._id": new ObjectId(activityId) },
+    { $set: updateData },
     { returnDocument: "after" }
   );
 
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the activity successfully");
   }
+  console.log(updatedInfo.value.activity);
+  console.log("here is the activity Id:");
+  console.log(activityId);
 
   return updatedInfo.value.activity.find(
     (activity) => activity._id.toString() === activityId

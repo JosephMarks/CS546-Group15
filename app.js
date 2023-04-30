@@ -12,6 +12,7 @@ import Grid from "gridfs-stream";
 import { groupActivityData, userData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
+import * as groupActivityDataFunctions from "./data/groupActivity.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -175,6 +176,22 @@ app.use("/", (req, res, next) => {
   return next();
 });
 
+// let newGroup = await groupData.create(
+//   "Anja's Rocking Cats Groupwwww",
+//   "The best cats around"
+// );
+// console.log(newGroup);
+// let newActivity = await groupActivityDataFunctions.create(
+//   "644ea863311a2bb9a363e8f3",
+//   "New Activity  - April 30"
+// );
+// console.log(newActivity);
+// let updatedActivity = await groupActivityDataFunctions.updateActivity(
+//   "644ea863311a2bb9a363e8f3",
+//   "644ea8d57c04d517ee1e65f0",
+//   { title: "New Title", message: "New Message" }
+// );
+// console.log(updatedActivity);
 configRoutes(app);
 
 app.listen(3000, () => {
