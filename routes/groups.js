@@ -17,7 +17,10 @@ router.route("/").get(async (req, res) => {
       displayArray.push(groupObject);
       console.log(displayArray);
     }
-    res.render("./groups/groups", { groups: displayArray });
+    res.render("./groups/groups", {
+      groups: displayArray,
+      title: "Groups Master Page",
+    });
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
@@ -84,6 +87,7 @@ router.route("/:id").get(async (req, res) => {
     // console.log(eventsArray);
 
     res.render("./groups/groupById", {
+      title: "Group Specific Page",
       _id: id,
       name: groupInfo.name,
       description: groupInfo.description,

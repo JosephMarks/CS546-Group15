@@ -52,6 +52,7 @@ router.route("/:id").get(async (req, res) => {
     connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
+      title: "Profile Page",
       _id: id,
       name: userInfo.name,
       description: userInfo.aboutMe,
