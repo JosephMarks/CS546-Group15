@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { groups } from "../config/mongoCollections.js";
+import { groups, users } from "../config/mongoCollections.js";
 import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 
@@ -82,4 +82,280 @@ export const getAll = async (groupId) => {
   let { activity } = group;
 
   return activity;
+};
+
+export const updateTitle = async (groupId, activityId, title) => {
+  console.log(groupId, activityId, title);
+  groupId = groupId.trim();
+  activityId = activityId.trim();
+  title = title.trim();
+  if (!groupId || !activityId || !title) {
+    throw new Error("Parameters must be present");
+  }
+  if (
+    typeof groupId != "string" ||
+    typeof activityId != "string" ||
+    typeof title !== "string"
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || activityId.length === 0 || title.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const updatedTitle = {
+    "events.$.title": title,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(activityId),
+        },
+      },
+    },
+    { $set: updatedTitle },
+    { returnDocument: "after" }
+  );
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the event title successfully");
+  }
+  return updatedInfo;
+};
+
+export const updateEventDate = async (groupId, activityId, activityDate) => {
+  groupId = groupId.trim();
+  activityId = activityId.trim();
+
+  activityDate = activityDate.trim();
+  if (!groupId || !activityDate || !activityId) {
+    throw new Error("Parameters must be provided");
+  }
+  if (
+    (typeof groupId != "string" || typeof activityDate !== "string",
+    typeof activityId !== "string")
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (
+    groupId.length === 0 ||
+    activityDate.length === 0 ||
+    activityId.length === 0
+  ) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const dateObject = parse(activityDate, "MM/dd/yyyy", new Date());
+  if (!isValid(dateObject)) {
+    throw new Error("Date is not of proper format");
+  }
+
+  let dateArray = [];
+  dateArray = activityDate.split("/");
+  if (dateArray.length < 3) {
+    throw new Error("This is not valid");
+  }
+  if (dateArray.length !== 3) {
+    throw new Error("This is not valid");
+  }
+  if (
+    dateArray[0].length !== 2 ||
+    dateArray[1].length !== 2 ||
+    dateArray[2].length !== 4
+  ) {
+    throw new Error("This is not valid format");
+  }
+  let yearString;
+  let yearValue;
+  yearString = dateArray[2];
+  yearValue = Number(yearString);
+  if (yearValue < 2023 || yearValue > 2025) {
+    throw new Error("The date is out of the appropriate range");
+  }
+
+  const updatedActivityDate = {
+    "events.$.eventDate": activityDate,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(activityId),
+        },
+      },
+    },
+    { $set: updatedActivityDate },
+    { returnDocument: "after" }
+  );
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the activity title successfully");
+  }
+  return updatedInfo;
+};
+
+export const addUser = async (groupId, activityId, user) => {
+  groupId = groupId.trim();
+  activityId = activityId.trim();
+  user = user.trim();
+
+  if (!groupId || !activityId || !user) {
+    throw new Error("Parameters must be provided");
+  }
+  if (
+    (typeof groupId != "string" || typeof activityId !== "string",
+    typeof user !== "string")
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || user.length === 0 || activityId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const addedUser = {
+    "activities.$.users": user,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      activities: {
+        $elemMatch: {
+          _id: new ObjectId(activityId),
+        },
+      },
+    },
+    { $set: addedUser },
+    { returnDocument: "after" }
+  );
+
+  // Check if user exists in the database
+  const usersCollection = await users();
+  const foundUser = await usersCollection.findOne({ username: user });
+  if (foundUser === null) {
+    throw new Error("User does not exist in the database");
+  }
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the activity title successfully");
+  }
+  return updatedInfo;
+};
+
+export const remove = async (activityId) => {
+  activityId = activityId.trim();
+  if (!activityId) {
+    throw new Error("ID parameter must be provided");
+  }
+  if (typeof activityId !== "string") {
+    throw new Error("Must be of type string");
+  }
+  if (activityId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+  const groupCollection = await groups();
+
+  const theActivity = await groupCollection.findOne({
+    activities: { $elemMatch: { _id: new ObjectId(activityId) } },
+  });
+
+  if (theActivity === null) {
+    throw new Error("There is no activity with that id");
+  }
+
+  const activity = theActivity.activities.find(
+    (activity) => activity._id.toString() === activityId
+  );
+  if (!activity) {
+    throw new Error("There is no activity with that id");
+  }
+
+  // Now we will remove the activity from the array of the band document
+  const updatedGroup = await groupCollection.findOneAndUpdate(
+    { _id: theActivity._id },
+    { $pull: { activities: { _id: new ObjectId(activityId) } } },
+    { returnOriginal: false }
+  );
+
+  if (!updatedGroup.value) {
+    throw new Error("activity was not able to be deleted");
+  }
+
+  return updatedGroup;
+};
+
+export const removeUser = async (groupId, activityId, user) => {
+  groupId = groupId.trim();
+  activityId = activityId.trim();
+  user = user.trim();
+
+  if (!groupId || !activityId || !user) {
+    throw new Error("Parameters must be provided");
+  }
+  if (
+    (typeof groupId != "string" || typeof activityId !== "string",
+    typeof user !== "string")
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || user.length === 0 || activityId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const addedUser = {
+    "activities.$.users": user,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      activities: {
+        $elemMatch: {
+          _id: new ObjectId(activityId),
+        },
+      },
+    },
+    { $set: addedUser },
+    { returnDocument: "after" }
+  );
+  // Check if user exists in the database
+  const usersCollection = await users();
+  const foundUser = await usersCollection.findOne({ username: user });
+  if (foundUser === null) {
+    throw new Error("User does not exist in the database");
+  }
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the activity title successfully");
+  }
+  return updatedInfo;
 };
