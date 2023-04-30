@@ -33,9 +33,23 @@
         <h2>{{name}}</h2>
         <h2>Description: {{description}}</h2>
 
-        {{#each activity}}
-          <div>{{title}}</div>
-        {{/each}}
+        <h2>Job History:</h2>
+        {{#if jobHistory}}
+          <ul>
+            {{#each jobHistory}}
+              <li>
+                <strong>{{this.company}}</strong>
+                -
+                {{this.position}}
+                ({{this.startDate}}
+                -
+                {{this.endDate}})
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <p>No job history available.</p>
+        {{/if}}
 
         {{#if gitHubUserName}}
           <p>Github profile for {{gitHubUserName}}</p>
@@ -49,9 +63,8 @@
           <script>
             document.addEventListener('DOMContentLoaded', function() { const
             gitHubUsername = '{{gitHubUserName}}'; GitHubCalendar(".calendar",
-            gitHubUsername); // or enable responsive functionality
-            GitHubCalendar(".calendar", gitHubUsername, { responsive: true });
-            });
+            gitHubUsername); GitHubCalendar(".calendar", gitHubUsername, {
+            responsive: true }); });
           </script>
         {{/if}}
       </div>

@@ -7,6 +7,7 @@ const upload = multer({ dest: "uploads/" });
 import fs from "fs";
 import network from "../data/network.js";
 import * as messageData from "../data/messages.js";
+import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
 
@@ -45,6 +46,7 @@ router.route("/:id").get(async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
     let image = userInfo.base64Image;
+    let jobHistory = await jobHistoryData.getAll(id);
 
     res.render("./profile/profile", {
       _id: id,
@@ -52,12 +54,13 @@ router.route("/:id").get(async (req, res) => {
       description: userInfo.aboutMe,
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
+      jobHistory: jobHistory, // Pass the job history to the template
     });
   } catch (e) {
     res.status(404).render("./error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `We're sorry, a venue with that id does not exist .`,
+      errorMessage: `We're sorry, a venue with that id does not exist.`,
     });
   }
 });

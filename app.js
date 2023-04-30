@@ -155,15 +155,8 @@ app.use("/", (req, res, next) => {
 
 configRoutes(app);
 
-let newJob = await userJobHistoryData.create(
-  "643b2afed6271e8e940ad58e",
-  "Controller",
-  "Masterworks",
-  "05/13/1985",
-  "present",
-  "In charge of the finance department"
-);
-console.log(newJob);
+let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
+console.log(jobHistory);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import * as userData from "./user.js";
+import userData from "../data/user.js";
 import validations from "../helpers.js";
 import { parse, isValid } from "date-fns";
 import { users } from "../config/mongoCollections.js";
