@@ -3,6 +3,7 @@ import { get } from "mongoose";
 import { groups } from "../config/mongoCollections.js";
 import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
+import { users } from "../config/mongoCollections.js";
 
 // Functinon to create the new group sub-document.
 export const create = async (groupId, title) => {
@@ -253,9 +254,14 @@ export const addUser = async (groupId, eventId, user) => {
     { $set: addedUser },
     { returnDocument: "after" }
   );
-  //TO DO - NEED TO CHECK THAT THE USER IS IN THE DATABASE AS A USER
-  // OTHER ERROR CHECKING FOR USERS TO BE ADDED
-  // FUNCTIONALITY ON THE USER SIDE TO JOIN A GROUP
+
+  // Check if user exists in the database
+  const usersCollection = await users();
+  const foundUser = await usersCollection.findOne({ username: user });
+  if (foundUser === null) {
+    throw new Error("User does not exist in the database");
+  }
+
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the event title successfully");
   }
@@ -302,4 +308,57 @@ export const remove = async (eventId) => {
   }
 
   return updatedGroup;
+};
+
+export const removeUser = async (groupId, eventId, user) => {
+  groupId = groupId.trim();
+  eventId = eventId.trim();
+  user = user.trim();
+
+  if (!groupId || !eventId || !user) {
+    throw new Error("Parameters must be provided");
+  }
+  if (
+    (typeof groupId != "string" || typeof eventId !== "string",
+    typeof user !== "string")
+  ) {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || user.length === 0 || eventId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const addedUser = {
+    "events.$.users": user,
+  };
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(eventId),
+        },
+      },
+    },
+    { $set: addedUser },
+    { returnDocument: "after" }
+  );
+  // Check if user exists in the database
+  const usersCollection = await users();
+  const foundUser = await usersCollection.findOne({ username: user });
+  if (foundUser === null) {
+    throw new Error("User does not exist in the database");
+  }
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the event title successfully");
+  }
+  return updatedInfo;
 };
