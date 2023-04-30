@@ -11,6 +11,7 @@ import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
 import { groupActivityData, userData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
+import * as userJobHistoryData from "./data/userJobHistory.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -107,20 +108,23 @@ app.use("/skills", (req, res, next) => {
 });
 
 app.use("/company/job", (req, res, next) => {
-  if(req.session && !req.session.user)
-  {
-    return res.render('Auth/login', { error: "You Must Sign In First", title: "Login" });
-  } else
-  {
-    if(req.session.user.candidateType === "Company")
-    {
+  if (req.session && !req.session.user) {
+    return res.render("Auth/login", {
+      error: "You Must Sign In First",
+      title: "Login",
+    });
+  } else {
+    if (req.session.user.candidateType === "Company") {
       next();
-    } else
-    {
-      return res.render('error', { error: "You Do not have Access for this page. Logout and Signup as Company.", title: "Error" });
+    } else {
+      return res.render("error", {
+        error:
+          "You Do not have Access for this page. Logout and Signup as Company.",
+        title: "Error",
+      });
     }
   }
-})
+});
 
 app.use("/logout", (req, res, next) => {
   if (req.session && !req.session.user) {
@@ -150,6 +154,9 @@ app.use("/", (req, res, next) => {
 });
 
 configRoutes(app);
+
+let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
+console.log(jobHistory);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

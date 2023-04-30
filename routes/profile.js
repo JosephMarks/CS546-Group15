@@ -7,6 +7,7 @@ const upload = multer({ dest: "uploads/" });
 import fs from "fs";
 import network from "../data/network.js";
 import * as messageData from "../data/messages.js";
+import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
 
@@ -45,6 +46,7 @@ router.route("/:id").get(async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
     let image = userInfo.base64Image;
+    let jobHistory = await jobHistoryData.getAll(id);
 
     res.render("./profile/profile", {
       _id: id,
@@ -52,12 +54,13 @@ router.route("/:id").get(async (req, res) => {
       description: userInfo.aboutMe,
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
+      jobHistory: jobHistory, // Pass the job history to the template
     });
   } catch (e) {
     res.status(404).render("./error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `We're sorry, a venue with that id does not exist .`,
+      errorMessage: `We're sorry, a venue with that id does not exist.`,
     });
   }
 });
@@ -113,23 +116,36 @@ router.post("/:id/updategithubusername", async (req, res) => {
 router
   .route("/:id/messaging")
   .get(async (req, res) => {
-    const id = req.params.id;
-    const connections = await network.getConnections(id);
-    const userFullNames = [];
+    let id = req.params.id;
+    try {
+      const uniqueConversationUserIds =
+        await messageData.getUniqueConversationUserIds(id);
+      const conversations = [];
+      const userFullNames = []; // Initialize the userFullNames array
 
-    for (let i = 0; i < connections.length; i++) {
-      const connectionId = connections[i];
-      const userFullName = await userData.getUserFullNameById(connectionId);
-      const userInfo = {
-        id: connectionId,
-        fullName: `${userFullName.fname} ${userFullName.lname}`,
-      };
-      userFullNames.push(userInfo);
+      for (const id of uniqueConversationUserIds) {
+        const userFullName = await userData.getUserFullNameById(id);
+        conversations.push({
+          id: id,
+          fullName: `${userFullName.firstName} ${userFullName.lastName}`,
+        });
+
+        // Populate the userFullNames array with user IDs and names
+        userFullNames.push({
+          id: id,
+          fullName: `${userFullName.firstName} ${userFullName.lastName}`,
+        });
+      }
+
+      res.render("./profile/profileMessage", {
+        _id: id,
+        conversations: conversations,
+        userFullNames: userFullNames, // Pass the userFullNames array to the template
+      });
+    } catch (e) {
+      console.error(e);
+      res.status(500).send("Error retrieving conversations.");
     }
-    res.render("./profile/profileMessage", {
-      _id: id,
-      userFullNames: userFullNames,
-    });
   })
   .post(async (req, res) => {
     const receivedInput = req.body;
@@ -152,4 +168,23 @@ router
       res.status(500).send("Error sending message.");
     }
   });
+
+router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
+  const originUserId = req.params.originUserId;
+  const targetUserId = req.params.targetUserId;
+
+  try {
+    // Fetch the conversation between the current user and the friend
+    const messages = await messageData.getConversation(
+      new ObjectId(originUserId),
+      new ObjectId(targetUserId)
+    );
+    console.log(messages);
+    res.json(messages);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Error retrieving conversation.");
+  }
+});
+
 export default router;
