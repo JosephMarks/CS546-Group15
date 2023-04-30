@@ -15,6 +15,17 @@
     <script
       src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
     ></script>
+    <link
+      rel="stylesheet"
+      href="node_modules/leetcode-card/dist/leetcode-card.min.css"
+    />
+    <script
+      defer
+      src="node_modules/leetcode-card/dist/leetcode-card.min.js"
+    ></script>
+    <script
+      src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
+    ></script>
   </head>
   <body>
     <div class="container">
@@ -30,8 +41,15 @@
             Messaging
           </button>
         </a>
+        <a href="/groups"><button>Go to Groups</button></a>
+
         <h2>{{name}}</h2>
         <h2>Description: {{description}}</h2>
+
+        <div class="leetcode-card" data-user="neal_wu" data-theme="dark"></div>
+        <script>
+          window.addEventListener('load', function() { LeetCodeCard.init(); });
+        </script>
 
         <h2>Job History:</h2>
         {{#if jobHistory}}
@@ -64,6 +82,10 @@
 
         {{#if gitHubUserName}}
           <p>Github profile for {{gitHubUserName}}</p>
+              <img src="https://github.com/favicon.ico" alt="Github logo" class="github-logo" />
+
+
+          </div>
 
           <!-- Prepare a container for your calendar. -->
           <div class="calendar">
