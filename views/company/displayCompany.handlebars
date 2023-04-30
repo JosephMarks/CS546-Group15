@@ -1,23 +1,40 @@
 <div class="main-company-main">
+
   <div class="main-company">
+
     <h1>{{companyData.companyName}}</h1>
-    {{!-- <div class="imgSrc">{{ companyData.imgSrc }}</div> --}}
+
     <img
       src="/public/images/image_not_found.png"
       alt="Company Logo"
       id="my-company-src"
-    />
+    >
+
     <div class="industry">Industry : {{companyData.industry}}</div>
-    <div class="locations">Location : {{companyData.locations}}</div>
+
+    <div class="locations">
+      Location : {{companyData.locations}}
+    </div>
+
     <div class="numberOfEmployees">Number Of Employees :
-      {{companyData.numberOfEmployees}}</div>
-    <div class="description"> Description : {{companyData.description}}</div>
+      {{companyData.numberOfEmployees}}
+    </div>
+
+    <div class="description"> 
+      Description : {{companyData.description}}
+    </div>
+
     <div class="editCompanyDetails">
       <a href=/company/dataUpdate/{{companyData.companyName}}>Edit The Details
       </a>
     </div>
+
     <div class="createJobs">
-      <a href="/job">Create Job</a>
+      <a href="/company/job">Create Jobs</a>
+    </div>
+
+    <div class="viewJobs">
+      <a href=/company/viewJob/{{companyData.companyName}}>View Jobs</a>
     </div>
   </div>
 

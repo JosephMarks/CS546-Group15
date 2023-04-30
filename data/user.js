@@ -332,7 +332,7 @@ const exportedMethods = {
 
     if (!user) throw `Error: No user found with the given id: ${userId}`;
 
-    return { fname: user.fname, lname: user.lname };
+    return { firstName: user.fname, lastName: user.lname };
   },
 };
 

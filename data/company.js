@@ -7,6 +7,7 @@ const companyCollection = await company();
 const companyFunctions = {
 
     async createComapny(companyName, companyEmail, industry, locations, numberOfEmployees, description, createdAt, imgSrc) {
+      
       validations.isNumberOfEmployee(numberOfEmployees);
       validations.checkEmail(companyEmail);
       numberOfEmployees = Number(numberOfEmployees);
@@ -60,6 +61,100 @@ const companyFunctions = {
       let companyData = await companyCollection.findOne({ companyName: name});
       if (!companyData) throw "Error : No Company Found";
       return companyData;
+    },
+
+    async createJob ( companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description ) {
+      
+      if (
+        !companyName ||
+        !companyEmail ||
+        !jobTitle ||
+        !salary ||
+        !level ||
+        !jobType ||
+        !location ||
+        !description
+      )
+        throw "Error : All parameters are required";
+  
+      if (
+        !validations.isProperString([
+          companyName,
+          companyEmail,
+          jobTitle,
+          description,
+          level
+        ])
+      )
+        throw "Error : Parameters can only be string not just string with empty spaces";
+
+        if (typeof(jobType) === 'string'){
+
+          if (!validations.isProperString([jobType])) throw "Error : job type can only be a valid string or array with valid strings";
+    
+        } else {
+    
+          validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+          jobType = jobType.map(x => x.trim().toLowerCase());
+    
+        }
+    
+        if (typeof(skills) === 'string'){
+    
+          if (!validations.isProperString([jobType])) throw "Error : skills can only be a valid string or array with valid strings";
+    
+        } else {
+    
+          validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+          skills = skills.map(x => x.trim().toLowerCase());
+          
+        }
+    
+        if (typeof(location) === 'string'){
+    
+          if (!validations.isProperString([location])) throw "Error : location can only be a valid string or array with valid strings";
+    
+        } else {
+    
+          validations.isArrayWithTheNonEmptyStringForLocation([location]);
+          location = location.map(x => x.trim().toLowerCase());
+          
+        }
+
+      validations.isSalary(salary);
+      salary = Number(salary);
+
+      let jobData = {
+
+        _id: new ObjectId(),
+        jobTitle : jobTitle.trim().toLowerCase(),
+        skills: skills,
+        salary,
+        location,
+        description : description.trim().toLowerCase()
+
+      } 
+
+      const sameJob = await companyCollection.findOne({companyEmail: companyEmail, "jobs.jobTitle": jobTitle});
+      if (sameJob) throw "Error: same company cannot have same job title";
+
+      let createJobDetails = await companyCollection.updateOne({companyEmail: companyEmail}, {$push: {jobs: jobData}});
+      return createJobDetails;
+
+    },
+
+    async updateJob (email, companyName, companyEmail, jobTitle, salary, location, description) {
+
+    },
+
+    async getAllJobs (companyName){
+
+      if (!companyName) throw "Error : company name cannot be empty";
+      if (!validations.isProperString([companyName])) throw "Error : Company Name must be valid string";
+
+      let allJobs = await companyCollection.find({ companyName: companyName }, { projection : { jobs: 1 } } ).toArray();
+       
+      return allJobs;
     }
   };
 

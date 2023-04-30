@@ -1,50 +1,89 @@
 <h1>{{title}}</h1>
 
 <div class="company-container">
+
   <div class="company">
-    <form
-      class="row g-3 needs-validation"
-      action="/company/job"
-      method="post"
-    >
+
+    <form class="row g-3 needs-validation" action="/company/job" method="post">
+
       <span id="errorDisplay" style="color: red"> {{error}} </span>
 
       <div class="col-md-12">
+
         <label class="companyName">Company Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="companyName"
-          name="companyName"
-          readonly
-        />
+        <input type="text" class="form-control" id="companyName" name="companyName" value={{
+          companyDetails.companyName}} readonly >
+
       </div>
 
       <div class="col-md-12">
+
         <label class="companyEmail">Company Email</label>
-        <input
-          type="text"
-          class="form-control"
-          id="companyEmail"
-          value="{{session.email}}"
-          name="companyEmail"
-        />
+        <input type="text" class="form-control" id="companyEmail" value="{{session.email}}" name="companyEmail"
+          readonly >
+
       </div>
 
       <div class="col-md-12">
+
         <label for="jobTitle" class="jobTitle">Job Title</label>
-        <input type="text" class="form-control" id="jobTitle" name="jobTitle" />
+        <input type="text" class="form-control" id="jobTitle" name="jobTitle" >
+
       </div>
 
       <div class="col-md-12">
-        <label for="salary" class="form-label">Salary (USD : )</label>
-        <input type="number" class="form-control" id="salary" name="salary" />
+
+        <label for="salary" class="form-label">Salary (USD : Yearly)</label>
+        <input type="number" class="form-control" id="salary" name="salary" >
+
       </div>
 
       <div class="col-md-12">
+
+        <label for="level">Experience Level</label>
+        <select id="level" name="level">
+
+          <option value="senior">Senior (More than 5+ years)</option>
+          <option value="internship">Internship (1 year or less)</option>
+          <option value="mid">Mid Level (1 to 5 years)</option>
+
+        </select>
+
+      </div>      
+
+      <div class="col-md-12">
+
+        <label for="jobType">Job Type</label>
+        <select multiple id="jobType" name="jobType">
+
+          <option value="remote">Remote</option>
+          <option value="online">Online</option>
+          <option value="hybrid">Hybrid</option>
+
+        </select>
+
+      </div>
+
+      <div class="col-md-12">
+
+        <label for="skills">Skills Required</label>
+        <select multiple="multiple" id="skills" name="skills">
+
+          <option value="Python">Python</option>
+          <option value="C++">C++</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="NodeJS">NodeJS</option>
+          <option value="React">React</option>
+
+        </select>
+
+      </div>
+
+      <div class="col-md-12">
+
         <label for="location">Select the location</label>
 
-        <select multiple id="location" name="location" required>
+        <select multiple id="location" name="location">
 
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
@@ -103,13 +142,11 @@
       </div>
 
       <div class="col-md-12">
+
         <label for="description">Job Description</label>
-        <textarea
-          name="description"
-          id="description"
-          rows="5"
-          placeholder="Give A Brief Description About the Job .... "
-        ></textarea>
+        <textarea name="description" id="description" rows="5"
+          placeholder="Give A Brief Description About the Job .... "></textarea>
+
       </div>
 
       <div class="col-md-12">
