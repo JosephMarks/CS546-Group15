@@ -66,7 +66,7 @@ export const create = async (
     let endDateYearValue;
     endDateYearString = endDateDateArray[2];
     endDateYearValue = Number(endDateYearString);
-    if (endDateYearString < 1900 || endDateYearString > 2023) {
+    if (endDateYearString < 1950 || endDateYearString > 2023) {
       throw new Error("The date is out of the appropriate range");
     }
 
@@ -101,7 +101,7 @@ export const create = async (
     let yearValue;
     yearString = dateArray[2];
     yearValue = Number(yearString);
-    if (yearValue < 1900 || yearValue > 2023) {
+    if (yearValue < 1950 || yearValue > 2023) {
       throw new Error("The date is out of the appropriate range");
     }
   }
@@ -169,8 +169,191 @@ export const getAll = async (userId) => {
   return jobHistory;
 };
 
-export const updateTitle = async (groupId, eventId, title) => {};
+export const removeJobHistory = async (userId, jobId) => {
+  if (!userId || !jobId) {
+    throw new Error("userId and jobId must be provided");
+  }
 
-export const updateEventDate = async (groupId, eventId, eventDate) => {};
+  // Validate userId and jobId
+  userId = validations.checkId(userId);
+  jobId = validations.checkId(jobId);
 
-export const remove = async (eventId) => {};
+  // Check if user is present
+  const userCollection = await users();
+  let foundUser = await userCollection.findOne({ _id: new ObjectId(userId) });
+  if (!foundUser) {
+    throw new Error("User is not in the database");
+  }
+
+  // Remove the job history sub-document
+  const dataResult = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $pull: { jobHistory: { _id: new ObjectId(jobId) } } }
+  );
+
+  // Check if the job history was removed successfully
+  if (dataResult.modifiedCount !== 1) {
+    throw new Error("Failed to remove the job history");
+  }
+
+  // Return success message
+  return { message: "Job history removed successfully" };
+};
+
+export const removeAll = async (userId) => {
+  if (!userId) {
+    throw new Error("userId must be provided");
+  }
+
+  // Validate userId
+  userId = validations.checkId(userId);
+
+  // Check if user is present
+  const userCollection = await users();
+  let foundUser = await userCollection.findOne({ _id: new ObjectId(userId) });
+  if (!foundUser) {
+    throw new Error("User is not in the database");
+  }
+
+  // Remove all job history sub-documents
+  const dataResult = await userCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { jobHistory: [] } }
+  );
+
+  // Check if the job histories were removed successfully
+  if (dataResult.modifiedCount !== 1) {
+    throw new Error("Failed to remove all job histories");
+  }
+
+  // Return success message
+  return { message: "All job histories removed successfully" };
+};
+
+export const update = async (
+  userId,
+  jobId,
+  role = null,
+  organization = null,
+  startDate = null,
+  endDate = null,
+  description = null
+) => {
+  if (!userId || !jobId) {
+    throw new Error("userId and jobId must be provided");
+  }
+
+  // Validate userId and jobId
+  userId = validations.checkId(userId);
+  jobId = validations.checkId(jobId);
+
+  //check if user is present
+  const userCollection = await users();
+  let foundUser = await userCollection.findOne({ _id: new ObjectId(userId) });
+  if (!foundUser) {
+    throw new Error("User is not in the database");
+  }
+
+  // Prepare the update object
+  let updateObject = {};
+  if (role) {
+    updateObject["jobHistory.$.role"] = role.trim();
+  }
+  if (organization) {
+    updateObject["jobHistory.$.organization"] = organization.trim();
+  }
+  if (startDate) {
+    // Validate startDate
+    const startDateDateObj = parse(endDate, "MM/dd/yyyy", new Date());
+    if (!isValid(startDateDateObj)) {
+      throw new Error("Date is not of proper format");
+    }
+    if (typeof startDate !== "string") {
+      throw new Error("This is not a type string");
+    }
+    if (startDate.length === 0) {
+      throw new Error("String cannot be of length empty");
+    }
+    let startDateDateArray = [];
+    startDateDateArray = startDate.split("/");
+    if (startDateDateArray.length < 3) {
+      throw new Error("This is not valid");
+    }
+    if (startDateDateArray.length !== 3) {
+      throw new Error("This is not valid");
+    }
+    if (
+      startDateDateArray[0].length !== 2 ||
+      startDateDateArray[1].length !== 2 ||
+      startDateDateArray[2].length !== 4
+    ) {
+      throw new Error("This is not valid format");
+    }
+    let startDateYearString;
+    let startDateYearValue;
+    startDateYearString = startDateDateArray[2];
+    startDateYearValue = Number(startDateYearString);
+    if (startDateYearString < 1950 || startDateYearString > 2023) {
+      throw new Error("The date is out of the appropriate range");
+    }
+  }
+  updateObject["jobHistory.$.startDate"] = startDate.trim();
+
+  if (endDate) {
+    if (endDate !== "present") {
+      // need to ensure that the date provide is of the proper format
+      // TO DO: double check all this date stuff - may be a little buggy?
+      const endDateDateObj = parse(endDate, "MM/dd/yyyy", new Date());
+      if (!isValid(endDateDateObj)) {
+        throw new Error("Date is not of proper format");
+      }
+      if (typeof endDate !== "string") {
+        throw new Error("This is not a type string");
+      }
+      if (endDate.length === 0) {
+        throw new Error("String cannot be of length empty");
+      }
+      let endDateDateArray = [];
+      endDateDateArray = endDate.split("/");
+      if (endDateDateArray.length < 3) {
+        throw new Error("This is not valid");
+      }
+      if (endDateDateArray.length !== 3) {
+        throw new Error("This is not valid");
+      }
+      if (
+        endDateDateArray[0].length !== 2 ||
+        endDateDateArray[1].length !== 2 ||
+        endDateDateArray[2].length !== 4
+      ) {
+        throw new Error("This is not valid format");
+      }
+      let endDateYearString;
+      let endDateYearValue;
+      endDateYearString = endDateDateArray[2];
+      endDateYearValue = Number(endDateYearString);
+      if (endDateYearString < 1950 || endDateYearString > 2023) {
+        throw new Error("The date is out of the appropriate range");
+      }
+      updateObject["jobHistory.$.endDate"] = endDate.trim();
+
+      if (description) {
+        updateObject["jobHistory.$.description"] = description.trim();
+      }
+
+      // Update the job history
+      const dataResult = await userCollection.updateOne(
+        { _id: new ObjectId(userId), "jobHistory._id": new ObjectId(jobId) },
+        { $set: updateObject }
+      );
+
+      // Check if the job history was updated successfully
+      if (dataResult.modifiedCount !== 1) {
+        throw new Error("Failed to update the job history");
+      }
+
+      // Return success message or updated job object
+      return { message: "Job history updated successfully" };
+    }
+  }
+};
