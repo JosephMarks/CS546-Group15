@@ -47,6 +47,9 @@ router.route("/:id").get(async (req, res) => {
     let userInfo = await userData.getUserById(id);
     let image = userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
+    let connections = await network.getConnections(id);
+    console.log(connections);
+    connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
       _id: id,
@@ -54,7 +57,8 @@ router.route("/:id").get(async (req, res) => {
       description: userInfo.aboutMe,
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
-      jobHistory: jobHistory, // Pass the job history to the template
+      jobHistory: jobHistory,
+      connections: connections,
     });
   } catch (e) {
     res.status(404).render("./error", {
