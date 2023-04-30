@@ -127,16 +127,16 @@ app.use("/company/job", (req, res, next) => {
   }
 });
 
-app.use("/groups", (req, res, next) => {
-  if (
-    !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
-  ) {
-    return res.redirect("/login");
-  }
-  next();
-});
+// app.use("/groups", (req, res, next) => {
+//   if (
+//     !req.session.user ||
+//     (req.session.user.candidateType !== "Student" &&
+//       req.session.user.candidateType !== "Company")
+//   ) {
+//     return res.redirect("/login");
+//   }
+//   next();
+// });
 
 app.use("/profile", (req, res, next) => {
   if (

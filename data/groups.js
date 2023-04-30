@@ -287,7 +287,9 @@ export const updateGroup = async (groupId, updates) => {
   if (!groupId) {
     throw new Error("Group id must be provided");
   }
-
+  console.log("in the group function...");
+  console.log(groupId);
+  console.log(updates.name);
   const updatedGroup = {};
 
   if (updates.name) {
@@ -315,7 +317,9 @@ export const updateGroup = async (groupId, updates) => {
   }
 
   if (updates.image) {
-    updatedGroup.image = new Binary(Buffer.from(updates.image, "base64"));
+    const bufferImage = Buffer.from(updates.image, "base64");
+    const bin = new Binary(bufferImage);
+    updatedGroup.image = bin;
   }
 
   const groupCollection = await groups();

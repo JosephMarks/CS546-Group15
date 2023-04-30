@@ -125,17 +125,36 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 
-router.post("/:id", async (req, res) => {
+router.post("/:id", upload.single("image"), async (req, res) => {
   const groupId = req.params.id;
-  const { name, description, image } = req.body;
+  const { name, description } = req.body;
   console.log(name);
+  console.log(description);
 
+  console.log(req.file);
   try {
-    const updatedGroup = await groupData.updateGroup(groupId, {
-      name,
-      description,
-      image,
-    });
+    // Check if an image was uploaded
+    if (req.file) {
+      // Convert the image to base64
+      const imgBuffer = req.file.buffer;
+      const imgBase64 = imgBuffer.toString("base64");
+
+      let updatedGroup = {
+        name: name,
+        description: description,
+        image: imgBase64,
+      };
+
+      // Update the group data with the new image
+      await groupData.updateGroup(groupId, updatedGroup);
+    } else {
+      let updatedGroup = {
+        name: name,
+        description: description,
+      };
+      // Update the group data without changing the image
+      await groupData.updateGroup(groupId, updatedGroup);
+    }
 
     // Redirect to the group's details page
     res.redirect(`/groups/${groupId}`);
