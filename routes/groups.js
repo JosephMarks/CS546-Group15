@@ -107,7 +107,7 @@ router.route("/:id").get(async (req, res) => {
 router.get("/:id/edit", async (req, res) => {
   const id = req.params.id;
 
-  res.render("./groupsEdit", {
+  res.render("./groups/groupsEdit", {
     _id: id,
   });
 });

@@ -8,11 +8,12 @@
     <h2>id: {{_id}}</h2>
     <h2>Group Name: {{name}}</h2>
     <h2>Group Description: {{description}}</h2>
-    <h2>Upcoming Events: {{events}}</h2>
 
     {{#if image}}
       <img src="data:image/png;base64,{{image}}" alt="Group Image" />
     {{/if}}
+
+    <h2>Upcoming Events: {{events}}</h2>
 
     {{#each activity}}
       <div>{{title}}</div>
