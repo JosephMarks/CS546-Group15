@@ -35,18 +35,29 @@
 
         <h2>Job History:</h2>
         {{#if jobHistory}}
-          <ul>
+          <div>
             {{#each jobHistory}}
-              <li>
-                <strong>{{this.company}}</strong>
+              <div class="job-card">
+                {{#if this.logo}}
+                  <img
+                    src="data:image/png;base64,{{this.logo}}"
+                    alt="{{this.organization}} Logo"
+                    style="width: 50px; height: 50px;"
+                  />
+                {{/if}}
+                <strong>Organization: {{this.organization}}</strong><br />
+                Title:
+                {{this.role}}<br />
+                Dates:
+                {{this.startDate}}
                 -
-                {{this.position}}
-                ({{this.startDate}}
-                -
-                {{this.endDate}})
-              </li>
+                {{this.endDate}}<br />
+                Description:
+                {{this.description}}<br />
+
+              </div>
             {{/each}}
-          </ul>
+          </div>
         {{else}}
           <p>No job history available.</p>
         {{/if}}
