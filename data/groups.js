@@ -1,5 +1,6 @@
 import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { groups, users } from "../config/mongoCollections.js";
+import userData from "./user.js";
 
 export const create = async (name, description) => {
   name = name.trim();
@@ -49,16 +50,20 @@ export const get = async (id) => {
     throw new Error("Id must be of type string");
   }
   const groupCollection = await groups();
-  const group = await groupCollection.findOne({ _id: new ObjectId(id) });
-  if (group === null) {
-    throw new Error("There is no group with that id");
-  }
+  try {
+    const group = await groupCollection.findOne({ _id: new ObjectId(id) });
+    if (group === null) {
+      throw new Error("There is no group with that id");
+    }
 
-  if (group.image) {
-    group.base64Image = group.image.buffer.toString("base64");
+    if (group.image) {
+      group.base64Image = group.image.buffer.toString("base64");
+    }
+    group._id = group._id.toString();
+    return group;
+  } catch (e) {
+    throw new Error(`Could not retrieve group with id ${id}: ${e.message}`);
   }
-  group._id = group._id.toString();
-  return group;
 };
 
 export const getAll = async () => {
@@ -189,7 +194,7 @@ export const updateDescription = async (id, description) => {
 };
 
 export const addUser = async (id, user) => {
-  if (!id || !description) {
+  if (!id || !user) {
     throw new Error("Parameters must be provided to make the update");
   }
   // checking to make sure id is a valid ObjectId
@@ -226,7 +231,16 @@ export const addUser = async (id, user) => {
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the group successfully.");
   }
-  // TO DO: double check - am I returning the right thing here?
+  let userCollection = await users();
+  const updateInfo = await userCollection.updateOne(
+    { _id: new ObjectId(user) },
+    { $addToSet: { group: id } }
+  );
+
+  if (updateInfo.modifiedCount === 0) {
+    throw new Error("Could not update user with ID " + user);
+  }
+
   return await get(id);
 };
 
@@ -274,4 +288,73 @@ export const doesGroupExist = async (id) => {
     return false;
   }
   return true;
+};
+
+export const updateGroup = async (groupId, updates) => {
+  if (!groupId || !updates) {
+    throw new Error("Parameters must be provided to make the update");
+  }
+  if (!groupId) {
+    throw new Error("Group id must be provided");
+  }
+  const updatedGroup = {};
+
+  if (updates.name) {
+    if (typeof updates.name !== "string" || updates.name.trim().length === 0) {
+      throw new Error("Name must be a non-empty string");
+    }
+    updatedGroup.name = updates.name.trim();
+  }
+
+  if (updates.description) {
+    if (
+      typeof updates.description !== "string" ||
+      updates.description.trim().length === 0
+    ) {
+      throw new Error("Description must be a non-empty string");
+    }
+    updatedGroup.description = updates.description.trim();
+  }
+
+  if (updates.users) {
+    if (!Array.isArray(updates.users)) {
+      throw new Error("Users must be an array");
+    }
+    updatedGroup.users = updates.users;
+  }
+
+  if (updates.image) {
+    const bufferImage = Buffer.from(updates.image, "base64");
+    const bin = new Binary(bufferImage);
+    updatedGroup.image = bin;
+  }
+
+  const groupCollection = await groups();
+
+  const result = await groupCollection.findOneAndUpdate(
+    { _id: new ObjectId(groupId) },
+    { $set: updatedGroup },
+    { returnDocument: "after" }
+  );
+
+  if (!result.ok) {
+    throw new Error("Failed to update group");
+  }
+
+  return result.value;
+};
+
+export const numberOfUsers = async (id) => {
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({ _id: new ObjectId(id) });
+
+  // Must ensure that the group id is present in the db
+  if (foundGroup === null) {
+    throw new Error("Group not found");
+  }
+
+  // Get the number of users in the group
+  const numberOfUsers = foundGroup.users.length;
+
+  return numberOfUsers;
 };
