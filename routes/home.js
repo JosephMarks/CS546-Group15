@@ -3,10 +3,20 @@ import { Router } from "express";
 const router = Router();
 
 router.route("/").get((req, res) => {
-  if (!req.session.user){
-    return res.render("homepage", { title: "Web Development I Group 15", userName:  "Sign In First", status: false});
-  }else {
-    return res.render("homepage", { title: "Web Development I Group 15", userName:  req.session.user.email, status: true});
+  if (!req.session.user) {
+    return res.render("homepage", {
+      title: "Web Development I Group 15",
+      userName: "Sign In First",
+      status: false,
+    });
+  } else {
+    console.log(req.session.user);
+    return res.render("homepage", {
+      title: "Web Development I Group 15",
+      userName: req.session.user.email,
+      status: true,
+      userId: req.session.user.userId,
+    });
   }
 });
 

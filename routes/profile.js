@@ -39,22 +39,29 @@ router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
 });
 
 router.route("/:id").get(async (req, res) => {
-  // Need to do my error checking here!
+  // Need to do my error checking here!np
 
   const id = req.params.id;
 
   try {
     let userInfo = await userData.getUserById(id);
-    let image = userInfo.base64Image;
+    console.log(userInfo);
+    let image = await userInfo.base64Image;
+    console.log(image);
     let jobHistory = await jobHistoryData.getAll(id);
+    let connections = await network.getConnections(id);
+    console.log(connections);
+    connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
+      title: "Profile Page",
       _id: id,
       name: userInfo.name,
       description: userInfo.aboutMe,
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
-      jobHistory: jobHistory, // Pass the job history to the template
+      jobHistory: jobHistory,
+      connections: connections,
     });
   } catch (e) {
     res.status(404).render("./error", {

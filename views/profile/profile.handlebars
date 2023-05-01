@@ -1,4 +1,3 @@
-<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -85,8 +84,6 @@
               <img src="https://github.com/favicon.ico" alt="Github logo" class="github-logo" />
 
 
-          </div>
-
           <!-- Prepare a container for your calendar. -->
           <div class="calendar">
             <!-- Loading stuff -->
@@ -100,7 +97,14 @@
             responsive: true }); });
           </script>
         {{/if}}
-      </div>
-    </div>
+<div>{{#if connections}}
+  <h2>Connections:</h2>
+  <ul>
+    {{#each connections}}
+      <li><a href="/profile/{{this._id}}">{{this.name}}</a></li>
+    {{/each}}
+  </ul>
+{{/if}}</div>
+        
   </body>
 </html>
