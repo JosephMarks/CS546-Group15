@@ -175,24 +175,7 @@ app.use("/", (req, res, next) => {
   );
   return next();
 });
-let numberOfUsers = await groupData.numberOfUsers("644ea4a28464fd1eaac53c79");
-console.log(numberOfUsers);
-// let newGroup = await groupData.create(
-//   "Anja's Rocking Cats Groupwwww",
-//   "The best cats around"
-// );
-// console.log(newGroup);
-// let newActivity = await groupActivityDataFunctions.create(
-//   "644ea863311a2bb9a363e8f3",
-//   "New Activity  - April 30"
-// );
-// console.log(newActivity);
-// let updatedActivity = await groupActivityDataFunctions.updateActivity(
-//   "644ea863311a2bb9a363e8f3",
-//   "644ea8d57c04d517ee1e65f0",
-//   { title: "New Title", message: "New Message" }
-// );
-// console.log(updatedActivity);
+
 configRoutes(app);
 
 app.listen(3000, () => {

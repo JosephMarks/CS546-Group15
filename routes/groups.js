@@ -171,7 +171,6 @@ router.get("/:id/join", async (req, res) => {
 
   try {
     let joinedGroup = await groupData.addUser(id, req.session.user.userId);
-    console.log(joinedGroup);
     if (joinedGroup) {
       res.render("./groups/groupsJoin", {
         message: "You have successfully joined the group!",

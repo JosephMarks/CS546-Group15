@@ -1,5 +1,6 @@
 import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { groups, users } from "../config/mongoCollections.js";
+import userData from "./user.js";
 
 export const create = async (name, description) => {
   name = name.trim();
@@ -230,7 +231,16 @@ export const addUser = async (id, user) => {
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the group successfully.");
   }
-  // TO DO: double check - am I returning the right thing here?
+  let userCollection = await users();
+  const updateInfo = await userCollection.updateOne(
+    { _id: new ObjectId(user) },
+    { $addToSet: { group: id } }
+  );
+
+  if (updateInfo.modifiedCount === 0) {
+    throw new Error("Could not update user with ID " + user);
+  }
+
   return await get(id);
 };
 
@@ -287,9 +297,6 @@ export const updateGroup = async (groupId, updates) => {
   if (!groupId) {
     throw new Error("Group id must be provided");
   }
-  console.log("in the group function...");
-  console.log(groupId);
-  console.log(updates.name);
   const updatedGroup = {};
 
   if (updates.name) {

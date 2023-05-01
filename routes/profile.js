@@ -39,13 +39,15 @@ router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
 });
 
 router.route("/:id").get(async (req, res) => {
-  // Need to do my error checking here!
+  // Need to do my error checking here!np
 
   const id = req.params.id;
 
   try {
     let userInfo = await userData.getUserById(id);
-    let image = userInfo.base64Image;
+    console.log(userInfo);
+    let image = await userInfo.base64Image;
+    console.log(image);
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
     console.log(connections);
