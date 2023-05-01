@@ -1,6 +1,7 @@
 import { ObjectId, Binary } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
+import bcrypt from "bcryptjs";
 
 const exportedMethods = {
   async getAllUser() {
@@ -28,16 +29,19 @@ const exportedMethods = {
     return user;
   },
 
-  async createUser(fname, lname, age, email, password) {
+    async createUser(fname, lname, age, email, password, candidateType) {
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");
+    lname = validations.checkString(candidateType, "Candidate Type");
     age = validations.isAge(Number(age));
     const userCollection = await users();
     const ifAlready = await userCollection.findOne({ email: email });
     if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
     email = validations.checkEmail(email, "email"); //check email is valid
     password = validations.checkString(password, "Password");
+
+    password = await bcrypt.hash(password, 10);
 
     // attributes need, but to be populated later when profile filled out by user
     let gender = "";
@@ -66,6 +70,7 @@ const exportedMethods = {
       password,
       age: age,
       gender,
+      candidateType,
       headerDescription,
       aboutMe,
       locationState,

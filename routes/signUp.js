@@ -1,5 +1,5 @@
 import { Router } from "express";
-import signUpFunctions from "../data/signUp.js";
+import signUpFunctions from "../data/user.js";
 import validations from "../helpers.js";
 import emailValidator from "email-validator"; //use to validate email address
 
