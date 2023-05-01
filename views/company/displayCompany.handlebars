@@ -1,3 +1,5 @@
+<div class="main-center">
+
 <div class="main-company-main">
 
   <div class="main-company">
@@ -5,7 +7,7 @@
     <h1>{{companyData.companyName}}</h1>
 
     <img
-      src="/public/images/image_not_found.png"
+      src=/public/uploads/{{companyData.imgSrc}}
       alt="Company Logo"
       id="my-company-src"
     >
@@ -38,6 +40,7 @@
     </div>
   </div>
 
+</div>
 </div>
 
 {{!-- TODO : TOTALLY, XSS, AND CLIENT SIDE, STATUS CODE --}}

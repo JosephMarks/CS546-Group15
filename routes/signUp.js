@@ -1,5 +1,5 @@
 import { Router } from "express";
-import signUpFunctions from "../data/signUp.js";
+import signUpFunctions from "../data/user.js";
 import validations from "../helpers.js";
 import emailValidator from "email-validator"; //use to validate email address
 
@@ -66,7 +66,7 @@ router.route("/data").post(async (req, res) => {
 
     return res.status(200).render('Auth/login', { error: " New User Registered ", title : 'Error' });
   } catch (e) {
-    if (e === "Error : User Email is already registered")
+    if (e === "Error: User Email is already registered")
       return res.status(404).render('Auth/login', { error: e, title : 'Error' });
     else return res.status(500).render('error', { error: "Sever Error", title : 'Server Error' });
   }

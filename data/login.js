@@ -28,6 +28,7 @@ rules
 // Setting the rules of validations for the password.
 
 const logInFunctions = {
+
   async checkUser(emailAddress, password) {
     if (!emailAddress || !password)
       throw "Error : You should provide all the parameters";
@@ -47,7 +48,7 @@ const logInFunctions = {
     if (!rules.validate(password)) throw "Error : Invalid Password";
 
     const ifExists = await userCollection.findOne({
-      emailAddress: emailAddress,
+      email: emailAddress,
     });
 
     if (!ifExists) {
