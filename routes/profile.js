@@ -250,6 +250,8 @@ router.get("/:id/connect", async (req, res) => {
 
   try {
     const newConnection = await network.addConnections(userId, followerId);
+    const newConnection2 = await network.addConnections(followerId, userId);
+
     res.render("./profile/profile", {
       connectionMessage: "Congratulations, you are now connected!",
       _id: followerId,
