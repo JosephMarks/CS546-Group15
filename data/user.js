@@ -33,7 +33,7 @@ const exportedMethods = {
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");
-    lname = validations.checkString(candidateType, "Candidate Type");
+    candidateType = validations.checkString(candidateType, "Candidate Type");
     age = validations.isAge(Number(age));
     const userCollection = await users();
     const ifAlready = await userCollection.findOne({ email: email });
@@ -63,6 +63,7 @@ const exportedMethods = {
     let likedPost = [];
     let collectedPost = [];
     let socialPost = [];
+
     const newCreateUser = await userCollection.insertOne({
       fname,
       lname,

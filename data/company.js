@@ -221,7 +221,7 @@ const companyFunctions = {
 
       let updatedInfo = await companyCollection.findOneAndUpdate(
 
-        {_id: new ObjectId(id)}, // TODO validate id's
+        {"jobs._id": new ObjectId(id)}, // TODO validate id's
         {$set: jobData},
         {returnDocument: 'after'}
 
@@ -232,9 +232,14 @@ const companyFunctions = {
 
     async getJobById (id) {
 
-      if (!id) throw "Error : no id";
+      if (!id) throw "Error : Invalid Id";
+      if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
+
       let getJob = await companyCollection.findOne( { "jobs._id": new ObjectId(id) } );
+      if (!getJob || getJob.length === 0) throw "Error : No Job Found";
+      
       return getJob;
+      
       
     },
 
