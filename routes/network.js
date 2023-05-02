@@ -3,6 +3,7 @@ const router = Router();
 import { networkData, userData } from '../data/index.js';
 import validation from '../helpers.js';
 import xss from "xss";
+import { network } from "../config/mongoCollections.js";
 
 router
     .route('/')
