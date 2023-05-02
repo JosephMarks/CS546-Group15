@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { users, network } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import usersData from "./user.js";
+import { check } from "link-check/lib/proto/hash.js";
 
 const exportedMethods = {
   async getAllPost ()
@@ -236,23 +237,21 @@ const exportedMethods = {
     return likesList;
   },
 
+  async checkLikes (postId, userId)
+  {
+    postId = validations.checkId(postId);
+    userId = validations.checkId(userId);
+    const checkDuplicated = await this.getLikes(postId);
+    console.log(checkDuplicated);
+    if(!checkDuplicated.includes(userId)) return true;
+    else return false;
+  },
+
   async addLikes (postId, userId)
   {
     postId = validations.checkId(postId);
     userId = validations.checkId(userId);
-
-    //check is there is a duplicates user press like button
     const networkCollection = await network();
-    let duplicateUser = await networkCollection.findOne(
-      { likes: userId },
-      { projection: { _id: 0 } }
-    );
-    if(duplicateUser !== null)
-    {
-      const userName = (await usersData.getUserById(userId)).fname;
-      throw `Error: ${userName} can not press likes more than twice!!`;
-    }
-
     let newNetworks = await networkCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $addToSet: { likes: userId } },
