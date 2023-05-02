@@ -133,6 +133,8 @@ const companyFunctions = {
         _id: new ObjectId(),
         jobTitle : jobTitle.trim().toLowerCase(),
         skills: skills,
+        level,
+        jobType,
         salary,
         location,
         description : description.trim().toLowerCase()
@@ -147,7 +149,7 @@ const companyFunctions = {
 
     },
 
-    async updateJob (companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description) {
+    async updateJob (id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description) {
       
       if (
         !companyName ||
@@ -213,19 +215,28 @@ const companyFunctions = {
         _id: new ObjectId(),
         jobTitle : jobTitle.trim().toLowerCase(),
         skills: skills,
+        level,
+        jobType,
         salary,
         location,
         description : description.trim().toLowerCase()
 
       } 
 
-      let updatedInfo = await companyCollection.findOneAndUpdate(
+      let temp = await this.getJobById(id);
+      // console.log("temp", temp);
+
+      let updatedInfo = await companyCollection.updateOne(
 
         {"jobs._id": new ObjectId(id)}, // TODO validate id's
-        {$set: jobData},
+        {$pull: {jobs: { jobTitle: temp.jobs[0].jobTitle }}},
         {returnDocument: 'after'}
 
       );
+
+      // this.createJob()
+
+      // console.log(updatedInfo.value.jobs);
 
       return updatedInfo;
     },
@@ -235,7 +246,9 @@ const companyFunctions = {
       if (!id) throw "Error : Invalid Id";
       if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
 
-      let getJob = await companyCollection.findOne( { "jobs._id": new ObjectId(id) } );
+      let getJob = await companyCollection.findOne( { "jobs._id": new ObjectId(id) }, { projection: { companyName: 1, "jobs.$": 1 } });
+      console.log(getJob);
+      
       if (!getJob || getJob.length === 0) throw "Error : No Job Found";
       
       return getJob;

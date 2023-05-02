@@ -9,7 +9,9 @@ import socialPostRoutes from "./socialPost.js";
 import networkRoutes from "./network.js";
 import profileRoutes from "./profile.js";
 import skillsRoutes from "./skills.js";
-import logoutRoutes from "./logout.js"
+import logoutRoutes from "./logout.js";
+import allCompanyRoutes from "./allCompany.js";
+
 const constructorMethod = (app) =>
 {
   app.use("/", homeRoutes);
@@ -23,6 +25,7 @@ const constructorMethod = (app) =>
   app.use("/skills", skillsRoutes);
   app.use("/profile", profileRoutes);
   app.use("/logout", logoutRoutes);
+  app.use("/allCompany", allCompanyRoutes);
 
   // app.use("/profile", profileRoutes); Will update momentarily
 

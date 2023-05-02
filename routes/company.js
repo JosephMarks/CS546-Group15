@@ -411,6 +411,8 @@ router.route("/viewJob/:name").get(async (req, res) => {
         .render("company/displayJobs", { companyName: companyName, error: "No Jobs", title: "No Jobs" });
 
     } else {
+
+      console.log(allJobs[0].jobs);
       
       for (let i in allJobs[0].jobs){
 
@@ -437,8 +439,10 @@ router.route("/jobUpdate/:id").get(async (req, res) => { // get for job update
   try {
 
     let getJob = await companyFunctions.getJobById(id);
+    // console.log("hi", getJob.jobs[0]);
+
     if (!getJob || getJob.length === 0) throw "Error : No Job Found";
-    else return res.render('company/updateJob', { title: 'Edit Job', jobDetail: getJob }); 
+    else return res.render('company/updateJob', { title: 'Edit Job', company: getJob, jobDetail: getJob.jobs[0], session: req.session.user }); 
 
   } catch (e) {
     if (e === "Error : Invalid Id" || e === "Error : No Job Found") {
@@ -453,6 +457,7 @@ router.route("/jobUpdate/:id").get(async (req, res) => { // get for job update
 router.route("/jobUpdate/:id").post(async (req, res) => { // update page for jobs
 
   const bodyData = req.body;
+  console.log(req.params.id);
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
 
@@ -464,6 +469,8 @@ router.route("/jobUpdate/:id").post(async (req, res) => { // update page for job
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
   req.body;
+
+  console.log(req.body);
 
   try {
 
@@ -527,18 +534,15 @@ router.route("/jobUpdate/:id").post(async (req, res) => { // update page for job
     validations.isSalary(salary);
     salary = Number(salary);
 
-    let createJob = await companyFunctions.updateJob(companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description);
+    let createJob = await companyFunctions.updateJob(req.params.id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description);
     
     return res.redirect(`/company/viewJob/${companyName}`);
 
   } catch (e) {
+    let getJob = await companyFunctions.getJobById(req.params.id);
 
-    return res.render("company/createJobs", {
-      error: e,
-      title: "Create Job",
-      session: req.session.user,
-      companyDetails: { companyName },
-    });
+    return res.render('company/updateJob', { error: e, title: 'Edit Job', company: getJob, jobDetail: getJob.jobs[0], session: req.session.user }); 
+
   }
 
 });
@@ -564,7 +568,7 @@ router.route("/jobSingleDisplay/:id").get(async (req, res) => {
   try {
 
     let getJob = await companyFunctions.getJobById(id);
-    console.log(getJob);
+    // return console.log(getJob);
 
     if (!getJob || getJob.length === 0) throw "Error : No Job Found";
     else return res.render('company/displaySingleJob', { title: 'View Job', jobData: getJob.jobs[0] }); 
@@ -578,6 +582,7 @@ router.route("/jobSingleDisplay/:id").get(async (req, res) => {
   }
 
 });
+
 
 // TODO : Remove all console.logs 
 
