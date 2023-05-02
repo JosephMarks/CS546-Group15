@@ -1,0 +1,143 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+
+                    <li class="nav-item">
+                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
+                                style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
+                                Create New Post
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+<H1>===={{ auth }}=======</H1>
+    {{!--Posted Post --}}
+    <div class="accordion" id="your-post">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                Posted Post
+            </p>
+        </div>
+        {{#if userPost.length}}
+        {{#each userPost}}
+    
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    Title: {{title}} <br />
+                    Content: {{body}} <br />
+                    Poster: {{poster.name}} <br />
+                    Eventdate: {{eventdate}} <br />
+                    Fields: {{fields}} <br />
+                    Category:{{category}} <br />
+                    Company: {{company}} <br />
+                    PostDate: {{postdate}} <br />
+                    Auth: {{auth}} <br />
+                </button>
+            </h2>
+
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    {{!-- Check comments and leave comments --}}
+                    <a class="btn btn-primary" href={{link}} role="button"
+                        target="_blank">
+                        Leave comments
+                    </a>
+                     {{#if auth}}
+                    {{!-- Edit comments --}}
+                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
+                        target="_blank">
+                        Edit this post
+                    </a>
+                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
+                        target="_blank">
+                        Remove this post
+                    </a>
+                    {{/if}}
+                </div>
+            </div>
+
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+
+    <br>
+
+    {{!-- Liked Post --}}
+    <div class="accordion" id="follower-post">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                Liked Post
+            </p>
+        </div>
+        {{#if userLike.length}}
+        {{#each userLike}}
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls="{{_id}}">
+                    Title: {{title}} <br />
+                    Content: {{body}} <br />
+                    Poster: {{poster.name}} <br />
+                    Eventdate: {{eventdate}} <br />
+                    Fields: {{fields}} <br />
+                    Category:{{category}} <br />
+                    Company: {{company}} <br />
+                    PostDate: {{postdate}} <br />
+                    Auth: {{auth}} <br />
+                </button>
+            </h2>
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
+                        role="button">
+                        Leave comments
+                    </a>
+                    {{#if auth}}
+                    {{!-- Edit comments --}}
+                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
+                        target="_blank">
+                        Edit this post
+                    </a>
+                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
+                        target="_blank">
+                        Remove this post
+                    </a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+</div>

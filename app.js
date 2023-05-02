@@ -107,6 +107,28 @@ app.use("/skills", (req, res, next) => {
   next();
 });
 
+app.use("/socialmediaposts", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
+app.use("/referral", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
     return res.render("Auth/login", {
@@ -155,8 +177,8 @@ app.use("/", (req, res, next) => {
 
 configRoutes(app);
 
-let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
-console.log(jobHistory);
+// let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
+// console.log(jobHistory);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

@@ -13,4 +13,4 @@ export const groupActivityData = groupActivityFunctions;
 export const teamData = teamDataFunctions;
 export const networkData = networkDataFunctions;
 export const skillsData = skillsDataFunctions;
-export const socailData = socialPostDataFunctions;
+export const socialData = socialPostDataFunctions;

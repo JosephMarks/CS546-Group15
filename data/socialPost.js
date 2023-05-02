@@ -84,17 +84,17 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     if (!Array.isArray(company)) {
       company = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      company = await validation.checkCompanyTags(company);
     }
     if (!Array.isArray(category)) {
       category = [];
     } else {
-      category = validation.checkStringArray2(category, "category");
+      category = validation.checkCategoryTags(category);
     }
     const postCollection = await socialPost();
     return await postCollection
@@ -110,12 +110,12 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     if (!Array.isArray(company)) {
       company = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      company = await validation.checkCompanyTags(company);
     }
     const postCollection = await socialPost();
     return await postCollection
@@ -127,12 +127,12 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     if (!Array.isArray(category)) {
       category = [];
     } else {
-      category = validation.checkStringArray2(category, "category");
+      category = validation.checkCategoryTags(category);
     }
     const postCollection = await socialPost();
     return await postCollection
@@ -144,12 +144,12 @@ const exportedMethods = {
     if (!Array.isArray(company)) {
       company = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      company = await validation.checkCompanyTags(company);
     }
     if (!Array.isArray(category)) {
       category = [];
     } else {
-      category = validation.checkStringArray2(category, "category");
+      category = validation.checkCategoryTags(category);
     }
     const postCollection = await socialPost();
     return await postCollection
@@ -161,7 +161,7 @@ const exportedMethods = {
     if (!Array.isArray(company)) {
       company = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      company = await validation.checkCompanyTags(company);
     }
     const postCollection = await socialPost();
     return await postCollection.find({ company: { $in: company } }).toArray();
@@ -171,7 +171,7 @@ const exportedMethods = {
     if (!Array.isArray(category)) {
       category = [];
     } else {
-      category = validation.checkStringArray2(category, "category");
+      category = validation.checkCategoryTags(category);
     }
     const postCollection = await socialPost();
     return await postCollection.find({ category: { $in: category } }).toArray();
@@ -181,7 +181,7 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     const postCollection = await socialPost();
     return await postCollection.find({ fields: { $in: fields } }).toArray();
@@ -196,21 +196,24 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     if (!Array.isArray(company)) {
       company = [];
     } else {
-      company = validation.checkStringArray2(company, "company");
+      company = await validation.checkCompanyTags(company);
     }
     if (!Array.isArray(category)) {
       category = [];
     } else {
-      category = validation.checkStringArray2(category, "category");
+      category = validation.checkCategoryTags(category);
     }
     const userThatPosted = await userData.getUserById(posterId);
     let postdate = new Date().toUTCString();
+    let newPostId = new ObjectId();
+
     const newPost = {
+      _id: newPostId,
       title: title,
       body: body,
       poster: {
@@ -224,22 +227,22 @@ const exportedMethods = {
       likes: [],
       comments: [],
       postdate: postdate,
+      link: `/socialmediaposts/post/${posterId}/postId/${newPostId}`,
     };
     const postCollection = await socialPost();
     const newInsertInformation = await postCollection.insertOne(newPost);
-    const newId = newInsertInformation.insertedId;
 
     //user post in user database
     let usersCollection = await users();
     let newuserPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(posterId) },
-      { $addToSet: { socialPost: newId.toString() } },
+      { $addToSet: { socialPost: newPostId.toString() } },
       { returnDocument: "after" }
     );
     if (newuserPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
 
-    return await this.getPostById(newId.toString());
+    return await this.getPostById(newPostId.toString());
   },
 
   async removePost(id, userId) {
