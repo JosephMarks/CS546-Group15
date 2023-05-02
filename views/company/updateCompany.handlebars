@@ -2,12 +2,12 @@
 
 <div class="company-container">
         <div class="company">
-            <form class="row g-3 needs-validation" action="/company/data" method="post" enctype="multipart/form-data">
+            <form class="row g-3 needs-validation" action=/company/updateCompany/{{ companyData.companyName }} method="post" enctype="multipart/form-data">
                 <span id="errorDisplay" style="color: red"> {{ error }} </span>
 
                 <div class="col-md-12">
                 <label class="companyName">Company Name</label>
-                <input type="text" class="form-control" id = "companyName" name="companyName" value = {{ companyData.companyName }} required>
+                <input type="text" class="form-control" id = "companyName" name="companyName" value = {{ companyData.companyName }} >
                 </div>
 
                 <div class="col-md-12">
@@ -17,18 +17,21 @@
 
                 <div class="col-md-12">
                     <label for="validationCustom01" class="industry">Industry</label>
-                    <input type="text" class="form-control" id="industry" name="industry" value = {{ companyData.industry }} required>
+                    <input type="text" class="form-control" id="industry" name="industry" value = {{ companyData.industry }} >
                 </div>
 
                 <div class="col-md-12">
-                    <label for="age" class="form-label">Numbers of Employee</label>
-                    <input type="number" class="form-control" id="employee" placeholder="There should be atleast one employee" min="1" max="100000" name="employee" value = {{ companyData.numberOfEmployees }} required>
+                    <label for="employee" class="form-label">Numbers of Employee</label>
+                    <input type="number" class="form-control" id="numberOfEmployees" placeholder="There should be atleast one employee" min="1" max="100000" name="numberOfEmployees" value = {{ companyData.numberOfEmployees }}>
+                </div>
+
+                <div class="col-md-12">
+                    <span> Current Location : {{ companyData.locations }} You should select the current location as well</span>
                 </div>
 
                 <div class="col-md-12">
                     <label for="location">Select the location</label>
-
-                    <select multiple id="location" name="location" required>
+                    <select multiple id="location" name="location">
 
                         <option value="AL">Alabama</option>
                         <option value="AK">Alaska</option>
@@ -87,18 +90,23 @@
                 </div>
 
                 <div class="col-md-12">
+                    <span>Current Image (Please Select the Image or Else no image will be there)</span>
+                    <img src=/public/uploads/{{companyData.imgSrc}} alt="current logo">
+                </div>
+
+                <div class="col-md-12">
                     <label for="uploadImage">Upload Profile Image</label>
-                    <input type="file" name="uploadImage" id="uploadImage"></input>
+                    <input type="file" name="uploadImage" id="uploadImage" value={{ companyData.imgSrc }}></input>
                 </div> 
 
                 <div class="col-md-12">
                     <label for="description">About Company</label>
-                    <textarea name="description" id="description" rows="5" value = {{ companyData.description }}></textarea>
+                    <textarea name="description" id="description" rows="5">{{ companyData.description }}</textarea>
                 </div> 
 
 
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-outline-info">Register Company</button>
+                    <button type="submit" class="btn btn-outline-info">Update Company Details</button>
                 </div>
 
             </form>

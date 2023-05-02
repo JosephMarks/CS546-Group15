@@ -13,7 +13,6 @@ router
             const h1 = "Network";
             const title = "Network";
             res.redirect(`/network/post/${req.session.user.userId}`)
-            // return res.render('networks/network', { title: title, h1: h1 });
         } catch(error)
         {
             return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
@@ -111,11 +110,11 @@ router.route('/post/:userid/new')
         try
         {
             newPost = await networkData.addPost(req.params.userid, post);
+            res.redirect(`/network/post/${req.params.userid}`);
         } catch(error)
         {
             return res.status(500).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
         }
-        res.redirect(`/network/post/${req.params.userid}`);
     })
 
 router.route('/post/:userid/postId/:id')
@@ -357,7 +356,7 @@ router.route('/post/:userid/postId/:id/remove')
         try
         {
             await networkData.removePost(postId);
-            return res.redirect(`/network/post/${userId}`);
+            res.redirect(`/network/post/${userId}`);
         } catch(error)
         {
             return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });

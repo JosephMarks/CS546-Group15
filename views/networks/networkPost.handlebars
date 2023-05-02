@@ -74,7 +74,7 @@
 
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <a class="link-dark">Comments: {{comments.length}}{{!-- &nbsp; Likes: {{likes.length}}--}}</a>&nbsp;
                     {{!-- Check comments and leave comments --}}
                     <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
                         target="_blank">
@@ -117,7 +117,7 @@
             </h2>
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <a class="link-dark">Commits: {{comments.length}}{{!-- &nbsp; Likes: {{likes.length}}; --}} </a>&nbsp
                     <a class="btn btn-primary" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
                         role="button">
                         Leave comments

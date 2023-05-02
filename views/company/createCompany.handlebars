@@ -2,44 +2,23 @@
 
 <div class="company-container">
   <div class="company">
-    <form
-      class="row g-3 needs-validation"
-      action="/company/data"
-      method="post"
-      enctype="multipart/form-data"
-    >
+    <form class="row g-3 needs-validation" action="/company/data" method="post" enctype="multipart/form-data">
       <span id="errorDisplay" style="color: red"> {{error}} </span>
 
       <div class="col-md-12">
         <label class="companyName">Company Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="companyName"
-          name="companyName"
-        />
+        <input type="text" class="form-control" id="companyName" name="companyName" />
       </div>
 
       <div class="col-md-12">
         <label class="companyEmail">Company Email</label>
-        <input
-          type="text"
-          class="form-control"
-          id="companyEmail"
-          value="{{ session.email }}"
-          name="companyEmail"
-          readonly
-        />
+        <input type="text" class="form-control" id="companyEmail" value="{{ session.email }}" name="companyEmail"
+          readonly />
       </div>
 
       <div class="col-md-12">
         <label for="validationCustom01" class="industry">Industry</label>
-        <input
-          type="text"
-          class="form-control"
-          id="industry"
-          name="industry"
-        />
+        <input type="text" class="form-control" id="industry" name="industry" />
       </div>
 
       {{!-- TODO : Make Industry a Select --}}
@@ -47,13 +26,8 @@
 
       <div class="col-md-12">
         <label for="age" class="form-label">Numbers of Employee</label>
-        <input
-          type="number"
-          class="form-control"
-          id="employee"
-          placeholder="There should be atleast one employee"
-          name="employee"
-        />
+        <input type="number" class="form-control" id="employee" placeholder="There should be atleast one employee"
+          name="employee" />
       </div>
 
       <div class="col-md-12">
@@ -124,12 +98,8 @@
 
       <div class="col-md-12">
         <label for="description">About Company</label>
-        <textarea
-          name="description"
-          id="description"
-          rows="5"
-          placeholder="Give A Brief Description About The Company .... "
-        ></textarea>
+        <textarea name="description" id="description" rows="5"
+          placeholder="Give A Brief Description About The Company .... "></textarea>
       </div>
 
       <div class="col-md-12">
