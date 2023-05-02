@@ -313,7 +313,7 @@ const companyFunctions = {
   },
 
   async getAllCompanyName() {
-    let res = [];
+    let res = ["others"];
     let companyNmae = await companyCollection
       .find({}, { projection: { companyName: 1 } })
       .toArray();
@@ -322,6 +322,14 @@ const companyFunctions = {
       res.push(x.companyName);
     }
     return res.sort();
+  },
+  async getAllCompanyNameinObject() {
+    let companyName = await companyCollection
+      .find({}, { projection: { companyName: 1 } })
+      .toArray();
+    if (companyName.length === 0) throw "no company in database";
+    companyName.push({ companyName: "others" });
+    return companyName;
   },
 };
 

@@ -338,6 +338,7 @@ const validations = {
       "engineering",
       "art",
       "music",
+      "others",
     ];
     const checker = (desired, target) =>
       target.every((ele) => desired.includes(ele));

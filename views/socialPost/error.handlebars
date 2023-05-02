@@ -14,11 +14,15 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
@@ -33,6 +37,7 @@
             </div>
         </div>
     </nav>
+
 
     <div class="alert alert-danger" style="margin-top: 2%;" role="alert">
         {{#if error}}

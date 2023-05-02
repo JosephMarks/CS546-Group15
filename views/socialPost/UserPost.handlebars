@@ -14,14 +14,17 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
                     <li class="nav-item">
                         <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
@@ -36,7 +39,7 @@
     </nav>
 
     <br>
-<H1>===={{ auth }}=======</H1>
+
     {{!--Posted Post --}}
     <div class="accordion" id="your-post">
         <div class="accordion-item">
@@ -50,38 +53,35 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
-                    aria-expanded="true" aria-controls="collapseOne">
-                    Title: {{title}} <br />
-                    Content: {{body}} <br />
-                    Poster: {{poster.name}} <br />
-                    Eventdate: {{eventdate}} <br />
-                    Fields: {{fields}} <br />
-                    Category:{{category}} <br />
-                    Company: {{company}} <br />
-                    PostDate: {{postdate}} <br />
-                    Auth: {{auth}} <br />
+                    aria-expanded="true" aria-controls={{_id}}>
+                    Title: {{title}} <br >
+                    Content: {{body}} <br >
+                    Poster: {{poster.name}} <br >
+                    Eventdate: {{eventdate}} <br >
+                    Fields: {{fields}} <br >
+                    Category:{{category}} <br >
+                    Company: {{company}} <br >
+                    PostDate: {{postdate}} <br >
                 </button>
             </h2>
 
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <button type="button" class="like">Like</button>
                     {{!-- Check comments and leave comments --}}
-                    <a class="btn btn-primary" href={{link}} role="button"
+                    <a class="btn btn-primary" target="_blank" href={{link}} role="button"
                         target="_blank">
                         Leave comments
                     </a>
-                     {{#if auth}}
-                    {{!-- Edit comments --}}
-                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
-                        target="_blank">
-                        Edit this post
+                    <a class="btn btn-primary" target="_blank" href={{link}}
+                    role="button">
+                    See this post
                     </a>
-                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
-                        target="_blank">
-                        Remove this post
+                    <a class="btn btn-primary" target="_blank" href='/socialmediaposts/post/{{poster.id}}'
+                    role="button">
+                    See author
                     </a>
-                    {{/if}}
                 </div>
             </div>
 
@@ -105,35 +105,32 @@
             <h2 class="accordion-header">
                 <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
                     aria-expanded="true" aria-controls="{{_id}}">
-                    Title: {{title}} <br />
-                    Content: {{body}} <br />
-                    Poster: {{poster.name}} <br />
-                    Eventdate: {{eventdate}} <br />
-                    Fields: {{fields}} <br />
-                    Category:{{category}} <br />
-                    Company: {{company}} <br />
-                    PostDate: {{postdate}} <br />
-                    Auth: {{auth}} <br />
+                    Title: {{title}} <br >
+                    Content: {{body}} <br >
+                    Poster: {{poster.name}} <br>
+                    Eventdate: {{eventdate}} <br>
+                    Fields: {{fields}} <br >
+                    Category:{{category}} <br >
+                    Company: {{company}} <br >
+                    PostDate: {{postdate}} <br >
                 </button>
             </h2>
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Commits: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
+                    <button type="button" class="like">Like</button>
+                    <a class="btn btn-primary" target="_blank" href={{link}}
                         role="button">
                         Leave comments
                     </a>
-                    {{#if auth}}
-                    {{!-- Edit comments --}}
-                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
-                        target="_blank">
-                        Edit this post
+                    <a class="btn btn-primary" target="_blank" href={{link}}
+                    role="button">
+                    See this post
                     </a>
-                    <a class="btn btn-primary" href="/socialmediaposts/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
-                        target="_blank">
-                        Remove this post
+                    <a class="btn btn-primary" target="_blank" href='/socialmediaposts/post/{{poster.id}}'
+                    role="button">
+                    See author
                     </a>
-                    {{/if}}
                 </div>
             </div>
         </div>
