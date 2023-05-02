@@ -10,6 +10,7 @@ import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
+import { connections } from "mongoose";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -56,6 +57,7 @@ router.route("/:id").get(async (req, res) => {
     res.render("./profile/profile", {
       title: "Profile Page",
       _id: id,
+      isMyProfile: id === req.session.user.userId,
       name: userInfo.name,
       description: userInfo.aboutMe,
       image: image,
@@ -64,6 +66,7 @@ router.route("/:id").get(async (req, res) => {
       connections: connections,
     });
   } catch (e) {
+    console.error(e);
     res.status(404).render("./error", {
       class: "error",
       title: "Error Page",
@@ -125,13 +128,25 @@ router
   .get(async (req, res) => {
     let id = req.params.id;
     try {
+      let allConnectionsFullNamesArray = [];
+      let allConnections = await network.getConnections(id);
+      for (const id of allConnections) {
+        let allConnectionsFullNames = await userData.getUserFullNameById(
+          id.toString()
+        );
+        allConnectionsFullNamesArray.push({
+          id: id,
+          fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
+        });
+      }
+
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
       const conversations = [];
       const userFullNames = []; // Initialize the userFullNames array
 
       for (const id of uniqueConversationUserIds) {
-        const userFullName = await userData.getUserFullNameById(id);
+        const userFullName = await userData.getUserFullNameById(id.toString());
         conversations.push({
           id: id,
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
@@ -146,8 +161,9 @@ router
 
       res.render("./profile/profileMessage", {
         _id: id,
+        connections: allConnections,
         conversations: conversations,
-        userFullNames: userFullNames, // Pass the userFullNames array to the template
+        userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
       console.error(e);
@@ -158,6 +174,36 @@ router
     const receivedInput = req.body;
     const id = req.params.id;
     try {
+      let allConnectionsFullNamesArray = [];
+      let allConnections = await network.getConnections(id);
+      for (const id of allConnections) {
+        let allConnectionsFullNames = await userData.getUserFullNameById(
+          id.toString()
+        );
+        allConnectionsFullNamesArray.push({
+          id: id,
+          fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
+        });
+      }
+
+      const uniqueConversationUserIds =
+        await messageData.getUniqueConversationUserIds(id);
+      const conversations = [];
+      const userFullNames = [];
+
+      for (const id of uniqueConversationUserIds) {
+        const userFullName = await userData.getUserFullNameById(id.toString());
+        conversations.push({
+          id: id,
+          fullName: `${userFullName.firstName} ${userFullName.lastName}`,
+        });
+
+        // Populate the userFullNames array with user IDs and names
+        userFullNames.push({
+          id: id,
+          fullName: `${userFullName.firstName} ${userFullName.lastName}`,
+        });
+      }
       let newMessage = await messageData.create(
         id,
         receivedInput.connection,
@@ -165,13 +211,17 @@ router
         receivedInput.messageInput
       );
       let allMessages = await messageData.getAll(id);
-
+      console.log(uniqueConversationUserIds);
+      console.log(conversations);
       res.render("./profile/profileMessage", {
         _id: id,
-        messages: allMessages, // Pass all messages to the template
+        messages: allMessages,
+        connections: allConnections,
+        conversations: conversations,
+        userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
-      console.error(e); // Log the error to console
+      console.error(e);
       res.status(500).send("Error sending message.");
     }
   });
@@ -191,6 +241,26 @@ router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send("Error retrieving conversation.");
+  }
+});
+
+router.get("/:id/connect", async (req, res) => {
+  const userId = req.session.user.userId;
+  const followerId = req.params.id;
+
+  try {
+    const newConnection = await network.addConnections(userId, followerId);
+    const newConnection2 = await network.addConnections(followerId, userId);
+
+    res.render("./profile/profile", {
+      connectionMessage: "Congratulations, you are now connected!",
+      _id: followerId,
+    });
+  } catch (e) {
+    console.error(e); // Log the error to console
+    res.render("./error", {
+      message: e,
+    });
   }
 });
 
