@@ -33,6 +33,7 @@
         <img src="data:image/png;base64,{{image}}" alt="Group Image" />
       {{/if}}
       <div>
+        {{#if isMyProfile}}
         <a href="/profile/{{_id}}/edit"><button>Edit</button></a>
         <a href="/profile/{{_id}}/messaging">
           <button class="btn btn-primary">
@@ -41,7 +42,10 @@
           </button>
         </a>
         <a href="/groups"><button>Go to Groups</button></a>
-
+        {{else}}
+        <a href="/profile/{{_id}}/connect/"><button>Add Friend</button></a>
+        {{connectionMessage}}
+      {{/if}}
         <h2>{{name}}</h2>
         <h2>Description: {{description}}</h2>
 

@@ -167,8 +167,7 @@ router.post("/:id", upload.single("image"), async (req, res) => {
 router.get("/:id/join", async (req, res) => {
   const id = req.params.id;
   console.log(id);
-  console.log(req.session.user);
-
+  console.log(req.session.user.userId);
   try {
     let joinedGroup = await groupData.addUser(id, req.session.user.userId);
     if (joinedGroup) {
