@@ -1,0 +1,35 @@
+<div class="main-jobs-main">
+
+    <span id="errorDisplay" style="color: red"> {{error}} </span>
+
+    <div class="main-class">
+
+        <div class="jobId">
+            Job Id : {{{ jobData._id }}}
+        </div>
+
+        <div id="JobTitle">
+            Job Title : {{{ jobData.jobTitle }}}
+        </div>
+
+        <div id="skills">
+            Skills : {{{ jobData.skills }}}
+        </div>
+
+        <div id="salary">
+            Salary : {{{ jobData.salary }}}
+        </div>
+
+        <div id="location">
+            Location : {{{ jobData.location }}}
+        </div>
+
+        <div id="description">
+            Description : {{{ jobData.description }}}
+        </div>
+
+    </div>
+
+</div>
+
+{{!-- TODO : TOTALLY, XSS, AND CLIENT SIDE, STATUS CODE --}}
