@@ -54,6 +54,8 @@ router.route("/data").post(async (req, res) => {
     return res.status(400).render('Auth/signup', { error : e, title: 'Error' });
   }
 
+  // console.log(lastName);
+
   try {
     const newData = await signUpFunctions.createUser(
       firstName.trim(),

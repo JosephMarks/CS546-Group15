@@ -649,5 +649,37 @@ router.route('/follower/:userId/create')
         }
         res.redirect(`/network/follower/${userId}`);
     })
-
+router.route('/like')
+    .post(async (req, res) =>
+    {
+        let postId = xss(req.body.postId);
+        let userId = xss(req.body.userId);
+        let checkInfo;
+        try
+        {
+            validation.checkParamsAndSessionId(userId, req.session.user.userId)
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+        try
+        {
+            checkInfo = await networkData.checkLikes(postId, userId);
+        } catch(error)
+        {
+            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+        }
+        if(checkInfo)
+        {
+            await networkData.addLikes(xss(req.body.postId), xss(req.body.userId));
+        } else
+        {
+            await networkData.removeLikes(xss(req.body.postId), xss(req.body.userId));
+        }
+        const post = await networkData.getPostById(postId);
+        console.log(post)
+        const title = post.content;
+        const author = await userData.getUserById(post.userId)
+        return res.render('networks/followerPostComments', { title: title, h1: title, post: post, userId: req.params.userId, followerId: post.userId, author: author });
+    })
 export default router;
