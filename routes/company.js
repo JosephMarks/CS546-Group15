@@ -3,6 +3,7 @@ import companyFunctions from "../data/company.js";
 const router = Router();
 import multer from "multer";
 import validations from "../helpers.js";
+import { ObjectId } from "mongodb";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,6 +26,7 @@ router.route("/").get(async (req, res) => { // done
     if (ifExists) {
       return res.redirect(`/company/data/${ifExists.companyName}`);
     } else {
+
       return res.render("company/createCompany", {
         title: "Create Company",
         session: req.session.user,
@@ -79,7 +81,13 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
     companyName = companyName.trim().toLowerCase();
     industry = industry.trim().toLowerCase();
     description = description.trim().toLowerCase();
+
+    if (typeof(location) === 'string'){
+      location = [location];
+    }
+
     location = location.map((x) => x.trim());
+   
     validations.isNumberOfEmployee(employee);
     employee = Number(employee);
 
@@ -419,6 +427,29 @@ router.route("/viewJob/:name").get(async (req, res) => {
   }
 });
 
+router.route("/jobUpdate/:id").get(async (req, res) => { // get for job update 
+
+  let id = req.params.id;
+  if (!id || !ObjectId.isValid(id)) {
+    return res.status(400).render('error', { error: "No Id or Invalid Id" });
+  }
+
+  try {
+
+    let getJob = await companyFunctions.getJobById(id);
+    if (!getJob || getJob.length === 0) throw "Error : No Job Found";
+    else return res.render('company/updateJob', { title: 'Edit Job', jobDetail: getJob }); 
+
+  } catch (e) {
+    if (e === "Error : Invalid Id" || e === "Error : No Job Found") {
+      return res.status(404).render('error', { title: "Error", error: e });
+    } else {
+      return res.status(500).render('error', { title: 'Error', error: 'Server Error' });
+    }
+  }
+
+});
+
 router.route("/jobUpdate/:id").post(async (req, res) => { // update page for jobs
 
   const bodyData = req.body;
@@ -519,10 +550,39 @@ router.route("/jobDetails/:id").get(async (req, res) => {
   // let jobDetail = await companyFunctions.getJobById()
   // return console.log(jobDetail);
 
-})
+});
+
+router.route("/jobSingleDisplay/:id").get(async (req, res) => {
+
+  let id = req.params.id.replace(":", "");
+  console.log(id);
+  console.log(ObjectId.isValid(id));
+  if (!id || !ObjectId.isValid(id)) {
+    return res.status(400).render('error', { error: "No Id or Invalid Id" });
+  }
+
+  try {
+
+    let getJob = await companyFunctions.getJobById(id);
+    console.log(getJob);
+
+    if (!getJob || getJob.length === 0) throw "Error : No Job Found";
+    else return res.render('company/displaySingleJob', { title: 'View Job', jobData: getJob.jobs[0] }); 
+
+  } catch (e) {
+    if (e === "Error : Invalid Id" || e === "Error : No Job Found") {
+      return res.status(404).render('error', { title: "Error", error: e });
+    } else {
+      return res.status(500).render('error', { title: 'Error', error: 'Server Error' });
+    }
+  }
+
+});
 
 // TODO : Remove all console.logs 
 
 // --- GET AND CREATE JOBS
+
+
 
 export default router;
