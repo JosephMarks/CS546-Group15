@@ -6,6 +6,8 @@ import multer from "multer";
 const upload = multer();
 import fs from "fs";
 import * as groupActivityFn from "../data/groupActivity.js";
+import userData from "../data/user.js";
+import { users } from "../config/mongoCollections.js";
 
 router.route("/").get(async (req, res) => {
   try {
