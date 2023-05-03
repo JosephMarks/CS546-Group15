@@ -76,7 +76,7 @@ button:hover {
 /*  About us  */
 
 /*  sign up  */
-.signup-container{
+.signup-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@ button:hover {
 
 /*  log in  */
 
-.login-container{
+.login-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -161,13 +161,14 @@ button:hover {
   animation: fadeInAnimation ease 2s;
 }
 
-.main-center{
+.main-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .main-company-main {
-  width:50%;
+  width: 50%;
   display: flex;
   justify-content: center;
 }
@@ -232,6 +233,56 @@ button:hover {
   padding: 5px;
 }
 
+/* Network */
+.nav-item #network-new-post-button {
+  background-color: #1300bb;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #003994;
+  --bs-accordion-active-bg: #003994;
+}
+
+.accordion-item .your-post-button {
+  background-color: #003994;
+}
+
+.accordion-item .follower-button {
+  background-color: #003994;
+}
+
+#network-add-button{
+  background-color: #003994;
+}
+
+#network-follower-remove-button{
+  background-color: #003994;
+}
+
+#follower-comment-button{
+  background-color: #003994;
+}
+
+#network-your-post-comment-button{
+  background-color: #003994;
+}
+
+#your-post-edit-button{
+  background-color: #003994;
+}
+
+#your-post-remove-button{
+  background-color: #003994;
+}
+
+/* skills */
+#skill-api-search-button{
+  background-color: #003994;
+}
+
+#skills-create-new-post-button{
+  background-color: #003994;
+}
 
 @media(max-width: 1200px) {
   #about-us-container {

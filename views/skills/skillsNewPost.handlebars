@@ -1,4 +1,4 @@
-<h1>{{h1}}</h1>
+<h1 style="color: rgb(255, 255, 255); background-color: #d28200;">{{h1}}</h1>
 <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
         <div class="container-fluid">
@@ -46,8 +46,10 @@
                     Content
                 </label>
                 <br>
-                <textarea id="post-body" name="article" rows="4" placeholder="Post Content"
-                    class="form-control full-width-input">{{article}}</textarea>
+                <grammarly-editor-plugin>
+                    <textarea id="post-body" name="article" rows="4" placeholder="Post Content"
+                        class="form-control full-width-input">{{article}}</textarea>
+                </grammarly-editor-plugin>
             </div>
 
             <fieldset class="mb-2">
@@ -126,9 +128,10 @@
                         class="full-width-input" />
                 </label>
             </div>
-            <button type="submit">Create New Post</button>
+            <button id="skills-create-new-post-button" type="submit">Create New Post</button>
             <div id="error"></div>
             {{error}}
         </form>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@grammarly/editor-sdk?clientId=client_PRrRfaCCawua6gWC2tERxd"></script>

@@ -11,11 +11,35 @@ router.route("/").get(async (req, res) => {
   skills.map((ele) => {
     ele.tags = ele.tags.split(",");
   });
+
+  const request = {
+    method: "GET",
+    url: "https://motivational-quotes-quotable-api.p.rapidapi.com/motivational_quotes",
+    headers: {
+      "X-RapidAPI-Key": "7fe356965emsha4a36952851d8cdp17f29bjsn1cff5cbe731a",
+      "X-RapidAPI-Host": "motivational-quotes-quotable-api.p.rapidapi.com",
+    },
+  };
+
+  let quotes;
+  try {
+    quotes = (await axios.request(request)).data;
+  } catch (error) {
+    return res.status(404).render("skills/error", {
+      title: "error",
+      h1: "error",
+      userId: req.session.user.userId,
+      error: error,
+      img: "https://http.dog/404.jpg",
+    });
+  }
+
   return res.render("skills/skillsHome", {
     title: "Skills Home",
     h1: "Skills Home",
     Id: req.session.user.userId,
     skills: skills,
+    quotes: quotes,
   });
 });
 
@@ -28,14 +52,13 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-        });
+      return res.status(401).render("skills/error", {
+        title: "Error",
+        h1: "Error",
+        userId: req.session.user.userId,
+        error: error,
+        img: "https://http.dog/401.jpg",
+      });
     }
     return res.render("skills/skillsNewPost", {
       title: "New Post",
@@ -57,65 +80,58 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-        });
+      return res.status(401).render("skills/error", {
+        title: "Error",
+        h1: "Error",
+        userId: req.session.user.userId,
+        error: error,
+        img: "https://http.dog/401.jpg",
+      });
     }
 
     try {
       userId = validations.checkId(userId);
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/skillsNewPost", {
-          title: "New Post",
-          h1: "New Post",
-          Id: req.session.user.userId,
-          postTitle: postTitle,
-          article: article,
-          interest: interest,
-          url: url,
-          error: error,
-        });
+      return res.status(400).render("skills/skillsNewPost", {
+        title: "New Post",
+        h1: "New Post",
+        Id: req.session.user.userId,
+        postTitle: postTitle,
+        article: article,
+        interest: interest,
+        url: url,
+        error: error,
+      });
     }
 
     try {
       postTitle = validations.checkString(postTitle, "Title");
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/skillsNewPost", {
-          title: "New Post",
-          h1: "New Post",
-          Id: req.session.user.userId,
-          postTitle: postTitle,
-          article: article,
-          interest: interest,
-          url: url,
-          error: error,
-        });
+      return res.status(400).render("skills/skillsNewPost", {
+        title: "New Post",
+        h1: "New Post",
+        Id: req.session.user.userId,
+        postTitle: postTitle,
+        article: article,
+        interest: interest,
+        url: url,
+        error: error,
+      });
     }
 
     try {
       article = validations.checkString(article, "Article");
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/skillsNewPost", {
-          title: "New Post",
-          h1: "New Post",
-          Id: req.session.user.userId,
-          postTitle: postTitle,
-          article: article,
-          interest: interest,
-          url: url,
-          error: error,
-        });
+      return res.status(400).render("skills/skillsNewPost", {
+        title: "New Post",
+        h1: "New Post",
+        Id: req.session.user.userId,
+        postTitle: postTitle,
+        article: article,
+        interest: interest,
+        url: url,
+        error: error,
+      });
     }
 
     try {
@@ -129,40 +145,42 @@ router
         "https://www.youtube.com/embed/"
       );
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/skillsNewPost", {
-          title: "New Post",
-          h1: "New Post",
-          Id: req.session.user.userId,
-          postTitle: postTitle,
-          article: article,
-          interest: interest,
-          url: url,
-          error: error,
-        });
+      return res.status(400).render("skills/skillsNewPost", {
+        title: "New Post",
+        h1: "New Post",
+        Id: req.session.user.userId,
+        postTitle: postTitle,
+        article: article,
+        interest: interest,
+        url: url,
+        error: error,
+      });
     }
 
     try {
       interest = validations.checkTags(interest, "Interest");
     } catch (error) {
-      return res
-        .status(400)
-        .render("skills/skillsNewPost", {
-          title: "New Post",
-          h1: "New Post",
-          Id: req.session.user.userId,
-          postTitle: postTitle,
-          article: article,
-          interest: interest,
-          url: url,
-          error: error,
-        });
+      return res.status(400).render("skills/skillsNewPost", {
+        title: "New Post",
+        h1: "New Post",
+        Id: req.session.user.userId,
+        postTitle: postTitle,
+        article: article,
+        interest: interest,
+        url: url,
+        error: error,
+      });
     }
     try {
       await skillsData.createSkills(userId, postTitle, article, url, interest);
     } catch (error) {
-      return res.status(404).json(error);
+      return res.status(400).render("skills/error", {
+        title: "Error",
+        h1: "Error",
+        userId: req.session.user.userId,
+        error: error,
+        img: "https://http.dog/400.jpg",
+      });
     }
     res.redirect("/skills");
   });
