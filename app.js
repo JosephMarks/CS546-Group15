@@ -176,6 +176,13 @@ app.use("/", (req, res, next) => {
   return next();
 });
 
+let updatedGroup = await groupEventsData.update(
+  "64348d1b2f4dd57a63bba048",
+  "64348d51a0c96da3a556b5f5",
+  { title: "the new title", eventDate: "09/30/2023" }
+);
+console.log(updatedGroup);
+
 configRoutes(app);
 
 app.listen(3000, () => {

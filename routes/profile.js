@@ -52,8 +52,8 @@ router.route("/:id").get(async (req, res) => {
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
+    connections = connections.slice(0, 5);
     console.log(connections);
-    connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
       title: "Profile Page",

@@ -191,4 +191,24 @@ router.get("/:id/join", async (req, res) => {
   }
 });
 
+router.get("/:id/event", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let groupInfo = await groupData.get(id);
+    res.render("./groups/eventEdit", {
+      _id: id,
+      name: groupInfo.name,
+      description: groupInfo.description,
+      image: groupInfo.base64Image,
+    });
+  } catch (e) {
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a venue with that id does not exist .`,
+    });
+  }
+});
+
 export default router;

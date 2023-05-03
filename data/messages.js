@@ -143,7 +143,15 @@ export const getUniqueConversationUserIds = async (userId) => {
       allConversationUserIds.push(userId);
     }
   }
+  let uniqueValues = [];
 
-  // Return the array of unique user IDs
-  return allConversationUserIds;
+  for (const item of allConversationUserIds) {
+    const itemString = item.toString();
+
+    if (!uniqueValues.some((value) => value.toString() === itemString)) {
+      uniqueValues.push(item);
+    }
+  }
+
+  return uniqueValues;
 };

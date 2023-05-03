@@ -21,7 +21,7 @@ export const create = async (groupId, title) => {
   }
 
   let eventDate;
-  let users;
+  let users = [];
   let image;
 
   let newObjectId = new ObjectId();
@@ -358,6 +358,109 @@ export const removeUser = async (groupId, eventId, user) => {
 
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the event title successfully");
+  }
+  return updatedInfo;
+};
+
+export const update = async (groupId, eventId, newAttributes) => {
+  groupId = groupId.trim();
+  eventId = eventId.trim();
+
+  if (!groupId || !eventId) {
+    throw new Error("Parameters groupId and eventId must be provided");
+  }
+
+  if (typeof groupId !== "string" || typeof eventId !== "string") {
+    throw new Error("Parameters groupId and eventId must be of type string");
+  }
+
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+
+  if (newAttributes.users) {
+    if (typeof newAttributes.users !== "string") {
+      throw new Error("Users must be of type string");
+    }
+    if (!ObjectId.isValid(newAttributes.users)) {
+      throw new Error("Users must be a valid ObjectId");
+    }
+  }
+
+  if (newAttributes.image) {
+    if (
+      typeof newAttributes.image.buffer !== "object" ||
+      !(newAttributes.image.buffer instanceof Buffer)
+    ) {
+      throw new Error("Image must have a valid buffer");
+    }
+    newAttributes.base64Image = newAttributes.image.buffer.toString("base64");
+  }
+
+  if (newAttributes.eventDate) {
+    if (typeof newAttributes.eventDate !== "string") {
+      throw new Error("Parameters must be of type string");
+    }
+    if (newAttributes.eventDate.length === 0) {
+      throw new Error("Cannot be an empty string");
+    }
+
+    const dateObject = parse(newAttributes.eventDate, "MM/dd/yyyy", new Date());
+    if (!isValid(dateObject)) {
+      throw new Error("Date is not of proper format");
+    }
+
+    let dateArray = [];
+    dateArray = newAttributes.eventDate.split("/");
+    if (dateArray.length < 3) {
+      throw new Error("This is not valid");
+    }
+    if (dateArray.length !== 3) {
+      throw new Error("This is not valid");
+    }
+    if (
+      dateArray[0].length !== 2 ||
+      dateArray[1].length !== 2 ||
+      dateArray[2].length !== 4
+    ) {
+      throw new Error("This is not valid format");
+    }
+    let yearString;
+    let yearValue;
+    yearString = dateArray[2];
+    yearValue = Number(yearString);
+    if (yearValue < 2023 || yearValue > 2025) {
+      throw new Error("The date is out of the appropriate range");
+    }
+  }
+
+  const updateData = {};
+  for (const [key, value] of Object.entries(newAttributes)) {
+    if (typeof value !== "undefined") {
+      updateData[`events.$.${key}`] = value;
+    }
+  }
+
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(eventId),
+        },
+      },
+    },
+    { $set: updateData },
+    { returnDocument: "after" }
+  );
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the event successfully");
   }
   return updatedInfo;
 };
