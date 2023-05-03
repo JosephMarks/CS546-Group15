@@ -130,7 +130,6 @@ export const getUniqueConversationUserIds = async (userId) => {
   const sentMessages = await messageCollection
     .find({ originUserId: ObjectUserId })
     .toArray();
-  console.log({ receivedMessages, sentMessages, userId });
   for (const message of receivedMessages) {
     const userId = message.originUserId;
     if (!allConversationUserIds.includes(userId)) {
