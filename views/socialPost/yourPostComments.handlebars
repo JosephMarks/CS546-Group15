@@ -14,34 +14,19 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/network/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Your Follower
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/follower/{{userId}}">Get & Remove Your
-                                    Connections
-                                    Info.</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/follower/{{userId}}/create">Create New
-                                    Connections</a>
-                            </li>
-
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
+                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
@@ -60,9 +45,32 @@
             <div class="text-center">
                 <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h6>
             </div>
-            <h5 class="card-title">{{post.content}}</h5>
+            <h5 class="card-title">Content: {{post.body}}</h5>
+            <h5 class="card-title">Eventdate: {{post.eventdate}}</h5>
+            <h5 class="card-title">Fields: {{post.fields}}</h5>
+            <h5 class="card-title">Category: {{post.category}}</h5>
+            <h5 class="card-title">Company: {{post.company}}</h5>
             <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
-                {{author.fname}}&nbsp;{{author.lname}}</h6>
+                {{fname}}&nbsp;{{lname}}</h6>
+            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Posted date: 
+            {{post.postdate}}</h6>
+            {{#if post.modifieddate}}
+            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Modified date: 
+            {{post.modifieddate}}</h6>
+            {{/if}}
+                               {{!-- Edit comments --}}
+            {{#if auth}}
+            <a class="btn btn-primary" href="{{post.link}}/edit" role="button"
+                target="_blank">
+                Edit this post
+            </a>
+            <a class="btn btn-primary" href="{{post.link}}/remove" role="button"
+                target="_blank">
+                Remove this post
+            </a>
+               <br>
+                  <br>
+            {{/if}}
             <div class="text-center">
                 <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Comments</h6>
             </div>
@@ -70,6 +78,7 @@
             {{#each post.comments}}
             <p class="card-text mb-0 ">{{comments}}</p>
             <p class="text-body-secondary fst-italic text-decoration-underline">{{fname}}&nbsp;{{lname}} </p>
+         
             {{/each}}
             {{/if}}
 
@@ -77,11 +86,10 @@
             {{!-- <div class="text-center">
                 <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Likes</h6>
             </div>
-            <button id="like-button">Like</button>
-            <p id="like-counter" class="card-text text-center">{{post.likes.length}}</p> --}}
+            <p class="card-text text-center">{{post.likes.length}}</p> --}}
         </div>
 
-        <form method="post" id="network-post-follower-commit">
+        <form method="post" id="network-post-your-commit">
             <div class="form-floating">
                 <label for="network-comments">
                 </label>
@@ -92,18 +100,7 @@
                 </div>
             </div>
         </form>
-        {{#if hasErrors}}
-        <ul class="error-list">
-            {{#each errors}}
-            <li>
-                {{this}}
-            </li>
-            {{/each}}
-        </ul>
-        {{/if}}
+        <div id="error"></div>
+        {{error}}
     </div>
-
 </div>
-{{!-- <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-    crossorigin="anonymous"></script> --}}
-{{!-- <script src="/public/js/ajax_likeButton.js"></script> --}}

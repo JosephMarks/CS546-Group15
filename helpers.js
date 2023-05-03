@@ -447,6 +447,42 @@ const validations = {
     if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
     return arr;
   },
+  checkArrNumber(arr) {
+    for (let x of arr) {
+      if (!Number(x)) {
+        return false;
+      }
+    }
+    return true;
+  },
+  checkDate(date) {
+    console.log(typeof date);
+    if (!date || typeof date !== "string")
+      throw "You should input eventDate in string.";
+    if (date.trim().length === 0)
+      throw "The input eventDate should not be empty strings.(YYYY-MM-DD)";
+    date = date.trim();
+    if (
+      !date.includes("-") ||
+      date.split("-").length !== 3 ||
+      !checkArrNumber(date.split("-"))
+    )
+      throw "The input eventDate should be valid date format strings. (YYYY-MM-DD)";
+    let dateArr = date.split("-");
+    //Reference date format recognition: https://blog.csdn.net/qq_17627195/article/details/111486466
+    if (!Date.parse(new Date(date)))
+      throw "The input date should be valid date format strings. (YYYY-MM-DD)";
+    if (Number(dateArr[0]) < 1990 || Number(dateArr[0]) > 2050)
+      throw "The date should be a number between 1990 and 2050.";
+    return date;
+  },
 };
-
+const checkArrNumber = (arr) => {
+  for (let x of arr) {
+    if (!Number(x)) {
+      return false;
+    }
+  }
+  return true;
+};
 export default validations;

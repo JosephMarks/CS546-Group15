@@ -1,13 +1,13 @@
 import { Router } from "express";
 const router = Router();
-import { socialData, userData } from "../data/index.js";
+import { socialPostData, userData, companyData } from "../data/index.js";
 import validation from "../helpers.js";
 import xss from "xss";
 
 router.route("/").get(async (req, res) => {
   try {
     res.redirect(`/socialmediaposts/post/${req.session.user.userId}`);
-    // return res.render('socialPost/network', { title: title, h1: h1 });
+    // return res.render('socialPost/socialPost', { title: title, h1: h1 });
   } catch (error) {
     return res.status(400).render("socialPost/error", {
       title: "error",
@@ -18,59 +18,73 @@ router.route("/").get(async (req, res) => {
   }
 });
 
-router.route("/post/:userid").get(async (req, res) => {
-  try {
-    req.params.userid = validation.checkId(req.params.userid);
-  } catch (error) {
-    return res.status(400).render("socialPost/error", {
-      title: "error",
-      h1: "error",
-      userId: req.session.user.userId,
-      error: error,
+router
+  .route("/post/:userid")
+  .get(async (req, res) => {
+    try {
+      req.params.userid = validation.checkId(req.params.userid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    const title = "Post";
+    const h1 = "Post";
+    let userPostedPostList, userLikedPostList;
+
+    try {
+      userPostedPostList = await socialPostData.getPostedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      userLikedPostList = await socialPostData.getLikedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    let authorId = req.params.userid;
+    let userId = req.session.user.userId;
+
+    return res.render("socialPost/UserPost", {
+      title: title,
+      h1: h1,
+      userId: userId,
+      userPost: userPostedPostList,
+      userLike: userLikedPostList,
+      authorId: authorId,
     });
-  }
+  })
+  .post(async (req, res) => {
+    let userId = req.session.user.userId;
+    let postId = req.body.postid;
 
-  const title = "Post";
-  const h1 = "Post";
-  let userPostedPostList, userLikedPostList;
-
-  try {
-    userPostedPostList = await socialData.getPostedPostByUserId(
-      req.params.userid
-    );
-  } catch (error) {
-    return res.status(400).render("socialPost/error", {
-      title: "error",
-      h1: "error",
-      userId: req.session.user.userId,
-      error: error,
-    });
-  }
-
-  try {
-    userLikedPostList = await socialData.getLikedPostByUserId(
-      req.params.userid
-    );
-  } catch (error) {
-    return res.status(400).render("socialPost/error", {
-      title: "error",
-      h1: "error",
-      userId: req.session.user.userId,
-      error: error,
-    });
-  }
-
-  let authorId = req.params.userid;
-  let userId = req.session.user.userId;
-
-  return res.render("socialPost/UserPost", {
-    title: title,
-    h1: h1,
-    userId: userId,
-    userPost: userPostedPostList,
-    userLike: userLikedPostList,
+    if (await socialPostData.checkLikes(postId, userId)) {
+      await socialPostData.addLikes(postId, userId);
+    } else {
+      await socialPostData.removeLikes(postId, userId);
+    }
+    return res.redirect(`/socialmediaposts/post/${req.params.userid}`);
   });
-});
 
 router
   .route("/post/:userid/new")
@@ -99,15 +113,16 @@ router
         error: error,
       });
     }
+    let companyList = await companyData.getAllCompanyNameinObject();
 
     return res.render("socialPost/createNewPost", {
       title: "New Post",
       h1: "New Post",
       userId: req.session.user.userId,
+      companyList: companyList,
     });
   })
   .post(async (req, res) => {
-    let post = xss(req.body.post);
     try {
       validation.checkParamsAndSessionId(
         req.params.userid,
@@ -121,21 +136,108 @@ router
         error: error,
       });
     }
-
+    let posttitle = xss(req.body.posttitle);
+    let postbody = xss(req.body.postbody);
+    let eventdate = xss(req.body.eventdate).toString();
+    let field = [];
+    if (xss(req.body.field).includes(",")) {
+      field = xss(req.body.field).split(",");
+    } else {
+      field.push(xss(req.body.field));
+    }
+    let category = [];
+    if (xss(req.body.category).includes(",")) {
+      category = xss(req.body.category).split(",");
+    } else {
+      category.push(xss(req.body.category));
+    }
+    let company = [];
+    if (xss(req.body.company).includes(",")) {
+      company = xss(req.body.company).split(",");
+    } else {
+      company.push(xss(req.body.company));
+    }
+    let posterId = req.session.user.userId;
+    let userId = req.params.userid;
+    let companyList = await companyData.getAllCompanyNameinObject();
     try {
-      post = validation.checkString(post, "Post");
+      posttitle = validation.checkString(posttitle, "Post title");
     } catch (error) {
       return res.render("socialPost/createNewPost", {
-        error: error,
-        post: post,
-        userId: req.params.userid,
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
       });
     }
-
+    try {
+      postbody = validation.checkString(postbody, "Post body");
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      eventdate = validation.checkDate(eventdate);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      field = validation.checkFieldsTags(field);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      category = validation.checkCategoryTags(category);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      company = await validation.checkCompanyTags(company);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
     let newPost;
     try {
-      newPost = await networkData.addPost(req.params.userid, post);
-      res.redirect(`/network/post/${req.params.userid}`);
+      newPost = await socialPostData.addPost(
+        posttitle,
+        postbody,
+        posterId,
+        eventdate,
+        field,
+        company,
+        category
+      );
+      res.redirect(`/socialmediaposts/post/${req.params.userid}`);
     } catch (error) {
       return res.status(500).render("socialPost/error", {
         title: "error",
@@ -149,12 +251,16 @@ router
 router
   .route("/post/:userid/postId/:id")
   .get(async (req, res) => {
-    let post, author;
+    let post, postid, author, authorid;
+    postid = req.params.id;
+    authorid = req.params.userid;
+    let auth = false;
+    if (authorid === req.session.user.userId) {
+      auth = true;
+    }
+
     try {
-      validation.checkParamsAndSessionId(
-        req.params.userid,
-        req.session.user.userId
-      );
+      post = await socialPostData.getPostById(postid);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -165,7 +271,7 @@ router
     }
 
     try {
-      post = await networkData.getPostById(req.params.id);
+      author = await userData.getUserById(authorid);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -175,23 +281,13 @@ router
       });
     }
 
-    try {
-      author = await userData.getUserById(post.userId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    const title = post.content;
-    const h1 = post.content;
+    const title = post.title;
+    const h1 = post.title;
     res.render("socialPost/yourPostComments", {
       title: title,
       userId: req.params.userid,
       h1: h1,
+      auth: auth,
       post: post,
       fname: author.fname,
       lname: author.lname,
@@ -199,20 +295,10 @@ router
   })
   .post(async (req, res) => {
     let updatedData = xss(req.body.comments);
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userid,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
+    let auth = false;
+    if (authorid === req.session.user.userId) {
+      auth = true;
     }
-
     try {
       req.params.id = validation.checkId(req.params.id, "ID");
     } catch (e) {
@@ -227,7 +313,7 @@ router
     try {
       updatedData = validation.checkString(updatedData, "Comment");
     } catch (error) {
-      const post = await networkData.getPostById(req.params.id);
+      const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(post.userId);
       const title = post.content;
       const h1 = post.content;
@@ -235,6 +321,7 @@ router
         title: title,
         h1: h1,
         post: post,
+        auth: auth,
         fname: author.fname,
         lname: author.lname,
         error: error,
@@ -243,12 +330,12 @@ router
     }
 
     try {
-      const updatedPost = await networkData.addComments(
+      const updatedPost = await socialPostData.addComments(
         req.params.id,
         req.params.userid,
         updatedData
       );
-      const post = await networkData.getPostById(req.params.id);
+      const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(req.params.userid);
       const title = post.content;
       const h1 = post.content;
@@ -260,7 +347,9 @@ router
         error: error,
       });
     }
-    res.redirect(`/network/post/${req.params.userid}`);
+    res.redirect(
+      `/socialmediaposts/post/${req.params.userid}/postId/${req.params.id}`
+    );
   });
 
 router
@@ -282,7 +371,18 @@ router
     }
 
     try {
-      post = await networkData.getPostById(req.params.id);
+      post = await socialPostData.getPostById(req.params.id);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let o = post.poster.id.toString();
+    try {
+      author = await userData.getUserById(o);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -293,18 +393,11 @@ router
     }
 
     try {
-      author = await userData.getUserById(post.userId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      if (author._id !== req.params.userid)
+      if (
+        author._id !== req.params.userid ||
+        author._id !== req.session.user.userId ||
+        req.session.user.userId !== req.params.userid
+      )
         throw `You have no right to modify this post!`;
     } catch (error) {
       return res.status(400).render("socialPost/error", {
@@ -314,25 +407,26 @@ router
         error: error,
       });
     }
+    let companyList = await companyData.getAllCompanyNameinObject();
 
-    const title = post.content;
-    const h1 = post.content;
+    const title = post.title;
+    const h1 = post.title;
     res.render("socialPost/yourPostEdit", {
       title: title,
       h1: h1,
       post: post,
       userId: req.params.userid,
+      postId: req.params.id,
+      companyList: companyList,
     });
   })
   .patch(async (req, res) => {
     let userId = req.params.userid;
     let postId = req.params.id;
-    let content = req.body.content;
 
     try {
       userId = validation.checkId(userId, "User ID");
       postId = validation.checkId(postId, "Post ID");
-      if (content) content = validation.checkString(content, "Post");
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -357,9 +451,91 @@ router
     }
 
     try {
-      const userIdByPostId = await networkData.getPostById(postId);
-      if (userIdByPostId.userId !== userId)
+      const userIdByPostId = await socialPostData.getPostById(postId);
+      if (userIdByPostId.poster.id.toString() !== userId)
         throw "Error: You have no right to modify this post!";
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let title = xss(req.body.posttitle);
+    let body = xss(req.body.postbody);
+    let eventdate = xss(req.body.eventdate).toString();
+
+    let fields = xss(req.body.field);
+    let category = xss(req.body.category);
+    let company = xss(req.body.company);
+    if (title) {
+      title = validation.checkString(title, "title");
+    }
+    if (body) {
+      body = validation.checkString(body, "Content");
+    }
+    let field = [];
+    if (fields) {
+      if (xss(req.body.field).includes(",")) {
+        field = xss(req.body.field).split(",");
+      } else {
+        field.push(xss(req.body.field));
+      }
+      fields = field;
+    }
+    let categorys = [];
+    if (category) {
+      if (xss(req.body.category).includes(",")) {
+        categorys = xss(req.body.category).split(",");
+      } else {
+        categorys.push(xss(req.body.category));
+      }
+      category = categorys;
+    }
+    let companys = [];
+    if (company) {
+      if (xss(req.body.company).includes(",")) {
+        companys = xss(req.body.company).split(",");
+      } else {
+        companys.push(xss(req.body.company));
+      }
+      company = companys;
+    }
+
+    if (eventdate) {
+      eventdate = validation.checkDate(eventdate);
+    }
+    try {
+    } catch (error) {}
+    let updatePost = {
+      title: title,
+      body: body,
+      poster: { id: userId },
+      fields: fields,
+      category: category,
+      company: company,
+      eventdate: eventdate,
+    };
+    try {
+      let updated = await socialPostData.updatePost(postId, updatePost);
+      console.log("this");
+      console.log(updated);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    res.redirect(`/socialmediaposts/post/${userId}/postId/${postId}`);
+  });
+router
+  .route("/search/:userid")
+  .get(async (req, res) => {
+    try {
+      req.params.userid = validation.checkId(req.params.userid);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -370,7 +546,10 @@ router
     }
 
     try {
-      await networkData.updatePost(postId, content);
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -379,7 +558,267 @@ router
         error: error,
       });
     }
-    res.redirect(`/network/post/${userId}`);
+    let companyList = await companyData.getAllCompanyNameinObject();
+    let userPost = await socialPostData.getAllPosts();
+    return res.render("socialPost/searchPage", {
+      title: "Search Post",
+      h1: "Search Post",
+      userId: req.session.user.userId,
+      userPost: userPost,
+      companyList: companyList,
+    });
+  })
+  .post(async (req, res) => {
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(500).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    let fields = xss(req.body.field);
+    let category = xss(req.body.category);
+    let company = xss(req.body.company);
+
+    let field = [];
+    if (fields) {
+      if (xss(req.body.field).includes(",")) {
+        field = xss(req.body.field).split(",");
+      } else {
+        field.push(xss(req.body.field));
+      }
+      fields = field;
+    }
+    let categorys = [];
+    if (category) {
+      if (xss(req.body.category).includes(",")) {
+        categorys = xss(req.body.category).split(",");
+      } else {
+        categorys.push(xss(req.body.category));
+      }
+      category = categorys;
+    }
+    let companys = [];
+    if (company) {
+      if (xss(req.body.company).includes(",")) {
+        companys = xss(req.body.company).split(",");
+      } else {
+        companys.push(xss(req.body.company));
+      }
+      company = companys;
+    }
+    let companyList = await companyData.getAllCompanyNameinObject();
+    let a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g = false;
+    if (fields.length > 0 && category.length > 0 && company.length > 0) {
+      a = true;
+      try {
+        let userPost = await socialPostData.getPostsByAllTag(
+          fields,
+          company,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          a: a,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0 && category.length > 0) {
+      b = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsCategoryTag(
+          fields,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          b: b,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0 && company.length > 0) {
+      c = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsCompanyTag(
+          fields,
+          company
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          c: c,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (category.length > 0 && company.length > 0) {
+      d = true;
+      try {
+        let userPost = await socialPostData.getPostsByCompanyCategoryTag(
+          company,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          d: d,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (category.length > 0) {
+      e = true;
+      try {
+        let userPost = await socialPostData.getPostsByCategoryTag(category);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          e: e,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (company.length > 0) {
+      f = true;
+      try {
+        let userPost = await socialPostData.getPostsByCompanyTag(company);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          f: f,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0) {
+      g = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsTag(fields);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          g: g,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else {
+      try {
+        let userPost = await socialPostData.getAllPosts();
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          g: g,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    }
   });
 
 router
@@ -401,7 +840,7 @@ router
     }
 
     try {
-      post = await networkData.getPostById(req.params.id);
+      post = await socialPostData.getPostById(req.params.id);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -411,7 +850,7 @@ router
       });
     }
 
-    author = post.userId;
+    author = post.poster.id.toString();
 
     try {
       if (
@@ -428,8 +867,8 @@ router
         error: error,
       });
     }
-    const title = post.content;
-    const h1 = post.content;
+    const title = post.title;
+    const h1 = post.title;
     return res.render("socialPost/yourPostRemove", {
       title: title,
       h1: h1,
@@ -454,7 +893,7 @@ router
     }
 
     try {
-      author = (await networkData.getPostById(postId)).userId;
+      author = (await socialPostData.getPostById(postId)).poster.id.toString();
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -481,8 +920,8 @@ router
     }
 
     try {
-      await networkData.removePost(postId);
-      res.redirect(`/network/post/${userId}`);
+      await socialPostData.removePost(postId, userId);
+      res.redirect(`/socialmediaposts/post/${userId}`);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -491,397 +930,6 @@ router
         error: error,
       });
     }
-  });
-
-router
-  .route("/post/:userId/followerId/:followerId/postId/:postId")
-  .get(async (req, res) => {
-    let post, author, user;
-    let followerId = req.params.followerId;
-    try {
-      followerId = validation.checkId(followerId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    try {
-      post = await networkData.getPostById(req.params.postId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      author = await userData.getUserById(req.params.followerId);
-      if (post.userId !== followerId)
-        throw `Error: You have no right to access.`;
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      user = await userData.getUserById(req.params.userId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      if (!user.connections.includes(followerId))
-        throw `Error: Follower is not in the user's connections`;
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userId,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      if (post.userId !== author._id) throw `Error: Can not found this page.`;
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    const title = post.content;
-    const h1 = post.content;
-    res.render("socialPost/followerPostComments", {
-      title: title,
-      h1: h1,
-      post: post,
-      userId: req.params.userId,
-      followerId: req.params.followerId,
-      author: author,
-    });
-  })
-  .post(async (req, res) => {
-    let updatedData = xss(req.body.comments);
-    let errors = [];
-    let post, author;
-    try {
-      updatedData = validation.checkString(updatedData, "Comments");
-    } catch (error) {
-      errors.push(error);
-    }
-
-    try {
-      post = await networkData.getPostById(req.params.postId);
-    } catch (e) {
-      errors.push(e);
-    }
-
-    try {
-      author = await userData.getUserById(req.params.followerId);
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      if (req.params.followerId !== post.userId)
-        throw `Error: You have no right to access.`;
-    } catch (e) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    if (errors.length > 0) {
-      const title = post.content;
-      const h1 = post.content;
-      res.render("socialPost/followerPostComments", {
-        title: title,
-        h1: h1,
-        post: post,
-        author: author,
-        errors: errors,
-        hasErrors: true,
-        newComments: updatedData,
-      });
-      return;
-    }
-
-    try {
-      await networkData.addComments(
-        req.params.postId,
-        req.params.userId,
-        updatedData
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    res.redirect(`/network/post/${req.params.userId}`);
-  });
-
-router
-  .route("/follower/:userId")
-  .get(async (req, res) => {
-    let users;
-    try {
-      users = await userData.getUserById(req.params.userId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userId,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    const connections = users.connections;
-    const connectionsList = [];
-
-    for (let ele of connections) {
-      let follower;
-      try {
-        follower = await userData.getUserById(ele);
-      } catch (error) {
-        return res.status(400).render("socialPost/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-        });
-      }
-      connectionsList.push(follower);
-    }
-
-    res.render("socialPost/networkFollower", {
-      title: "Follower Profile",
-      h1: "Follower Profile",
-      userId: req.params.userId,
-      connectionsList: connectionsList,
-    });
-  })
-  .delete(async (req, res) => {
-    let userId = req.params.userId;
-    let followerId = req.body.followerId;
-
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userId,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      userId = validation.checkId(userId, "User ID");
-    } catch (e) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      followerId = validation.checkId(followerId, "Follower ID");
-    } catch (e) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      let removeConnections = await networkData.removeConnections(
-        userId,
-        followerId
-      );
-    } catch (e) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    return res.redirect(`/network/follower/${userId}`);
-  });
-
-router
-  .route("/follower/:userId/create")
-  .get(async (req, res) => {
-    let connectionList;
-    let userConnections;
-    const userId = req.params.userId;
-
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userId,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      connectionList = await userData.getAllUser();
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    try {
-      userConnections = (await userData.getUserById(userId)).connections;
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    connectionList = connectionList.filter((ele) => {
-      return ele._id !== userId;
-    }); //remove userid in all user data
-    connectionList = connectionList.filter(
-      (
-        ele1 //remove userid's connection in all user data
-      ) => {
-        return !userConnections.includes(ele1._id);
-      }
-    ); // issue
-    const checker = [null, undefined, 0]; //filtering conditions
-    connectionList = connectionList.filter((item) => !checker.includes(item));
-    res.render("socialPost/followerCreate", {
-      h1: "Connections",
-      title: "Connections",
-      userId: userId,
-      connectionList: connectionList,
-    });
-  })
-  .post(async (req, res) => {
-    let followerId = req.body.followerId;
-    let userId = req.params.userId;
-    try {
-      validation.checkParamsAndSessionId(
-        req.params.userId,
-        req.session.user.userId
-      );
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      userId = validation.checkId(userId, "ID url param");
-    } catch (e) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    try {
-      followerId = validation.checkId(followerId, "ID url param");
-    } catch (e) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-
-    let addConnectionsInfo;
-    try {
-      addConnectionsInfo = await networkData.addConnections(userId, followerId);
-    } catch (error) {
-      return res.status(400).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
-    res.redirect(`/network/follower/${userId}`);
   });
 
 export default router;

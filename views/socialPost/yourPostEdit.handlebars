@@ -18,7 +18,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/network/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
@@ -26,7 +26,7 @@
                         {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
+                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
@@ -37,35 +37,36 @@
             </div>
         </div>
     </nav>
-    {{!-- --}}
+
     <br>
-    {{!-- --}}
+    {{!-- Edit --}}
+   {{!-- Edit --}}
     <div class="card" style="width: 50%;">
         
-    <form class="row g-3 needs-validation" method="post">
+    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{userId}}/postId/{{postId}}/edit" method="post">
 
       <span id="errorDisplay" style="color: red"> {{error}} </span>
 
       <div class="col-md-12">
 
         <label for="posttitle" class="posttitle">Post Title</label>
-        <input type="text" class="form-control" id="posttitle" name="posttitle" value="{{posttitle}}">
+        <input type="text" class="form-control" id="posttitle" name="posttitle" value="{{post.title}}">
 
       </div>
       
       <div class="col-md-12">
        <label for="postbody" class="postbody">Post Content</label>
         <textarea name="postbody" id="postbody" rows="5"
-          placeholder="Write something here .... ">{{postbody}}</textarea>
+          placeholder="Write something here .... ">{{post.body}}</textarea>
       </div>
 
        <div class="col-md-12">
 
         <label for="eventdate" class="eventdate">Event Date</label>
         <input type="date" class="form-control" id="eventdate" name="eventdate" min="1990-01-01" max="2050-12-31">
-
+ 
       </div>
-
+<p>Your previous choice for event date: {{post.eventdate}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="field">Select field tag(s)</label>
@@ -92,6 +93,7 @@
         </select>
 
       </div>
+      <p>Your previous choice for field tag(s): {{post.fields}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="category">Select category tag(s)</label>
@@ -107,6 +109,7 @@
         </select>
 
       </div>
+      <p>Your previous choice for category tag(s): {{post.category}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="company">Select company tag(s)</label>
@@ -120,7 +123,7 @@
         </select>
 
       </div>
-
+      <p>Your previous choice for company tag(s): {{post.company}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
         <button type="submit" class="btn btn-outline-info">Post the Post</button>
       </div>
