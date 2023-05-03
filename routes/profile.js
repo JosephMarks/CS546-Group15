@@ -46,9 +46,10 @@ router.route("/:id").get(async (req, res) => {
 
   try {
     let userInfo = await userData.getUserById(id);
-    console.log(userInfo);
+    let university = userInfo.university;
+    let collegeMajor = userInfo.collegeMajor;
+    let locationState = userInfo.locationState;
     let image = await userInfo.base64Image;
-    console.log(image);
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
     console.log(connections);
@@ -64,6 +65,9 @@ router.route("/:id").get(async (req, res) => {
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
       connections: connections,
+      university: university,
+      locationState: locationState,
+      collegeMajor: collegeMajor,
     });
   } catch (e) {
     console.error(e);
@@ -96,7 +100,7 @@ router.get("/:id/edit", async (req, res) => {
     });
   }
 });
-
+// need to change to patch
 router.post("/:id/updatename", async (req, res) => {
   const id = req.params.id;
   const newName = req.body.name;
@@ -143,7 +147,7 @@ router
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
       const conversations = [];
-      const userFullNames = []; // Initialize the userFullNames array
+      const userFullNames = [];
 
       for (const id of uniqueConversationUserIds) {
         const userFullName = await userData.getUserFullNameById(id.toString());
