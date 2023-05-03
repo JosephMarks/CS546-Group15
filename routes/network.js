@@ -16,7 +16,7 @@ router
             res.redirect(`/network/post/${req.session.user.userId}`)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
     })
 
@@ -28,7 +28,7 @@ router.route('/post/:userid')
             req.params.userid = validation.checkId(req.params.userid)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -36,7 +36,7 @@ router.route('/post/:userid')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         const title = "Post"
@@ -48,7 +48,7 @@ router.route('/post/:userid')
             userPostList = await networkData.getPostByUserId(req.params.userid);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -56,7 +56,7 @@ router.route('/post/:userid')
             followerPostList = await networkData.getPostByConnections(req.params.userid);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
         return res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
 
@@ -71,7 +71,7 @@ router.route('/post/:userid/new')
             req.params.userid = validation.checkId(req.params.userid);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -79,7 +79,7 @@ router.route('/post/:userid/new')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         return res.render('networks/createNewPost', { title: "New Post", h1: "New Post", userId: req.session.user.userId });
@@ -92,7 +92,7 @@ router.route('/post/:userid/new')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
         } catch(error)
         {
-            return res.status(500).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
 
         try
@@ -114,7 +114,7 @@ router.route('/post/:userid/new')
             res.redirect(`/network/post/${req.params.userid}`);
         } catch(error)
         {
-            return res.status(500).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
     })
 
@@ -127,7 +127,7 @@ router.route('/post/:userid/postId/:id')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -135,7 +135,7 @@ router.route('/post/:userid/postId/:id')
             post = await networkData.getPostById(req.params.id);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -143,7 +143,7 @@ router.route('/post/:userid/postId/:id')
             author = await userData.getUserById(post.userId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         const title = post.content;
@@ -158,7 +158,7 @@ router.route('/post/:userid/postId/:id')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -166,7 +166,7 @@ router.route('/post/:userid/postId/:id')
             req.params.id = validation.checkId(req.params.id, 'ID');
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -198,7 +198,7 @@ router.route('/post/:userid/postId/:id')
             const h1 = post.content;
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
         res.redirect(`/network/post/${req.params.userid}`)
     }
@@ -213,7 +213,7 @@ router.route('/post/:userid/postId/:id/edit')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -221,7 +221,7 @@ router.route('/post/:userid/postId/:id/edit')
             post = await networkData.getPostById(req.params.id);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -229,7 +229,7 @@ router.route('/post/:userid/postId/:id/edit')
             author = await userData.getUserById(post.userId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -237,7 +237,7 @@ router.route('/post/:userid/postId/:id/edit')
             if(author._id !== req.params.userid) throw `You have no right to modify this post!`
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         const title = post.content;
@@ -258,7 +258,7 @@ router.route('/post/:userid/postId/:id/edit')
                 content = validation.checkString(content, 'Post');
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -266,7 +266,7 @@ router.route('/post/:userid/postId/:id/edit')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -276,7 +276,7 @@ router.route('/post/:userid/postId/:id/edit')
                 throw "Error: You have no right to modify this post!"
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -284,7 +284,7 @@ router.route('/post/:userid/postId/:id/edit')
             await networkData.updatePost(postId, content);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
         res.redirect(`/network/post/${userId}`);
     })
@@ -298,7 +298,7 @@ router.route('/post/:userid/postId/:id/remove')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -306,7 +306,7 @@ router.route('/post/:userid/postId/:id/remove')
             post = await networkData.getPostById(req.params.id);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         author = post.userId;
@@ -317,7 +317,7 @@ router.route('/post/:userid/postId/:id/remove')
                 throw `Error: You have not right to access.`
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
         const title = post.content;
         const h1 = post.content;
@@ -334,7 +334,7 @@ router.route('/post/:userid/postId/:id/remove')
             postId = validation.checkId(postId, "Post ID");
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -342,7 +342,7 @@ router.route('/post/:userid/postId/:id/remove')
             author = (await networkData.getPostById(postId)).userId;
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -351,7 +351,7 @@ router.route('/post/:userid/postId/:id/remove')
                 throw `Error: You have not right to access.`
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -360,7 +360,7 @@ router.route('/post/:userid/postId/:id/remove')
             res.redirect(`/network/post/${userId}`);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
     }
     )
@@ -376,14 +376,14 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             followerId = validation.checkId(followerId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
         try
         {
             post = await networkData.getPostById(req.params.postId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -392,7 +392,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             if(post.userId !== followerId) throw `Error: You have no right to access.`
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -400,7 +400,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             user = await userData.getUserById(req.params.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -408,7 +408,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             if(!user.connections.includes(followerId)) throw `Error: Follower is not in the user's connections`
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -416,7 +416,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -424,7 +424,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             if(post.userId !== author._id) throw `Error: Can not found this page.`
         } catch(error)
         {
-            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
         const title = post.content;
         const h1 = post.content;
@@ -456,15 +456,15 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             author = await userData.getUserById(req.params.followerId)
         } catch(error)
         {
-            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
         {
             if(req.params.followerId !== post.userId) throw `Error: You have no right to access.`
-        } catch(e)
+        } catch(error)
         {
-            return res.status(404).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         if(errors.length > 0)
@@ -488,7 +488,7 @@ router.route('/post/:userId/followerId/:followerId/postId/:postId')
             await networkData.addComments(req.params.postId, req.params.userId, updatedData);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
         res.redirect(`/network/post/${req.params.userId}`)
     }
@@ -503,7 +503,7 @@ router.route('/follower/:userId')
             users = await userData.getUserById(req.params.userId);
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
 
         try
@@ -511,7 +511,7 @@ router.route('/follower/:userId')
             validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         const connections = users.connections;
@@ -525,7 +525,7 @@ router.route('/follower/:userId')
                 follower = await userData.getUserById(ele);
             } catch(error)
             {
-                return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+                return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
             }
             connectionsList.push(follower);
         }
@@ -542,7 +542,7 @@ router.route('/follower/:userId')
             validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -550,7 +550,7 @@ router.route('/follower/:userId')
             userId = validation.checkId(userId, 'User ID');
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -558,7 +558,7 @@ router.route('/follower/:userId')
             followerId = validation.checkId(followerId, 'Follower ID');
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -566,7 +566,7 @@ router.route('/follower/:userId')
             let removeConnections = await networkData.removeConnections(userId, followerId);
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
         return res.redirect(`/network/follower/${userId}`);
     }
@@ -585,7 +585,7 @@ router.route('/follower/:userId/create')
             validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -593,14 +593,14 @@ router.route('/follower/:userId/create')
             connectionList = await userData.getAllUser();
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
         try
         {
             userConnections = (await userData.getUserById(userId)).connections;
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
         connectionList = connectionList.filter((ele) => { return ele._id !== userId }); //remove userid in all user data
         connectionList = connectionList.filter((ele1) =>                     //remove userid's connection in all user data
@@ -620,7 +620,7 @@ router.route('/follower/:userId/create')
             validation.checkParamsAndSessionId(req.params.userId, req.session.user.userId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(401).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/401.jpg" });
         }
 
         try
@@ -628,7 +628,7 @@ router.route('/follower/:userId/create')
             userId = validation.checkId(userId, 'ID url param');
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         try
@@ -636,7 +636,7 @@ router.route('/follower/:userId/create')
             followerId = validation.checkId(followerId, 'ID url param');
         } catch(e)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
         let addConnectionsInfo;
@@ -645,41 +645,8 @@ router.route('/follower/:userId/create')
             addConnectionsInfo = await networkData.addConnections(userId, followerId)
         } catch(error)
         {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
+            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
         res.redirect(`/network/follower/${userId}`);
-    })
-router.route('/like')
-    .post(async (req, res) =>
-    {
-        let postId = xss(req.body.postId);
-        let userId = xss(req.body.userId);
-        let checkInfo;
-        try
-        {
-            validation.checkParamsAndSessionId(userId, req.session.user.userId)
-        } catch(error)
-        {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
-        }
-        try
-        {
-            checkInfo = await networkData.checkLikes(postId, userId);
-        } catch(error)
-        {
-            return res.status(400).render("networks/error", { title: "error", h1: "error", userId: req.session.user.userId, error: error });
-        }
-        if(checkInfo)
-        {
-            await networkData.addLikes(xss(req.body.postId), xss(req.body.userId));
-        } else
-        {
-            await networkData.removeLikes(xss(req.body.postId), xss(req.body.userId));
-        }
-        const post = await networkData.getPostById(postId);
-        console.log(post)
-        const title = post.content;
-        const author = await userData.getUserById(post.userId)
-        return res.render('networks/followerPostComments', { title: title, h1: title, post: post, userId: req.params.userId, followerId: post.userId, author: author });
     })
 export default router;
