@@ -4,6 +4,7 @@ const router = Router();
 import multer from "multer";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
+import { isValidObjectId } from "mongoose";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -53,6 +54,8 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   let createdAt = new Date();
 
+  // console.log("console", req.file);
+
   try {
     if (
       !companyName ||
@@ -60,7 +63,9 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
       !industry ||
       !employee ||
       !location ||
-      !description
+      !description||
+      !req.file||
+      !req.file.filename
     )
       throw "Error : You should provide all the parameters";
 
@@ -70,6 +75,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
         companyEmail,
         industry, // TODO : Validations for industry.
         description,
+        req.file.filename
       ])
     )
       throw "Error : Parameters can only be string not just string with empty spaces";
@@ -113,7 +119,39 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 });
 
 // --- GET AND POST FOR CREATE COMPANY
+// --- Delete Company
 
+router.route("/delete/:id").get(async (req, res) => {
+
+  let id = req.params.id;
+
+  if (!req.params.id  || !isValidObjectId(req.params.id)){
+
+    return res.status(404).render('error', { error: 'Error : Id is not Valid'});
+
+  }
+
+  try {
+
+    let getCompany = await companyFunctions.getCompanyData(id);
+    if (!getCompany) throw "Error : No Company Found";
+
+    await companyFunctions.deleteCompany(id);
+    
+    return res.redirect('/company');
+
+  } catch (e) {
+
+    if (e === 'Error : No Company Found' || e === 'Error : Invalid Id') return res.status(400).render('error', { error: e });
+    return res.status(500).render('error', { error: e });
+
+  }
+
+
+});
+
+
+// --- Delete Company
 // --- UPDATE COMPANY
 
 router.route("/dataUpdate/:name").get(async (req, res) => { // done company update display
@@ -155,27 +193,18 @@ router.route("/updateCompany/:name").post(upload.single("uploadImage"), async (r
   let { companyName, companyEmail, industry, numberOfEmployees, location, description } =
     bodyData;
 
-  let newData = {
-
-    companyName, 
-    companyEmail,
-    industry, 
-    numberOfEmployees, 
-    locations: location, 
-    description,
-    imgSrc: encodeURIComponent (req.file.filename)
-
-  }
-
   try {
-    
+
+
     if (
       !companyName ||
       !companyEmail ||
       !industry ||
       !numberOfEmployees ||
       !location ||
-      !description
+      !description ||
+      !req.file ||
+      !req.file.filename
     )
       throw "Error : You should provide all the parameters";
 
@@ -189,6 +218,10 @@ router.route("/updateCompany/:name").post(upload.single("uploadImage"), async (r
     )
       throw "Error : Parameters can only be string not just string with empty spaces";
 
+    if (typeof(location) === 'string'){
+      location = [location];
+    }
+    
     validations.isArrayWithTheNonEmptyStringForLocation([location]);
     validations.checkEmail(companyEmail);
 
@@ -215,7 +248,22 @@ router.route("/updateCompany/:name").post(upload.single("uploadImage"), async (r
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
-    console.log(bodyData);
+    // console.log(bodyData);
+
+    let fileName = await companyFunctions.getCompanyDataFromEmail(req.session.user.email);
+
+    let newData = {
+
+      companyName, 
+      companyEmail,
+      industry, 
+      numberOfEmployees, 
+      locations: location, 
+      description,
+      imgSrc: fileName.imgSrc
+  
+    }
+
     return res.status(500).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user });
   }
 });

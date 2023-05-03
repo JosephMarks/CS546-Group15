@@ -64,39 +64,83 @@ const exportedMethods = {
     let collectedPost = [];
     let socialPost = [];
 
-    const newCreateUser = await userCollection.insertOne({
-      fname,
-      lname,
-      email,
-      password,
-      age: age,
-      gender,
-      candidateType,
-      headerDescription,
-      aboutMe,
-      locationState,
-      image,
-      university,
-      collegeMajor,
-      gitHubUserName,
-      interestArea,
-      experience,
-      jobHistory,
-      seekingJob,
-      connections,
-      group,
-      createdAt,
-      updatedAt,
-      socialPost,
-      likedPost,
-      collectedPost,
-    });
-    if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+    if (candidateType === "Student") {
+      const newCreateUser = await userCollection.insertOne({
+        fname,
+        lname,
+        email,
+        password,
+        age: age,
+        gender,
+        candidateType,
+        headerDescription,
+        aboutMe,
+        locationState,
+        image,
+        university,
+        collegeMajor,
+        gitHubUserName,
+        interestArea,
+        experience,
+        jobHistory,
+        seekingJob,
+        connections,
+        group,
+        createdAt,
+        updatedAt,
+        socialPost,
+        likedPost,
+        collectedPost,
+      });
+
+      if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(
       newCreateUser.insertedId.toString()
     );
     returnUser._id = returnUser._id.toString();
     return returnUser;
+
+    } else {
+      const newCreateUser = await userCollection.insertOne({
+        fname,
+        lname,
+        email,
+        password,
+        age: age,
+        gender,
+        candidateType,
+        companyName: "",
+        referralPosts: [],
+        headerDescription,
+        aboutMe,
+        locationState,
+        image,
+        university,
+        collegeMajor,
+        gitHubUserName,
+        interestArea,
+        experience,
+        jobHistory,
+        seekingJob,
+        connections,
+        group,
+        createdAt,
+        updatedAt,
+        socialPost,
+        likedPost,
+        collectedPost,
+      });
+
+      if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+    const returnUser = await this.getUserById(
+      newCreateUser.insertedId.toString()
+    );
+    returnUser._id = returnUser._id.toString();
+    return returnUser;
+    }
+
+    
+    
   },
 
   async updateUsers(

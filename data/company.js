@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import { company } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
@@ -31,6 +32,7 @@ const companyFunctions = {
         industry, 
         locations,
         numberOfEmployees,
+        nameOfEmployees: [],
         jobs: [],
         description,
         imgSrc,
@@ -40,7 +42,18 @@ const companyFunctions = {
       return await companyCollection.findOne({ _id: finalPush.insertedId });
     },
 
+    async deleteCompany(id){
+
+      if(!isValidObjectId(id)) throw "Error : Invalid Id";
+
+      let companyData = await companyCollection.findOneAndDelete({_id: new ObjectId(id)});
+      if (!companyData) throw "Error : No Company Found";
+      return companyData;
+    },
+
     async getCompanyData (id) {
+
+      if(!isValidObjectId(id)) throw "Error : Invalid Id";
 
       let companyData = await companyCollection.findOne({_id: new ObjectId(id)});
       if (!companyData) throw "Error : No Company Found";
