@@ -14,7 +14,7 @@
     {{/if}}
     <div>
       <a href="/groups/{{_id}}/eventAdd"><button>Add Event</button></a>
-      <a href="/groups/{{_id}}/eventEdit"><button>Edit Event</button></a>
+      <a href="/groups/{{_id}}/eventEdit"><button>Edit Events</button></a>
       <a href="/groups/{{_id}}/postActivity"><button>Post Activity</button></a>
 
     </div>
@@ -22,7 +22,8 @@
     <h2>Upcoming Events:</h2>
     {{#each events}}
       <div class="event-box">
-        <div>Event Title:{{title}}</div>
+        <div><span class="event-title">Event Title:</span>
+          <span class="event-title-text">{{title}}</span></div>
         <div>Event Description:{{description}}</div>
         <div>Event Date:{{eventDate}}</div>
         {{#if image}}

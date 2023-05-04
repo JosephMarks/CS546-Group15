@@ -41,3 +41,16 @@ img {
   display: block;
   margin: 15px 0;
 }
+
+.event-title {
+  font-weight: bold;
+  text-decoration: underline;
+  color: blue;
+}
+
+.event-title-text {
+  font-weight: bold;
+  color: inherit;
+  text-decoration: underline;
+  color: blue;
+}
