@@ -19,7 +19,6 @@ router.route("/").get(async (req, res) => {
       let { _id } = groupList[i];
       let groupObject = { _id: _id, name: name };
       displayArray.push(groupObject);
-      console.log(displayArray);
     }
     res.render("./groups/groups", {
       groups: displayArray,
@@ -81,12 +80,10 @@ router.route("/:id").get(async (req, res) => {
   const id = req.params.id;
   let userId = req.session.user.userId;
   userId = userId.toString();
-  console.log("heres the userId");
-  console.log(userId);
+  let numOfUsers = await groupData.numberOfUsers(id);
 
   const group = await groupData.get(id);
   let users = group.users;
-  console.log(users);
   let isMember = false;
   for (let i = 0; i < users.length; i++) {
     const member = users[i];
@@ -113,6 +110,7 @@ router.route("/:id").get(async (req, res) => {
       description: groupInfo.description,
       activity: groupInfo.activity,
       events: events,
+      numOfUsers: numOfUsers,
       image: image,
       isMember: isMember,
     });
@@ -184,8 +182,6 @@ router.post("/:id", upload.single("image"), async (req, res) => {
 
 router.get("/:id/join", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
-  console.log(req.session.user.userId);
   try {
     let joinedGroup = await groupData.addUser(id, req.session.user.userId);
     if (joinedGroup) {
@@ -211,9 +207,7 @@ router.get("/:id/eventEdit", async (req, res) => {
   const id = req.params.id;
   // array of all events for this group
   const groupEvents = await groupEventData.getAll(id);
-  console.log("these will be all the events");
 
-  console.log(groupEvents);
   try {
     res.render("./groups/eventEdit", {
       _id: id,
@@ -237,7 +231,6 @@ router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
     eventDate,
     description,
   };
-  console.log({ updatedEvent });
   try {
     await groupEventData.update(groupId, eventId, updatedEvent);
     res.redirect(`/groups/${groupId}`);
@@ -267,15 +260,12 @@ router.post("/:id/eventAdd", async (req, res) => {
   const groupId = req.params.id;
   const { title, description, eventDate } = req.body;
   try {
-    console.log("lets print some stuff");
-    console.log({ title, description, eventDate });
     let newEvent = await groupEventData.create(
       groupId,
       title,
       description,
       eventDate
     );
-    console.log(newEvent);
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
     res.status(400).render("./error", {
@@ -306,7 +296,6 @@ router.post("/:id/activityAdd", async (req, res) => {
   const groupId = req.params.id;
   const { title } = req.body;
   const { message } = req.body;
-  console.log(message);
   const userId = req.session.user.userId;
   try {
     let newActivity = await groupActivityData.create(
@@ -323,6 +312,24 @@ router.post("/:id/activityAdd", async (req, res) => {
       errorMessage: `Error adding the event: ${e.message}`,
     });
   }
+});
+
+router.get("/:id/users", async (req, res) => {
+  const groupId = req.params.id;
+  const retrievedGroup = await groupData.get(groupId);
+  const userNames = await Promise.all(
+    retrievedGroup.users.map(async (userId) => {
+      const name = await userData.getUserFullNameById(userId);
+      return { id: userId, name: name };
+    })
+  );
+  console.log(userNames);
+
+  res.render("./groups/groupsUsers", {
+    groupName: retrievedGroup.name,
+    users: userNames,
+    groupId,
+  });
 });
 
 export default router;
