@@ -10,16 +10,11 @@ import networkRoutes from "./network.js";
 import profileRoutes from "./profile.js";
 import skillsRoutes from "./skills.js";
 import logoutRoutes from "./logout.js";
-<<<<<<< HEAD
 import allCompanyRoutes from "./allCompany.js";
 import recommendationRoutes from "./recommendation.js"
-
-const constructorMethod = (app) =>
-{
-=======
 import referralRoutes from "./referral.js";
+
 const constructorMethod = (app) => {
->>>>>>> main
   app.use("/", homeRoutes);
   app.use("/logIn", logInRoutes);
   app.use("/signUp", signUpRoutes);
