@@ -233,4 +233,43 @@ router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
   }
 });
 
+router.get("/:id/eventAdd", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    res.render("./groups/eventAdd", {
+      _id: id,
+    });
+  } catch (e) {
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a venue with that id does not exist .`,
+    });
+  }
+});
+
+router.post("/:id/eventAdd", async (req, res) => {
+  const groupId = req.params.id;
+  const { title, description, eventDate } = req.body;
+  try {
+    console.log("lets print some stuff");
+    console.log({ title, description, eventDate });
+    let newEvent = await groupEventData.create(
+      groupId,
+      title,
+      description,
+      eventDate
+    );
+    console.log(newEvent);
+    res.redirect(`/groups/${groupId}`);
+  } catch (e) {
+    res.status(400).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error adding the event: ${e.message}`,
+    });
+  }
+});
+
 export default router;

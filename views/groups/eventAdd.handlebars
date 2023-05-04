@@ -1,29 +1,14 @@
-<link rel="stylesheet" href="/css/group-details.css" />
+<link rel="stylesheet" href="/public/css/group-details.css" />
 
 <div class="container">
-  <h1>Group Details</h1>
+  <h1>Add Event</h1>
   <div>
-    <a href="javascript:history.back();">Back to Search Results</a>
+    <a href="javascript:history.back();">Back to Group Details</a>
 
-    {{#if image}}
-      <img src="data:image/png;base64,{{image}}" alt="Group Image" />
-    {{/if}}
-
-    <form
-      action="/groups/{{_id}}"
-      method="POST"
-      enctype="multipart/form-data"
-      id="group-add-form"
-    >
+    <form action="/groups/{{_id}}/eventAdd" method="POST" id="event-add-form">
       <div class="form-group">
-        <label for="name">Name</label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          class="form-control"
-          value="{{name}}"
-        />
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" class="form-control" />
       </div>
       <div class="form-group">
         <label for="description">Description</label>
@@ -31,15 +16,18 @@
           name="description"
           id="description"
           class="form-control"
-        >{{description}}</textarea>
+        ></textarea>
       </div>
       <div class="form-group">
+        <label for="eventDate">Event Date</label>
+        <input
+          type="datetime-local"
+          name="eventDate"
+          id="eventDate"
+          class="form-control"
+        />
       </div>
       <input type="submit" value="Save" class="btn btn-primary" />
     </form>
   </div>
 </div>
-<div id="error"></div>
-<script src="/public/js/groupEdit.js"></script>
-
-{{message}}

@@ -5,17 +5,24 @@ import { parse, isValid } from "date-fns";
 import { users } from "../config/mongoCollections.js";
 
 // Functinon to create the new group sub-document.
-export const create = async (groupId, title, eventDate, otherAttributes) => {
+export const create = async (
+  groupId,
+  title,
+  description,
+  eventDate,
+  otherAttributes
+) => {
   groupId = groupId.trim();
   title = title.trim();
 
-  if (!groupId || !title || !eventDate) {
+  if (!groupId || !title || !eventDate || !description) {
     throw new Error("Parameters groupId and title must be present");
   }
   if (
     typeof groupId !== "string" ||
     typeof title !== "string" ||
-    typeof eventDate !== "string"
+    typeof eventDate !== "string" ||
+    typeof description !== "string"
   ) {
     throw new Error("Parameters groupId and title must be of type string");
   }
@@ -23,45 +30,27 @@ export const create = async (groupId, title, eventDate, otherAttributes) => {
   if (groupId.length === 0 || title.length === 0 || eventDate.length === 0) {
     throw new Error("Input must not be empty strings");
   }
-
-  if (eventDate) {
-    if (typeof eventDate !== "string") {
-      throw new Error("Parameters must be of type string");
-    }
-    if (eventDate.length === 0) {
-      throw new Error("Cannot be an empty string");
-    }
-
-    const dateObject = parse(eventDate, "MM/dd/yyyy", new Date());
-    if (!isValid(dateObject)) {
-      throw new Error("Date is not of proper format");
-    }
-
-    let dateArray = [];
-    dateArray = eventDate.split("/");
-    if (dateArray.length < 3) {
-      throw new Error("This is not valid");
-    }
-    if (dateArray.length !== 3) {
-      throw new Error("This is not valid");
-    }
-    if (
-      dateArray[0].length !== 2 ||
-      dateArray[1].length !== 2 ||
-      dateArray[2].length !== 4
-    ) {
-      throw new Error("This is not valid format");
-    }
-    let yearString;
-    let yearValue;
-    yearString = dateArray[2];
-    yearValue = Number(yearString);
-    if (yearValue < 2023 || yearValue > 2025) {
-      throw new Error("The date is out of the appropriate range");
-    }
+  if (typeof eventDate !== "string") {
+    throw new Error("Parameters must be of type string");
+  }
+  if (eventDate.length === 0) {
+    throw new Error("Cannot be an empty string");
   }
 
-  if (otherAttributes.users) {
+  const dateObject = new Date(eventDate);
+  if (!isValid(dateObject)) {
+    throw new Error("Date is not of proper format");
+  }
+
+  const yearValue = dateObject.getFullYear();
+  if (yearValue < 2023 || yearValue > 2025) {
+    throw new Error("The date is out of the appropriate range");
+  }
+
+  let users;
+  let image;
+
+  if (otherAttributes && otherAttributes.users) {
     if (!Array.isArray(otherAttributes.users)) {
       throw new Error("users must be an array");
     }
@@ -70,20 +59,15 @@ export const create = async (groupId, title, eventDate, otherAttributes) => {
         throw new Error("Each user in users array must be a valid ObjectId");
       }
     });
+    users = otherAttributes.users;
   } else {
     users = [];
   }
 
-  if (otherAttributes.image) {
+  if (otherAttributes && otherAttributes.image) {
     const bufferImage = Buffer.from(otherAttributes.image, "base64");
     const bin = new Binary(bufferImage);
-    updatedGroup.image = bin;
-  }
-
-  if (otherAttributes.description) {
-    if (typeof otherAttributes.description !== "string") {
-      throw new Error("description must be of type string");
-    }
+    image = bin;
   }
 
   let newObjectId = new ObjectId();
@@ -93,8 +77,8 @@ export const create = async (groupId, title, eventDate, otherAttributes) => {
     groupId: groupId,
     title: title,
     eventDate: eventDate,
-    description: otherAttributes.description,
-    users: otherAttributes.users,
+    description: description,
+    users: users,
     image: image,
   };
 
@@ -103,7 +87,7 @@ export const create = async (groupId, title, eventDate, otherAttributes) => {
   let providedGroup = newEvent.title;
   const foundGroup = await groupCollection.findOne({
     _id: new ObjectId(groupId),
-    groups: {
+    events: {
       $elemMatch: { title: providedGroup },
     },
   });

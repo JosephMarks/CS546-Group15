@@ -13,6 +13,7 @@ import { groupActivityData, userData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
+import * as groupEventData from "./data/groupEvents.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -175,6 +176,13 @@ app.use("/", (req, res, next) => {
   );
   return next();
 });
+
+// let newEvent = await groupEventData.create(
+//   "644ea863311a2bb9a363e8f3",
+//   "NEW GROUPd2!",
+//   "09/30/2023"
+// );
+// console.log(newEvent);
 
 // let newGroupEvent = await groupEventsData.create(
 //   "644ea863311a2bb9a363e8f3",
