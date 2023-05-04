@@ -5,6 +5,10 @@ body {
   background-color: #f0a150 !important;
 }
 
+a{
+  color: black !important;
+}
+
 .container {
   font-family: "Gill Sans Extrabold", sans-serif;
   padding: 2px;
@@ -58,6 +62,7 @@ button:hover {
 /*  Nav Bar  */
 
 #navbar-all {
+  border: 2px black solid;
   background-color: #ed943b !important;
 }
 
@@ -164,6 +169,7 @@ button:hover {
 .main-center {
   display: flex;
   justify-content: center;
+  
   align-items: center;
 }
 
