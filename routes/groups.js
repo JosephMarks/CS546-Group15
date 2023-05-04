@@ -305,9 +305,16 @@ router.get("/:id/activityAdd", async (req, res) => {
 router.post("/:id/activityAdd", async (req, res) => {
   const groupId = req.params.id;
   const { title } = req.body;
+  const { message } = req.body;
+  console.log(message);
   const userId = req.session.user.userId;
   try {
-    let newActivity = await groupActivityData.create(groupId, title, userId);
+    let newActivity = await groupActivityData.create(
+      groupId,
+      title,
+      userId,
+      message
+    );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
     res.status(400).render("./error", {

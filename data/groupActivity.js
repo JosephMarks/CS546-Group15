@@ -4,23 +4,32 @@ import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 
 // Functinon to create the new group sub-document.
-export const create = async (groupId, title, author) => {
+export const create = async (groupId, title, author, message) => {
   groupId = groupId.trim();
   title = title.trim();
+  message = message.trim();
 
-  if (!groupId || !title) {
+  if (!groupId || !title || !author || !message) {
     throw new Error("Parameters must be present");
   }
-  if (typeof groupId !== "string" || typeof title !== "string") {
+  if (
+    typeof groupId !== "string" ||
+    typeof title !== "string" ||
+    typeof author !== "string" ||
+    typeof message !== "string"
+  ) {
     throw new Error("Paramterst must be of type string");
   }
 
-  if (groupId.length === 0 || title.length === 0) {
+  if (groupId.length === 0 || title.length === 0 || message.length === 0) {
     throw new Error("Input must not be empty strings");
   }
 
+  if (!ObjectId.isValid(author)) {
+    throw new Error("User must be an ObjectId");
+  }
+
   let date = new Date();
-  let message = "";
   let likes = [];
   let comments = [];
   let image;
