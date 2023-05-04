@@ -54,3 +54,28 @@ img {
   text-decoration: underline;
   color: blue;
 }
+
+.action-button {
+  display: inline-block;
+  padding: 7px 11px;
+  margin-bottom: 1;
+  font-size: 15px;
+  font-weight: 411;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #256196;
+  color: rgb(240, 240, 245);
+  text-decoration: none;
+}
+
+.action-button:hover,
+.action-button:focus {
+  background-color: #286090;
+  color: #fff;
+  text-decoration: none;
+}

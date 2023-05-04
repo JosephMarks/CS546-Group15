@@ -3,8 +3,8 @@
 <div class="container">
   <h1>Group Details</h1>
   <div>
-    <a href="/groups/{{_id}}/edit"><button>Edit</button></a>
-    <a href="/groups/{{_id}}/join"><button>Join</button></a>
+    <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
+    <a class="action-button" href="/groups/{{_id}}/join">Join</a>
 
     <h2>Group Name: {{name}}</h2>
     <h2>Group Description: {{description}}</h2>
@@ -13,9 +13,9 @@
       <img src="data:image/png;base64,{{image}}" alt="Group Image" />
     {{/if}}
     <div>
-      <a href="/groups/{{_id}}/eventAdd"><button>Add Event</button></a>
-      <a href="/groups/{{_id}}/eventEdit"><button>Edit Events</button></a>
-      <a href="/groups/{{_id}}/postActivity"><button>Post Activity</button></a>
+      <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
+      <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
+      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
 
     </div>
 
@@ -32,9 +32,8 @@
       </div>
     {{/each}}
 
-    {{#each activity}}
-      <div>{{title}}</div>
-    {{/each}}
+    <h2>Group Activity:</h2>
+
     <a href="javascript:history.back();">Back to Search Results</a>
 
   </div>
