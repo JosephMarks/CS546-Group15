@@ -7,7 +7,7 @@
       <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
       <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
       <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
-      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
+      <a class="action-button" href="/groups/{{_id}}/activityAdd">Post Activity</a>
     {{else}}
       <a class="action-button" href="/groups/{{_id}}/join">Join</a>
     {{/if}}
@@ -33,6 +33,15 @@
     {{/each}}
 
     <h2>Group Activity:</h2>
+
+    {{#each activity}}
+      <div class="activity-box">
+        <div><span class="activity-title">Activity Title:</span>
+          <span class="activity-title-text">{{title}}</span>
+          <span class="activity-title-text">{{author}}</span>
+          <span class="activity-title-text">{{message}}</span></div>
+      </div>
+    {{/each}}
 
     <a href="javascript:history.back();">Back to Search Results</a>
 

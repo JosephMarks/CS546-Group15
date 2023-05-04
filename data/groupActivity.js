@@ -4,7 +4,7 @@ import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 
 // Functinon to create the new group sub-document.
-export const create = async (groupId, title) => {
+export const create = async (groupId, title, author) => {
   groupId = groupId.trim();
   title = title.trim();
 
@@ -21,7 +21,6 @@ export const create = async (groupId, title) => {
 
   let date = new Date();
   let message = "";
-  let author;
   let likes = [];
   let comments = [];
   let image;
@@ -458,4 +457,37 @@ export const updateActivity = async (
   return updatedInfo.value.activity.find(
     (activity) => activity._id.toString() === activityId
   );
+};
+
+export const get = async (groupId, activityId) => {
+  groupId = groupId.trim();
+  activityId = activityId.trim();
+
+  if (!groupId || !activityId) {
+    throw new Error("Parameters must be provided");
+  }
+  if (typeof groupId !== "string" || typeof activityId !== "string") {
+    throw new Error("Parameters must be of type string");
+  }
+  if (groupId.length === 0 || activityId.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
+
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+    activity: {
+      $elemMatch: { _id: new ObjectId(activityId) },
+    },
+  });
+
+  if (foundGroup === null) {
+    throw new Error("Group or activity not found");
+  }
+
+  const activity = foundGroup.activity.find(
+    (activity) => activity._id.toString() === activityId
+  );
+
+  return activity;
 };

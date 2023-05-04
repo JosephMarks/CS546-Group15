@@ -286,4 +286,36 @@ router.post("/:id/eventAdd", async (req, res) => {
   }
 });
 
+router.get("/:id/activityAdd", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    res.render("./groups/activityAdd", {
+      _id: id,
+    });
+  } catch (e) {
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a group with that id does not exist.`,
+    });
+  }
+});
+
+router.post("/:id/activityAdd", async (req, res) => {
+  const groupId = req.params.id;
+  const { title } = req.body;
+  const userId = req.session.user.userId;
+  try {
+    let newActivity = await groupActivityData.create(groupId, title, userId);
+    res.redirect(`/groups/${groupId}`);
+  } catch (e) {
+    res.status(400).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error adding the event: ${e.message}`,
+    });
+  }
+});
+
 export default router;
