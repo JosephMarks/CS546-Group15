@@ -1,212 +1,935 @@
 import { Router } from "express";
 const router = Router();
-import { socailData, userData } from "../data/index.js";
+import { socialPostData, userData, companyData } from "../data/index.js";
 import validation from "../helpers.js";
+import xss from "xss";
 
-router.route("/new").get(async (req, res) => {
-  const users = await userData.getAllUser();
-  res.render("posts/new", { users: users });
+router.route("/").get(async (req, res) => {
+  try {
+    res.redirect(`/socialmediaposts/post/${req.session.user.userId}`);
+    // return res.render('socialPost/socialPost', { title: title, h1: h1 });
+  } catch (error) {
+    return res.status(400).render("socialPost/error", {
+      title: "error",
+      h1: "error",
+      userId: req.session.user.userId,
+      error: error,
+    });
+  }
 });
+
 router
-  .route("/")
+  .route("/post/:userid")
   .get(async (req, res) => {
     try {
-      const postList = await socailData.getAllPosts();
-      res.render("posts/index", { posts: postList });
-    } catch (e) {
-      res.status(500).json({ error: e });
+      req.params.userid = validation.checkId(req.params.userid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
     }
+
+    const title = "Post";
+    const h1 = "Post";
+    let userPostedPostList, userLikedPostList;
+
+    try {
+      userPostedPostList = await socialPostData.getPostedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      userLikedPostList = await socialPostData.getLikedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    let authorId = req.params.userid;
+    let userId = req.session.user.userId;
+
+    return res.render("socialPost/UserPost", {
+      title: title,
+      h1: h1,
+      userId: userId,
+      userPost: userPostedPostList,
+      userLike: userLikedPostList,
+      authorId: authorId,
+    });
   })
   .post(async (req, res) => {
-    const blogPostData = req.body;
-    let errors = [];
-    try {
-      blogPostData.title = validation.checkString(blogPostData.title, "Title");
-    } catch (e) {
-      errors.push(e);
-    }
+    let userId = req.session.user.userId;
+    let postId = req.body.postid;
 
-    try {
-      blogPostData.body = validation.checkString(blogPostData.body, "Body");
-    } catch (e) {
-      errors.push(e);
+    if (await socialPostData.checkLikes(postId, userId)) {
+      await socialPostData.addLikes(postId, userId);
+    } else {
+      await socialPostData.removeLikes(postId, userId);
     }
-
-    try {
-      blogPostData.posterId = validation.checkId(
-        blogPostData.posterId,
-        "Poster ID"
-      );
-    } catch (e) {
-      errors.push(e);
-    }
-
-    if (blogPostData.tags) {
-      let tags = blogPostData.tags.split(",");
-      try {
-        blogPostData.tags = validation.checkStringArray(tags, "Tags");
-      } catch (e) {
-        errors.push(e);
-      }
-    }
-
-    if (errors.length > 0) {
-      const users = await userData.getAllUser();
-      res.render("posts/new", {
-        errors: errors,
-        hasErrors: true,
-        post: blogPostData,
-        users: users,
-      });
-      return;
-    }
-
-    try {
-      const { title, body, tags, posterId } = blogPostData;
-      const newPost = await socailData.addPost(title, body, posterId, tags);
-      res.redirect(`/posts/${newPost._id}`);
-    } catch (e) {
-      res.status(500).json({ error: e });
-    }
-  })
-  .put(async (req, res) => {
-    res.send("ROUTED TO PUT ROUTE");
+    return res.redirect(`/socialmediaposts/post/${req.params.userid}`);
   });
 
 router
-  .route("/:id")
+  .route("/post/:userid/new")
   .get(async (req, res) => {
     try {
-      req.params.id = validation.checkId(req.params.id, "Id URL Param");
-    } catch (e) {
-      return res.status(400).json({ error: e });
-    }
-    try {
-      const post = await socailData.getPostById(req.params.id);
-      res.render("posts/single", { post: post });
-    } catch (e) {
-      res.status(404).json({ error: e });
-    }
-  })
-  .put(async (req, res) => {
-    const updatedData = req.body;
-    try {
-      req.params.id = validation.checkId(req.params.id, "ID url param");
-      updatedData.title = validation.checkString(updatedData.title, "Title");
-      updatedData.body = validation.checkString(updatedData.body, "Body");
-      updatedData.posterId = validation.checkId(
-        updatedData.posterId,
-        "Poster ID"
-      );
-      if (updatedData.tags) {
-        if (!Array.isArray(updatedData.tags)) {
-          updatedData.tags = [];
-        } else {
-          updatedData.tags = validation.checkStringArray(
-            updatedData.tags,
-            "Tags"
-          );
-        }
-      }
-    } catch (e) {
-      return res.status(400).json({ error: e });
+      req.params.userid = validation.checkId(req.params.userid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
     }
 
     try {
-      const updatedPost = await socailData.updatePostPut(
-        req.params.id,
-        updatedData
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
       );
-      res.json(updatedPost);
-    } catch (e) {
-      let status = e[0];
-      let message = e[1];
-      res.status(status).json({ error: message });
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
     }
-  })
-  .patch(async (req, res) => {
-    const requestBody = req.body;
-    try {
-      req.params.id = validation.checkId(req.params.id, "Post ID");
-      if (requestBody.title)
-        requestBody.title = validation.checkString(requestBody.title, "Title");
-      if (requestBody.body)
-        requestBody.body = validation.checkString(requestBody.body, "Body");
-      if (requestBody.posterId)
-        requestBody.posterId = validation.checkId(
-          requestBody.posterId,
-          "Poster ID"
-        );
-      if (requestBody.tags)
-        requestBody.tags = validation.checkStringArray(
-          requestBody.tags,
-          "Tags"
-        );
-    } catch (e) {
-      return res.status(400).json({ error: e });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
 
-    try {
-      const updatedPost = await socailData.updatePostPatch(
-        req.params.id,
-        requestBody
-      );
-      res.json(updatedPost);
-    } catch (e) {
-      let status = e[0];
-      let message = e[1];
-      res.status(status).json({ error: message });
-    }
+    return res.render("socialPost/createNewPost", {
+      title: "New Post",
+      h1: "New Post",
+      userId: req.session.user.userId,
+      companyList: companyList,
+    });
   })
-  .delete(async (req, res) => {
+  .post(async (req, res) => {
     try {
-      req.params.id = validation.checkId(req.params.id, "Id URL Param");
-    } catch (e) {
-      return res.status(400).json({ error: e });
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(500).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let posttitle = xss(req.body.posttitle);
+    let postbody = xss(req.body.postbody);
+    let eventdate = xss(req.body.eventdate).toString();
+    let field = [];
+    if (xss(req.body.field).includes(",")) {
+      field = xss(req.body.field).split(",");
+    } else {
+      field.push(xss(req.body.field));
+    }
+    let category = [];
+    if (xss(req.body.category).includes(",")) {
+      category = xss(req.body.category).split(",");
+    } else {
+      category.push(xss(req.body.category));
+    }
+    let company = [];
+    if (xss(req.body.company).includes(",")) {
+      company = xss(req.body.company).split(",");
+    } else {
+      company.push(xss(req.body.company));
+    }
+    let posterId = req.session.user.userId;
+    let userId = req.params.userid;
+    let companyList = await companyData.getAllCompanyNameinObject();
+    try {
+      posttitle = validation.checkString(posttitle, "Post title");
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
     }
     try {
-      let deletedPost = await socailData.removePost(req.params.id);
-      res.status(200).json(deletedPost);
-    } catch (e) {
-      let status = e[0];
-      let message = e[1];
-      res.status(status).json({ error: message });
+      postbody = validation.checkString(postbody, "Post body");
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      eventdate = validation.checkDate(eventdate);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      field = validation.checkFieldsTags(field);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      category = validation.checkCategoryTags(category);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    try {
+      company = await validation.checkCompanyTags(company);
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId,
+        companyList,
+      });
+    }
+    let newPost;
+    try {
+      newPost = await socialPostData.addPost(
+        posttitle,
+        postbody,
+        posterId,
+        eventdate,
+        field,
+        company,
+        category
+      );
+      res.redirect(`/socialmediaposts/post/${req.params.userid}`);
+    } catch (error) {
+      return res.status(500).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
     }
   });
 
-router.route("/tag/:tag").get(async (req, res) => {
-  try {
-    req.params.tag = validation.checkString(req.params.tag, "Tag");
-  } catch (e) {
-    return res.status(400).json({ error: e });
-  }
-  try {
-    const postList = await socailData.getPostsByTag(req.params.tag);
-    res.render("posts/index", { posts: postList });
-  } catch (e) {
-    res.status(400).json({ error: e });
-  }
-});
+router
+  .route("/post/:userid/postId/:id")
+  .get(async (req, res) => {
+    let post, postid, author, authorid;
+    postid = req.params.id;
+    authorid = req.params.userid;
+    let auth = false;
+    if (authorid === req.session.user.userId) {
+      auth = true;
+    }
 
-router.route("/tag/rename").patch(async (req, res) => {
-  try {
-    req.body.oldTag = validation.checkString(req.body.oldTag, "Old Tag");
-    req.body.newTag = validation.checkString(req.body.newTag, "New Tag");
-  } catch (e) {
-    res.status(400).json({ error: e });
-  }
+    try {
+      post = await socialPostData.getPostById(postid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
 
-  try {
-    let getNewTagPosts = await socailData.renameTag(
-      req.body.oldTag,
-      req.body.newTag
+    try {
+      author = await userData.getUserById(authorid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    const title = post.title;
+    const h1 = post.title;
+    res.render("socialPost/yourPostComments", {
+      title: title,
+      userId: req.params.userid,
+      h1: h1,
+      auth: auth,
+      post: post,
+      fname: author.fname,
+      lname: author.lname,
+    });
+  })
+  .post(async (req, res) => {
+    let updatedData = xss(req.body.comments);
+    let auth = false;
+    if (authorid === req.session.user.userId) {
+      auth = true;
+    }
+    try {
+      req.params.id = validation.checkId(req.params.id, "ID");
+    } catch (e) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      updatedData = validation.checkString(updatedData, "Comment");
+    } catch (error) {
+      const post = await socialPostData.getPostById(req.params.id);
+      const author = await userData.getUserById(post.userId);
+      const title = post.content;
+      const h1 = post.content;
+      return res.render("socialPost/yourPostComments", {
+        title: title,
+        h1: h1,
+        post: post,
+        auth: auth,
+        fname: author.fname,
+        lname: author.lname,
+        error: error,
+        newComments: updatedData,
+      });
+    }
+
+    try {
+      const updatedPost = await socialPostData.addComments(
+        req.params.id,
+        req.params.userid,
+        updatedData
+      );
+      const post = await socialPostData.getPostById(req.params.id);
+      const author = await userData.getUserById(req.params.userid);
+      const title = post.content;
+      const h1 = post.content;
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    res.redirect(
+      `/socialmediaposts/post/${req.params.userid}/postId/${req.params.id}`
     );
-    res.json(getNewTagPosts);
-  } catch (e) {
-    let status = e[0];
-    let message = e[1];
-    res.status(status).json({ error: message });
-  }
-});
+  });
+
+router
+  .route("/post/:userid/postId/:id/edit")
+  .get(async (req, res) => {
+    let post, author;
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      post = await socialPostData.getPostById(req.params.id);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let o = post.poster.id.toString();
+    try {
+      author = await userData.getUserById(o);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      if (
+        author._id !== req.params.userid ||
+        author._id !== req.session.user.userId ||
+        req.session.user.userId !== req.params.userid
+      )
+        throw `You have no right to modify this post!`;
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let companyList = await companyData.getAllCompanyNameinObject();
+
+    const title = post.title;
+    const h1 = post.title;
+    res.render("socialPost/yourPostEdit", {
+      title: title,
+      h1: h1,
+      post: post,
+      userId: req.params.userid,
+      postId: req.params.id,
+      companyList: companyList,
+    });
+  })
+  .patch(async (req, res) => {
+    let userId = req.params.userid;
+    let postId = req.params.id;
+
+    try {
+      userId = validation.checkId(userId, "User ID");
+      postId = validation.checkId(postId, "Post ID");
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      const userIdByPostId = await socialPostData.getPostById(postId);
+      if (userIdByPostId.poster.id.toString() !== userId)
+        throw "Error: You have no right to modify this post!";
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let title = xss(req.body.posttitle);
+    let body = xss(req.body.postbody);
+    let eventdate = xss(req.body.eventdate).toString();
+
+    let fields = xss(req.body.field);
+    let category = xss(req.body.category);
+    let company = xss(req.body.company);
+    if (title) {
+      title = validation.checkString(title, "title");
+    }
+    if (body) {
+      body = validation.checkString(body, "Content");
+    }
+    let field = [];
+    if (fields) {
+      if (xss(req.body.field).includes(",")) {
+        field = xss(req.body.field).split(",");
+      } else {
+        field.push(xss(req.body.field));
+      }
+      fields = field;
+    }
+    let categorys = [];
+    if (category) {
+      if (xss(req.body.category).includes(",")) {
+        categorys = xss(req.body.category).split(",");
+      } else {
+        categorys.push(xss(req.body.category));
+      }
+      category = categorys;
+    }
+    let companys = [];
+    if (company) {
+      if (xss(req.body.company).includes(",")) {
+        companys = xss(req.body.company).split(",");
+      } else {
+        companys.push(xss(req.body.company));
+      }
+      company = companys;
+    }
+
+    if (eventdate) {
+      eventdate = validation.checkDate(eventdate);
+    }
+    try {
+    } catch (error) {}
+    let updatePost = {
+      title: title,
+      body: body,
+      poster: { id: userId },
+      fields: fields,
+      category: category,
+      company: company,
+      eventdate: eventdate,
+    };
+    try {
+      let updated = await socialPostData.updatePost(postId, updatePost);
+      console.log("this");
+      console.log(updated);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    res.redirect(`/socialmediaposts/post/${userId}/postId/${postId}`);
+  });
+router
+  .route("/search/:userid")
+  .get(async (req, res) => {
+    try {
+      req.params.userid = validation.checkId(req.params.userid);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    let companyList = await companyData.getAllCompanyNameinObject();
+    let userPost = await socialPostData.getAllPosts();
+    return res.render("socialPost/searchPage", {
+      title: "Search Post",
+      h1: "Search Post",
+      userId: req.session.user.userId,
+      userPost: userPost,
+      companyList: companyList,
+    });
+  })
+  .post(async (req, res) => {
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(500).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    let fields = xss(req.body.field);
+    let category = xss(req.body.category);
+    let company = xss(req.body.company);
+
+    let field = [];
+    if (fields) {
+      if (xss(req.body.field).includes(",")) {
+        field = xss(req.body.field).split(",");
+      } else {
+        field.push(xss(req.body.field));
+      }
+      fields = field;
+    }
+    let categorys = [];
+    if (category) {
+      if (xss(req.body.category).includes(",")) {
+        categorys = xss(req.body.category).split(",");
+      } else {
+        categorys.push(xss(req.body.category));
+      }
+      category = categorys;
+    }
+    let companys = [];
+    if (company) {
+      if (xss(req.body.company).includes(",")) {
+        companys = xss(req.body.company).split(",");
+      } else {
+        companys.push(xss(req.body.company));
+      }
+      company = companys;
+    }
+    let companyList = await companyData.getAllCompanyNameinObject();
+    let a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g = false;
+    if (fields.length > 0 && category.length > 0 && company.length > 0) {
+      a = true;
+      try {
+        let userPost = await socialPostData.getPostsByAllTag(
+          fields,
+          company,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          a: a,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0 && category.length > 0) {
+      b = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsCategoryTag(
+          fields,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          b: b,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0 && company.length > 0) {
+      c = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsCompanyTag(
+          fields,
+          company
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          c: c,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (category.length > 0 && company.length > 0) {
+      d = true;
+      try {
+        let userPost = await socialPostData.getPostsByCompanyCategoryTag(
+          company,
+          category
+        );
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          d: d,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (category.length > 0) {
+      e = true;
+      try {
+        let userPost = await socialPostData.getPostsByCategoryTag(category);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          e: e,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (company.length > 0) {
+      f = true;
+      try {
+        let userPost = await socialPostData.getPostsByCompanyTag(company);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          f: f,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else if (fields.length > 0) {
+      g = true;
+      try {
+        let userPost = await socialPostData.getPostsByFieldsTag(fields);
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          g: g,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    } else {
+      try {
+        let userPost = await socialPostData.getAllPosts();
+        return res.render("socialPost/searchPage", {
+          title: "Search Post",
+          h1: "Search Post",
+          g: g,
+          userId: req.session.user.userId,
+          userPost: userPost,
+          companyList: companyList,
+          fields: fields,
+          company: company,
+          category: category,
+        });
+      } catch (error) {
+        return res.status(500).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
+    }
+  });
+
+router
+  .route("/post/:userid/postId/:id/remove")
+  .get(async (req, res) => {
+    let post, author;
+    try {
+      validation.checkParamsAndSessionId(
+        req.params.userid,
+        req.session.user.userId
+      );
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      post = await socialPostData.getPostById(req.params.id);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    author = post.poster.id.toString();
+
+    try {
+      if (
+        author !== req.params.userid ||
+        author !== req.session.user.userId ||
+        req.session.user.userId !== req.params.userid
+      )
+        throw `Error: You have not right to access.`;
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+    const title = post.title;
+    const h1 = post.title;
+    return res.render("socialPost/yourPostRemove", {
+      title: title,
+      h1: h1,
+      post: post,
+      userId: req.params.userid,
+    });
+  })
+  .delete(async (req, res) => {
+    let userId = req.params.userid;
+    let postId = req.params.id;
+    let author;
+    try {
+      userId = validation.checkId(userId, "User ID");
+      postId = validation.checkId(postId, "Post ID");
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      author = (await socialPostData.getPostById(postId)).poster.id.toString();
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      if (
+        author !== userId ||
+        author !== req.session.user.userId ||
+        req.session.user.userId !== userId
+      )
+        throw `Error: You have not right to access.`;
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+
+    try {
+      await socialPostData.removePost(postId, userId);
+      res.redirect(`/socialmediaposts/post/${userId}`);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
+  });
 
 export default router;

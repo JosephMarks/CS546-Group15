@@ -1,4 +1,4 @@
-<h1 style="color: rgb(255, 255, 255); background-color: #d28200;">{{h1}}</h1>
+<h1>{{h1}}</h1>
 <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
         <div class="container-fluid">
@@ -14,35 +14,20 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/network/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Your Follower
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/network/follower/{{userId}}">Get & Remove Your
-                                    Connections
-                                    Info.</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/network/follower/{{userId}}/create">Create New
-                                    Connections</a>
-                            </li>
-
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
-                            <button id="network-new-post-button" class="nav-link btn btn-outline-primary"
+                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
                             </button>
@@ -52,5 +37,11 @@
             </div>
         </div>
     </nav>
-    <br>
+
+
+    <div class="alert alert-danger" style="margin-top: 2%;" role="alert">
+        {{#if error}}
+        <p>{{error}}</p>
+        {{/if}}
+    </div>
 </div>

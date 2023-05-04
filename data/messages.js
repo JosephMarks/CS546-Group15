@@ -85,19 +85,65 @@ export const getAll = async (originUserId) => {
   }
   // if the id provided is not a valid ObjectId, the method should throw
   originUserId = originUserId.trim();
-  console.log("Origin User ID: ", originUserId);
   if (!ObjectId.isValid(originUserId)) {
     throw new Error("Invalid object id");
   }
   const messageCollection = await messages();
-  console.log("Message Collection: ", messageCollection);
   const allMessages = await messageCollection
     .find({ originUserId: new ObjectId(originUserId) })
     .toArray();
 
-  console.log("All Messages: ", allMessages);
   if (allMessages === null) {
     throw new Error("There are no messages with that id");
   }
   return allMessages;
+};
+
+export const getConversation = async (originUserId, targetUserId) => {
+  const messagesCollection = await messages();
+  const conversation = await messagesCollection
+    .find({
+      $or: [
+        {
+          originUserId: new ObjectId(originUserId),
+          targetUserId: new ObjectId(targetUserId),
+        },
+        {
+          originUserId: new ObjectId(targetUserId),
+          targetUserId: new ObjectId(originUserId),
+        },
+      ],
+    })
+    .toArray();
+
+  return conversation;
+};
+
+export const getUniqueConversationUserIds = async (userId) => {
+  let allConversationUserIds = [];
+  const messageCollection = await messages();
+  const ObjectUserId = new ObjectId(userId);
+
+  const receivedMessages = await messageCollection
+    .find({ targetUserId: ObjectUserId })
+    .toArray();
+  const sentMessages = await messageCollection
+    .find({ originUserId: ObjectUserId })
+    .toArray();
+  for (const message of receivedMessages) {
+    const userId = message.originUserId;
+    if (!allConversationUserIds.includes(userId)) {
+      allConversationUserIds.push(userId);
+    }
+  }
+
+  for (const message of sentMessages) {
+    const userId = message.targetUserId;
+    if (!allConversationUserIds.includes(userId)) {
+      allConversationUserIds.push(userId);
+    }
+  }
+
+  // Return the array of unique user IDs
+  return allConversationUserIds;
 };

@@ -10,18 +10,23 @@ import networkRoutes from "./network.js";
 import profileRoutes from "./profile.js";
 import skillsRoutes from "./skills.js";
 import logoutRoutes from "./logout.js";
+<<<<<<< HEAD
 import allCompanyRoutes from "./allCompany.js";
 import recommendationRoutes from "./recommendation.js"
 
 const constructorMethod = (app) =>
 {
+=======
+import referralRoutes from "./referral.js";
+const constructorMethod = (app) => {
+>>>>>>> main
   app.use("/", homeRoutes);
   app.use("/logIn", logInRoutes);
   app.use("/signUp", signUpRoutes);
   app.use("/company", companyRoutes);
   app.use("/groups", groupRoutes);
   app.use("/team", teamRoutes);
-  app.use("/socialposts", socialPostRoutes);
+
   app.use("/network", networkRoutes);
   app.use("/skills", skillsRoutes);
   app.use("/profile", profileRoutes);
@@ -29,10 +34,11 @@ const constructorMethod = (app) =>
   app.use("/allCompany", allCompanyRoutes);
   app.use("recommendation", recommendationRoutes);
 
+  app.use("/socialmediaposts", socialPostRoutes);
+  app.use("/referral", referralRoutes);
   // app.use("/profile", profileRoutes); Will update momentarily
 
-  app.use("*", (req, res) =>
-  {
+  app.use("*", (req, res) => {
     res.status(404).json({ error: "Page Not Found" });
   });
 };

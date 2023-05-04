@@ -1,4 +1,4 @@
-<h1>{{h1}}</h1>
+<h1 style="color: rgb(255, 255, 255); background-color: #d28200;">{{h1}}</h1>
 <div class="container">
     <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
         <div class="container-fluid">
@@ -42,7 +42,7 @@
                     </li>
                     <li class="nav-item">
                         <form style="display: inline" action="/network/post/{{userId}}/new" method="get">
-                            <button class="nav-link btn btn-outline-primary"
+                            <button id="network-new-post-button" class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
                             </button>
@@ -56,22 +56,25 @@
     <br>
     {{!-- --}}
     <div class="card" style="width: 50%;">
-        <form method="POST" id="network-post-create">
+        <form id="network-post-create">
             <!-- Add a hidden input field with the _method attribute set to PATCH -->
             <h6 class="card-subtitle mb-2 badge bg-warning text-wrap fs-6" style="width: 100%;">Your Post</h6>
             <div class="form-floating">
                 <label for="post">
                 </label>
-                <input type="text" id="post" name="post" class="form-control" aria-label="Large"
-                    aria-describedby="post" value="{{post}}">
+                <input type="text" id="post" name="post" class="form-control" aria-label="Large" aria-describedby="post"
+                    value="{{post}}">
                 <br>
                 <div class="text-center">
                     <button class="network-post-button mb-3" type="submit">submit</button>
                 </div>
             </div>
         </form>
-        
+
         <div id="error"></div>
         {{error}}
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+    crossorigin="anonymous"></script>
+<script src="/public/js/ajax_networkNewPost.js"></script>
