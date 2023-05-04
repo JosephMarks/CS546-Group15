@@ -11,6 +11,7 @@ import profileRoutes from "./profile.js";
 import skillsRoutes from "./skills.js";
 import logoutRoutes from "./logout.js";
 import allCompanyRoutes from "./allCompany.js";
+import recommendationRoutes from "./recommendation.js"
 
 const constructorMethod = (app) =>
 {
@@ -26,6 +27,7 @@ const constructorMethod = (app) =>
   app.use("/profile", profileRoutes);
   app.use("/logout", logoutRoutes);
   app.use("/allCompany", allCompanyRoutes);
+  app.use("recommendation", recommendationRoutes);
 
   // app.use("/profile", profileRoutes); Will update momentarily
 

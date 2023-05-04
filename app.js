@@ -130,6 +130,16 @@ app.use("/logout", (req, res, next) => {
   }
 });
 
+app.use("/recommendation", (req, res, next) => {
+
+  if (req.session && !req.session.user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+  
+});
+
 app.use("/", (req, res, next) => {
   let auth = "";
   if (req.session && req.session.user) {

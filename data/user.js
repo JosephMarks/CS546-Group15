@@ -384,6 +384,18 @@ const exportedMethods = {
 
     return { fname: user.fname, lname: user.lname };
   },
+
+  async getUserInterestArea(id) {
+
+    if (!id || ObjectId.isValid(id)){
+      throw "Error : Invalid Id";
+    }
+
+    let getUserInterests = await userCollection.findOne( {_id: new ObjectId(id)}, { projection: {interestArea: 1}} );
+    if (!getUserInterests) throw "Error : Users interest area is empty";
+    
+    return getUserInterests;
+  }
 };
 
 export default exportedMethods;
