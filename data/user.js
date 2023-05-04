@@ -29,7 +29,7 @@ const exportedMethods = {
     return user;
   },
 
-    async createUser(fname, lname, age, email, password, candidateType) {
+  async createUser(fname, lname, age, email, password, candidateType) {
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");

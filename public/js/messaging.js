@@ -2,6 +2,9 @@
 
 async function loadConversation(targetUserId) {
   const userId = document.body.dataset.userId;
+  const dropDown = document.querySelector("#userConnections");
+  dropDown.value = targetUserId;
+  console.log(dropDown);
   const response = await fetch(`/profile/${userId}/messaging/${targetUserId}`);
   const messages = await response.json();
   updateMessages(messages);

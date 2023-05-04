@@ -10,7 +10,6 @@ import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
-import { connections } from "mongoose";
 
 router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -52,8 +51,8 @@ router.route("/:id").get(async (req, res) => {
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
+    connections = connections.slice(0, 5);
     console.log(connections);
-    connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
       title: "Profile Page",
@@ -162,11 +161,29 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
+      let sortedConversations = conversations.sort((a, b) => {
+        console.log(a);
+        console.log(b);
+        let latestMessageA = a[a.length - 1];
+        let latestMessageB = b[b.length - 1];
+        if (!latestMessageA || !latestMessageB) {
+          return 0;
+        }
+        if ((latestMessageA.createdAt || 0) < (latestMessageB.createdAt || 0)) {
+          return -1;
+        }
+        if (
+          (latestMessageA.createdAt || 0) === (latestMessageB.createdAt || 0)
+        ) {
+          return 0;
+        }
+        return 1;
+      });
 
       res.render("./profile/profileMessage", {
         _id: id,
         connections: allConnections,
-        conversations: conversations,
+        conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
@@ -211,7 +228,6 @@ router
       let newMessage = await messageData.create(
         id,
         receivedInput.connection,
-        receivedInput.subjectInput,
         receivedInput.messageInput
       );
       let allMessages = await messageData.getAll(id);

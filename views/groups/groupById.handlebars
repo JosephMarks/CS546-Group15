@@ -3,8 +3,15 @@
 <div class="container">
   <h1>Group Details</h1>
   <div>
-    <a href="/groups/{{_id}}/edit"><button>Edit</button></a>
-    <a href="/groups/{{_id}}/join"><button>Join</button></a>
+    {{#if isMember}}
+      <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
+      <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
+      <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
+      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
+    {{else}}
+      <a class="action-button" href="/groups/{{_id}}/join">Join</a>
+    {{/if}}
+
     <h2>Group Name: {{name}}</h2>
     <h2>Group Description: {{description}}</h2>
 
@@ -12,11 +19,21 @@
       <img src="data:image/png;base64,{{image}}" alt="Group Image" />
     {{/if}}
 
-    <h2>Upcoming Events: {{events}}</h2>
-
-    {{#each activity}}
-      <div>{{title}}</div>
+    <h2>Upcoming Events:</h2>
+    {{#each events}}
+      <div class="event-box">
+        <div><span class="event-title">Event Title:</span>
+          <span class="event-title-text">{{title}}</span></div>
+        <div>Event Description:{{description}}</div>
+        <div>Event Date:{{eventDate}}</div>
+        {{#if image}}
+          <img src="data:image/png;base64,{{image}}" alt="Event Image" />
+        {{/if}}
+      </div>
     {{/each}}
+
+    <h2>Group Activity:</h2>
+
     <a href="javascript:history.back();">Back to Search Results</a>
 
   </div>

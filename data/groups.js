@@ -197,40 +197,33 @@ export const addUser = async (id, user) => {
   if (!id || !user) {
     throw new Error("Parameters must be provided to make the update");
   }
-  // checking to make sure id is a valid ObjectId
   if (!ObjectId.isValid(id)) {
     throw new Error("This is not a valid object ID");
   }
-  // if id, name, website, recordCompany, are not strings, throw error
   if (typeof id !== "string" || typeof user !== "string") {
     throw new Error("input values must be strings");
   }
-  // if id, name, website, recordCompany, are empty strings, throw error
   if (id.trim().length === 0 || user.trim().length === 0) {
     throw new Error("Input cannot be empty strings");
   }
 
-  // Now the main part of the function here
-  const updatedGroup = {
-    users: user,
-  };
   const groupCollection = await groups();
-  // Need to check to make sure at least one item is being changed in the band update, otherwise will throw
   const foundGroup = await groupCollection.findOne({ _id: new ObjectId(id) });
   if (foundGroup === null) {
     throw new Error("Group has not been found");
   }
-  if (foundGroup.users === user) {
+  if (foundGroup.users.includes(user)) {
     throw new Error("User has already joined the group!");
   }
   const updatedInfo = await groupCollection.findOneAndUpdate(
     { _id: new ObjectId(id) },
-    { $set: updatedGroup },
+    { $addToSet: { users: user } }, // Use $addToSet to add the user to the users array
     { returnDocument: "after" }
   );
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the group successfully.");
   }
+
   let userCollection = await users();
   const updateInfo = await userCollection.updateOne(
     { _id: new ObjectId(user) },

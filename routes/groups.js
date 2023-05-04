@@ -6,6 +6,7 @@ import multer from "multer";
 const upload = multer();
 import fs from "fs";
 import * as groupActivityFn from "../data/groupActivity.js";
+import * as groupEventData from "../data/groupEvents.js";
 import userData from "../data/user.js";
 import { users } from "../config/mongoCollections.js";
 
@@ -78,9 +79,25 @@ router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;
+  let userId = req.session.user.userId;
+  userId = userId.toString();
+  console.log("heres the userId");
+  console.log(userId);
 
+  const group = await groupData.get(id);
+  let users = group.users;
+  console.log(users);
+  let isMember = false;
+  for (let i = 0; i < users.length; i++) {
+    const member = users[i];
+    if (member === userId) {
+      isMember = true;
+      break;
+    }
+  }
   try {
     let groupInfo = await groupData.get(id);
+    let events = await groupEventData.getAll(id);
     let image = groupInfo.base64Image;
     // Pass our data over to the template to be rendered
     // let eventsArray = [];
@@ -95,8 +112,9 @@ router.route("/:id").get(async (req, res) => {
       name: groupInfo.name,
       description: groupInfo.description,
       activity: groupInfo.activity,
-      events: "the big event",
+      events: events,
       image: image,
+      isMember: isMember,
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -130,10 +148,8 @@ router.get("/:id/edit", async (req, res) => {
 router.post("/:id", upload.single("image"), async (req, res) => {
   const groupId = req.params.id;
   const { name, description } = req.body;
-  console.log(name);
-  console.log(description);
-
-  console.log(req.file);
+  const userId = req.session.user.userId;
+  const group = await groupData.get(groupId);
   try {
     // Check if an image was uploaded
     if (req.file) {
@@ -187,6 +203,85 @@ router.get("/:id/join", async (req, res) => {
     console.error(e);
     res.status(400).render("./groups/groupsJoin", {
       error: e.message,
+    });
+  }
+});
+
+router.get("/:id/eventEdit", async (req, res) => {
+  const id = req.params.id;
+  // array of all events for this group
+  const groupEvents = await groupEventData.getAll(id);
+  console.log("these will be all the events");
+
+  console.log(groupEvents);
+  try {
+    res.render("./groups/eventEdit", {
+      _id: id,
+      events: groupEvents,
+    });
+  } catch (e) {
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a venue with that id does not exist .`,
+    });
+  }
+});
+
+router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
+  const { groupId, eventId } = req.params;
+  const { title, eventDate, description } = req.body;
+
+  const updatedEvent = {
+    title,
+    eventDate,
+    description,
+  };
+  console.log({ updatedEvent });
+  try {
+    await groupEventData.update(groupId, eventId, updatedEvent);
+    res.redirect(`/groups/${groupId}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Error updating event.");
+  }
+});
+
+router.get("/:id/eventAdd", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    res.render("./groups/eventAdd", {
+      _id: id,
+    });
+  } catch (e) {
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a venue with that id does not exist .`,
+    });
+  }
+});
+
+router.post("/:id/eventAdd", async (req, res) => {
+  const groupId = req.params.id;
+  const { title, description, eventDate } = req.body;
+  try {
+    console.log("lets print some stuff");
+    console.log({ title, description, eventDate });
+    let newEvent = await groupEventData.create(
+      groupId,
+      title,
+      description,
+      eventDate
+    );
+    console.log(newEvent);
+    res.redirect(`/groups/${groupId}`);
+  } catch (e) {
+    res.status(400).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error adding the event: ${e.message}`,
     });
   }
 });
