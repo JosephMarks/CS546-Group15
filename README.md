@@ -4,12 +4,12 @@ Repo for Group 15's final project in CS546 @ Stevens Institute of Technology
 
 **<u>Team Members</u>**
 
-- Pradyumn Pundir (ppundir1@stevens.edu)
-- Ruobing Liu (rliu40@stevens.edu)
-- Tzu-Ming Lu (tlu14@stevens.edu)
-- Joseph Marks (jmarks@stevens.edu)
+- Pradyumn Pundir (ppundir1@stevens.edu)🙋‍♂️
+- Ruobing Liu (rliu40@stevens.edu)🙋‍♀️
+- Tzu-Ming Lu (tlu14@stevens.edu)🙋‍♂️
+- Joseph Marks (jmarks@stevens.edu)🙋‍♂️
 
-## Better Interview Book
+## Better Interview Book 📋
 
 <p align="center">
   <img src="https://github.com/JosephMarks/CS546-Group15/blob/main/public/static/images/download.png" />
@@ -21,7 +21,7 @@ We are creating a platform that assists candidates and employers alike in making
 
 [Back to top](#cs546-group15)
 
-## Getting Started
+## Getting Started⚙️
 ### Installation
 
 _Please follow the below instructions to clone the repo into your local, set up all the required environments and download the package to operate the application._
