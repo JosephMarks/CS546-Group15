@@ -1,28 +1,90 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Binary } from "mongodb";
 import { groups } from "../config/mongoCollections.js";
 import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 import { users } from "../config/mongoCollections.js";
 
 // Functinon to create the new group sub-document.
-export const create = async (groupId, title) => {
+export const create = async (groupId, title, eventDate, otherAttributes) => {
   groupId = groupId.trim();
   title = title.trim();
 
-  if (!groupId || !title) {
-    throw new Error("Parameters must be present");
+  if (!groupId || !title || !eventDate) {
+    throw new Error("Parameters groupId and title must be present");
   }
-  if (typeof groupId !== "string" || typeof title !== "string") {
-    throw new Error("Paramterst must be of type string");
+  if (
+    typeof groupId !== "string" ||
+    typeof title !== "string" ||
+    typeof eventDate !== "string"
+  ) {
+    throw new Error("Parameters groupId and title must be of type string");
   }
 
-  if (groupId.length === 0 || title.length === 0) {
+  if (groupId.length === 0 || title.length === 0 || eventDate.length === 0) {
     throw new Error("Input must not be empty strings");
   }
 
-  let eventDate;
-  let users = [];
-  let image;
+  if (eventDate) {
+    if (typeof eventDate !== "string") {
+      throw new Error("Parameters must be of type string");
+    }
+    if (eventDate.length === 0) {
+      throw new Error("Cannot be an empty string");
+    }
+
+    const dateObject = parse(eventDate, "MM/dd/yyyy", new Date());
+    if (!isValid(dateObject)) {
+      throw new Error("Date is not of proper format");
+    }
+
+    let dateArray = [];
+    dateArray = eventDate.split("/");
+    if (dateArray.length < 3) {
+      throw new Error("This is not valid");
+    }
+    if (dateArray.length !== 3) {
+      throw new Error("This is not valid");
+    }
+    if (
+      dateArray[0].length !== 2 ||
+      dateArray[1].length !== 2 ||
+      dateArray[2].length !== 4
+    ) {
+      throw new Error("This is not valid format");
+    }
+    let yearString;
+    let yearValue;
+    yearString = dateArray[2];
+    yearValue = Number(yearString);
+    if (yearValue < 2023 || yearValue > 2025) {
+      throw new Error("The date is out of the appropriate range");
+    }
+  }
+
+  if (otherAttributes.users) {
+    if (!Array.isArray(otherAttributes.users)) {
+      throw new Error("users must be an array");
+    }
+    otherAttributes.users.forEach((user) => {
+      if (typeof user !== "string" || !ObjectId.isValid(user)) {
+        throw new Error("Each user in users array must be a valid ObjectId");
+      }
+    });
+  } else {
+    users = [];
+  }
+
+  if (otherAttributes.image) {
+    const bufferImage = Buffer.from(otherAttributes.image, "base64");
+    const bin = new Binary(bufferImage);
+    updatedGroup.image = bin;
+  }
+
+  if (otherAttributes.description) {
+    if (typeof otherAttributes.description !== "string") {
+      throw new Error("description must be of type string");
+    }
+  }
 
   let newObjectId = new ObjectId();
 
@@ -31,12 +93,12 @@ export const create = async (groupId, title) => {
     groupId: groupId,
     title: title,
     eventDate: eventDate,
-    users: users,
+    description: otherAttributes.description,
+    users: otherAttributes.users,
     image: image,
   };
 
   const groupCollection = await groups();
-  console.log(groupCollection);
 
   let providedGroup = newEvent.title;
   const foundGroup = await groupCollection.findOne({
@@ -64,7 +126,7 @@ export const create = async (groupId, title) => {
 
 export const getAll = async (groupId) => {
   groupId = groupId.trim();
-  if (!groupID) {
+  if (!groupId) {
     throw new Error("You must provide a group id");
   }
   if (typeof groupId !== "string") {
@@ -77,6 +139,8 @@ export const getAll = async (groupId) => {
     throw new Error("Group Id must be a valid Object Id");
   }
   let group = await groupData.get(groupId);
+  console.log("Here is teh group");
+  console.log(group);
   if (group === null) {
     throw new Error("Grouop does not exist");
   }
@@ -156,7 +220,7 @@ export const updateEventDate = async (groupId, eventId, eventDate) => {
     throw new Error("Cannot be an empty string");
   }
 
-  const dateObject = parse(eventDate, "MM/dd/yyyy", new Date());
+  const dateObject = parse(eventDate);
   if (!isValid(dateObject)) {
     throw new Error("Date is not of proper format");
   }
@@ -393,13 +457,9 @@ export const update = async (groupId, eventId, newAttributes) => {
   }
 
   if (newAttributes.image) {
-    if (
-      typeof newAttributes.image.buffer !== "object" ||
-      !(newAttributes.image.buffer instanceof Buffer)
-    ) {
-      throw new Error("Image must have a valid buffer");
-    }
-    newAttributes.base64Image = newAttributes.image.buffer.toString("base64");
+    const bufferImage = Buffer.from(newAttributes.image, "base64");
+    const bin = new Binary(bufferImage);
+    newAttributes.image = bin;
   }
 
   if (newAttributes.eventDate) {
@@ -410,30 +470,12 @@ export const update = async (groupId, eventId, newAttributes) => {
       throw new Error("Cannot be an empty string");
     }
 
-    const dateObject = parse(newAttributes.eventDate, "MM/dd/yyyy", new Date());
+    const dateObject = new Date(newAttributes.eventDate);
     if (!isValid(dateObject)) {
       throw new Error("Date is not of proper format");
     }
 
-    let dateArray = [];
-    dateArray = newAttributes.eventDate.split("/");
-    if (dateArray.length < 3) {
-      throw new Error("This is not valid");
-    }
-    if (dateArray.length !== 3) {
-      throw new Error("This is not valid");
-    }
-    if (
-      dateArray[0].length !== 2 ||
-      dateArray[1].length !== 2 ||
-      dateArray[2].length !== 4
-    ) {
-      throw new Error("This is not valid format");
-    }
-    let yearString;
-    let yearValue;
-    yearString = dateArray[2];
-    yearValue = Number(yearString);
+    const yearValue = dateObject.getFullYear();
     if (yearValue < 2023 || yearValue > 2025) {
       throw new Error("The date is out of the appropriate range");
     }

@@ -6,6 +6,7 @@ import multer from "multer";
 const upload = multer();
 import fs from "fs";
 import * as groupActivityFn from "../data/groupActivity.js";
+import * as groupEventData from "../data/groupEvents.js";
 import userData from "../data/user.js";
 import { users } from "../config/mongoCollections.js";
 
@@ -81,6 +82,7 @@ router.route("/:id").get(async (req, res) => {
 
   try {
     let groupInfo = await groupData.get(id);
+    let events = await groupEventData.getAll(id);
     let image = groupInfo.base64Image;
     // Pass our data over to the template to be rendered
     // let eventsArray = [];
@@ -95,7 +97,7 @@ router.route("/:id").get(async (req, res) => {
       name: groupInfo.name,
       description: groupInfo.description,
       activity: groupInfo.activity,
-      events: "the big event",
+      events: events,
       image: image,
     });
   } catch (e) {
@@ -191,16 +193,17 @@ router.get("/:id/join", async (req, res) => {
   }
 });
 
-router.get("/:id/event", async (req, res) => {
+router.get("/:id/eventEdit", async (req, res) => {
   const id = req.params.id;
+  // array of all events for this group
+  const groupEvents = await groupEventData.getAll(id);
+  console.log("these will be all the events");
 
+  console.log(groupEvents);
   try {
-    let groupInfo = await groupData.get(id);
     res.render("./groups/eventEdit", {
       _id: id,
-      name: groupInfo.name,
-      description: groupInfo.description,
-      image: groupInfo.base64Image,
+      events: groupEvents,
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -208,6 +211,25 @@ router.get("/:id/event", async (req, res) => {
       title: "Error Page",
       errorMessage: `We're sorry, a venue with that id does not exist .`,
     });
+  }
+});
+
+router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
+  const { groupId, eventId } = req.params;
+  const { title, eventDate, description } = req.body;
+
+  const updatedEvent = {
+    title,
+    eventDate,
+    description,
+  };
+  console.log({ updatedEvent });
+  try {
+    await groupEventData.update(groupId, eventId, updatedEvent);
+    res.redirect(`/groups/${groupId}`);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send("Error updating event.");
   }
 });
 
