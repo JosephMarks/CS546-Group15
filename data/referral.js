@@ -6,7 +6,7 @@ import userData from "./user.js";
 const exportedMethods = {
   async getAllPosts() {
     const postCollection = await referral();
-    return await postCollection.find({}).toArray();
+    return await postCollection.find({}).sort({ duedate: -1 }).toArray();
   },
 
   async getPostById(id) {
@@ -22,7 +22,7 @@ const exportedMethods = {
     let usersCollection = await users();
 
     let user = await userData.getUserById(userId);
-    let arr = user.likedPost;
+    let arr = user.likedReferPost;
     let res = [];
     if (!Array.isArray(arr)) {
       arr = [];
@@ -31,11 +31,12 @@ const exportedMethods = {
         arr = validation.checkArrofId(arr, "Array of post Id");
 
         for (let id of arr) {
-          let post = await this.getPostById(id);
+          const postCollection = await referral();
+          const post = await postCollection.findOne({ _id: new ObjectId(id) });
           if (!post) {
             let newPost = await usersCollection.findOneAndUpdate(
               { _id: new ObjectId(userId) },
-              { $pull: { likedPost: id } },
+              { $pull: { likedReferPost: id } },
               { returnDocument: "after" }
             );
             if (newPost.lastErrorObject.n === 0)
@@ -53,31 +54,38 @@ const exportedMethods = {
   async getPostedPostByUserId(userId) {
     let usersCollection = await users();
     let user = await userData.getUserById(userId);
-    let arr = user.socialPost;
+    let arr = user.referPost;
     let res = [];
-    if (!Array.isArray(arr)) {
-      arr = [];
+    if (!arr) {
+      return [];
     } else {
-      if (arr.length > 0) {
-        arr = validation.checkArrofId(arr, "Array of post Id");
+      if (!Array.isArray(arr)) {
+        arr = [];
+      } else {
+        if (arr.length > 0) {
+          arr = validation.checkArrofId(arr, "Array of post Id");
 
-        for (let id of arr) {
-          let post = await this.getPostById(id);
-          if (!post) {
-            let newPost = await usersCollection.findOneAndUpdate(
-              { _id: new ObjectId(userId) },
-              { $pull: { socialPost: id } },
-              { returnDocument: "after" }
-            );
-            if (newPost.lastErrorObject.n === 0)
-              throw [404, `Could not delete the post with id ${id}`];
-            continue;
+          for (let id of arr) {
+            const postCollection = await referral();
+            const post = await postCollection.findOne({
+              _id: new ObjectId(id),
+            });
+            if (!post) {
+              let newPost = await usersCollection.findOneAndUpdate(
+                { _id: new ObjectId(userId) },
+                { $pull: { referPost: id } },
+                { returnDocument: "after" }
+              );
+              if (newPost.lastErrorObject.n === 0)
+                throw [404, `Could not delete the post with id ${id}`];
+              continue;
+            }
+            res.push(post);
           }
-          res.push(post);
         }
       }
+      return res;
     }
-    return res;
   },
 
   async getPostsByAllTag(fields, companyName) {
@@ -98,6 +106,7 @@ const exportedMethods = {
         fields: { $in: fields },
         company: { $in: companyName },
       })
+      .sort({ duedate: -1 })
       .toArray();
   },
 
@@ -110,6 +119,7 @@ const exportedMethods = {
     const postCollection = await referral();
     return await postCollection
       .find({ company: { $in: companyName } })
+      .sort({ duedate: -1 })
       .toArray();
   },
 
@@ -120,7 +130,10 @@ const exportedMethods = {
       fields = validation.checkFieldsTags(fields);
     }
     const postCollection = await referral();
-    return await postCollection.find({ fields: { $in: fields } }).toArray();
+    return await postCollection
+      .find({ fields: { $in: fields } })
+      .sort({ duedate: -1 })
+      .toArray();
   },
 
   async addPost(
@@ -132,32 +145,86 @@ const exportedMethods = {
     companyName,
     companyEmail,
     jobTitle,
-    jobDes,
-    jobFields
+    salary,
+    level,
+    jobType,
+    skills,
+    location,
+    description
   ) {
     title = validation.checkString(title, "Title");
     body = validation.checkString(body, "Body");
     posterId = validation.checkId(posterId, "Poster ID");
-    duedate = validation.checkString(duedate, "duedate");
-    jobTitle = validation.checkString(jobTitle, "jobTitle");
-    jobDes = validation.checkString(jobDes, "jobDes");
-    companyName = validation.checkString(companyName, "company");
-    companyEmail = validation.checkEmail(companyEmail, "companyEmail");
+    duedate = validation.checkDate(duedate);
+    if (
+      !companyName ||
+      !companyEmail ||
+      !jobTitle ||
+      !salary ||
+      !level ||
+      !jobType ||
+      !location ||
+      !description
+    )
+      throw "Error : All parameters are required";
+
+    if (
+      !validation.isProperString([
+        companyName,
+        companyEmail,
+        jobTitle,
+        description,
+        level,
+      ])
+    )
+      throw "Error : Parameters can only be string not just string with empty spaces";
+
+    if (typeof jobType === "string") {
+      if (!validation.isProperString([jobType]))
+        throw "Error : job type can only be a valid string or array with valid strings";
+    } else {
+      validation.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      jobType = jobType.map((x) => x.trim().toLowerCase());
+    }
+
+    if (typeof skills === "string") {
+      if (!validation.isProperString([jobType]))
+        throw "Error : skills can only be a valid string or array with valid strings";
+    } else {
+      validation.isArrayWithTheNonEmptyStringForSkills([skills]);
+      skills = skills.map((x) => x.trim().toLowerCase());
+    }
+
+    if (typeof location === "string") {
+      if (!validation.isProperString([location]))
+        throw "Error : location can only be a valid string or array with valid strings";
+    } else {
+      validation.isArrayWithTheNonEmptyStringForLocation([location]);
+      location = location.map((x) => x.trim().toLowerCase());
+    }
+
+    validation.isSalary(salary);
+    salary = Number(salary);
+
+    let jobData = {
+      _id: new ObjectId(),
+      jobTitle: jobTitle.trim().toLowerCase(),
+      skills: skills,
+      salary,
+      location,
+      description: description.trim().toLowerCase(),
+    };
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
       fields = validation.checkFieldsTags(fields);
     }
-
-    if (!Array.isArray(jobFields)) {
-      jobFields = [];
-    } else {
-      jobFields = validation.checkFieldsTags(fields);
-    }
-
+    [companyName] = await validation.checkCompanyTags([companyName]);
     const userThatPosted = await userData.getUserById(posterId);
     let postdate = new Date().toUTCString();
+    let newPostId = new ObjectId();
     const newPost = {
+      _id: newPostId,
       title: title,
       body: body,
       poster: {
@@ -166,22 +233,15 @@ const exportedMethods = {
       },
       duedate: duedate,
       fields: fields,
-      company: companyName,
-      jobs: {
-        _id: new ObjectId(),
-        companyName: companyName,
-        companyEmail: companyEmail,
-        jobTitle: jobTitle,
-        description: jobDes,
-        jobFields: jobFields,
-      },
+      company: [companyName],
+      jobs: jobData,
       likes: [],
       comments: [],
       postdate: postdate,
+      link: `/referral/post/${posterId}/postId/${newPostId}`,
     };
     const postCollection = await referral();
     const newInsertInformation = await postCollection.insertOne(newPost);
-    const newId = newInsertInformation.insertedId;
 
     //job in company database
     let companyCollection = await company();
@@ -195,15 +255,26 @@ const exportedMethods = {
 
     //user post in user database
     let usersCollection = await users();
-    let newuserPost = await usersCollection.findOneAndUpdate(
-      { _id: new ObjectId(posterId) },
-      { $addToSet: { socialPost: newId.toString() } },
-      { returnDocument: "after" }
-    );
+    let newuserPost;
+    if (
+      await usersCollection.findOne({ _id: new ObjectId(posterId) }).referPost
+    ) {
+      newuserPost = await usersCollection.findOneAndUpdate(
+        { _id: new ObjectId(posterId) },
+        { $addtoSet: { referPost: newPostId.toString() } },
+        { returnDocument: "after" }
+      );
+    } else {
+      newuserPost = await usersCollection.findOneAndUpdate(
+        { _id: new ObjectId(posterId) },
+        { $set: { referPost: [newPostId.toString()] } },
+        { returnDocument: "after" }
+      );
+    }
     if (newuserPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
 
-    return await this.getPostById(newId.toString());
+    return await this.getPostById(newPostId.toString());
   },
 
   async removePost(id, userId) {
@@ -220,7 +291,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
-      { $pull: { socialPost: id } },
+      { $pull: { referPost: id } },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
@@ -230,14 +301,14 @@ const exportedMethods = {
     const companyCollection = await company();
     let companyName = oldinfo.company;
     let job = oldinfo.jobs;
-    console.log(job);
+
     let newJobInser = await companyCollection.findOneAndUpdate(
       { companyName: companyName },
       { $pull: { jobs: job } },
       { returnDocument: "after" }
     );
     if (newJobInser.lastErrorObject.n === 0)
-      throw [404, `Could not update the post with id ${id}`];
+      throw [404, `Could not delete the post with id ${id}`];
 
     return { ...deletionInfo.value, deleted: true };
   },
@@ -249,7 +320,7 @@ const exportedMethods = {
     const userComment = await referralCollection
       .aggregate([
         { $unwind: "$comments" },
-        { $match: { "comments.userId": userId } },
+        { $match: { "comments.userId": new ObjectId(userId) } },
         {
           $project: {
             _id: "$comments._id",
@@ -319,39 +390,6 @@ const exportedMethods = {
     return returnValue;
   },
 
-  async removeComments(commentId) {
-    commentId = validation.checkId(commentId);
-    const comments = this.getCommentsByCommentId(commentId);
-    const referralCollection = await referral();
-    const deletionInfo = await referralCollection.findOneAndUpdate(
-      { "comments._id": new ObjectId(commentId) },
-      { $pull: { comments: { _id: new ObjectId(commentId) } } },
-      { new: true },
-      { returnDocument: "after" }
-    );
-    if (deletionInfo.lastErrorObject.n === 0)
-      throw `Error: Could not delete post with id of ${commentId}`;
-    const postId = deletionInfo.value._id.toString();
-
-    return comments;
-  },
-
-  async updateComments(commentId, content) {
-    commentId = validation.checkId(commentId);
-    content = validation.checkString(content, "Content");
-    const comments = this.getCommentsByCommentId(commentId);
-    const referralCollection = await referral();
-    const updateInfo = await referralCollection.findOneAndUpdate(
-      { "comments._id": new ObjectId(commentId) },
-      { $set: { "comments.$.comments": content } },
-      { returnDocument: "after" }
-    );
-    if (updateInfo.lastErrorObject.n === 0)
-      throw `Error: Update failed! Could not update post with id ${commentId}`;
-
-    return updateInfo.value;
-  },
-
   //  Likes
   async getLikes(postId) {
     postId = validation.checkId(postId);
@@ -359,7 +397,13 @@ const exportedMethods = {
     const likesList = post.likes;
     return likesList;
   },
-
+  async checkLikes(postId, userId) {
+    postId = validation.checkId(postId);
+    userId = validation.checkId(userId);
+    const checkDuplicated = await this.getLikes(postId);
+    if (!checkDuplicated.includes(userId)) return true;
+    else return false;
+  },
   async addLikes(postId, userId) {
     postId = validation.checkId(postId);
     userId = validation.checkId(userId);
@@ -367,7 +411,7 @@ const exportedMethods = {
     //check is there is a duplicates user press like button
     const referralCollection = await referral();
     let duplicateUser = await referralCollection.findOne(
-      { _id: new ObjectId(postId), likes: { $in: [userId] } },
+      { _id: new ObjectId(postId), likes: { $in: [new ObjectId(userId)] } },
       { projection: { _id: 0 } }
     );
     if (duplicateUser !== null) {
@@ -380,6 +424,14 @@ const exportedMethods = {
       { $addToSet: { likes: userId } },
       { returnDocument: "after" }
     );
+    const returnValue = newreferrals.value;
+    returnValue._id = returnValue._id.toString();
+    if (returnValue.comments.length > 0) {
+      for (let ele of returnValue.comments) {
+        ele._id = ele._id.toString();
+      }
+    }
+
     //user liked posts stored in user history
     let usersCollection = await users();
 
@@ -390,15 +442,6 @@ const exportedMethods = {
     );
     if (newPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${postId}`];
-
-    const returnValue = newreferrals.value;
-    returnValue._id = returnValue._id.toString();
-    console.log(returnValue.likes);
-    if (returnValue.comments.length > 0) {
-      for (let ele of returnValue.comments) {
-        ele._id = ele._id.toString();
-      }
-    }
     return returnValue;
   },
 
@@ -406,15 +449,15 @@ const exportedMethods = {
     postId = validation.checkId(postId);
     userId = validation.checkId(userId);
     const posts = this.getPostById(postId);
-    const referralPostCollection = await referral();
-    const deletionInfo = await referralPostCollection.findOneAndUpdate(
+    const referralCollection = await referral();
+    const deletionInfo = await referralCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $pull: { likes: userId } },
-      { new: true },
       { returnDocument: "after" }
     );
     if (deletionInfo.lastErrorObject.n === 0)
-      throw `Error: Could not delete post with id of ${postId}`;
+      throw `Error: Could not delete post with id of ${commentId}`;
+    deletionInfo.value._id = deletionInfo.value._id.toString();
     //user liked posts stored in user history
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
@@ -426,7 +469,6 @@ const exportedMethods = {
       throw [404, `Could not delete the post with id ${postId}`];
 
     deletionInfo.value._id = deletionInfo.value._id.toString();
-
     return deletionInfo.value;
   },
 };

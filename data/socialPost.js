@@ -6,7 +6,7 @@ import userData from "./user.js";
 const exportedMethods = {
   async getAllPosts() {
     const postCollection = await socialPost();
-    return await postCollection.find({}).toArray();
+    return await postCollection.find({}).sort({ eventdate: -1 }).toArray();
   },
 
   async getPostById(id) {
@@ -105,6 +105,7 @@ const exportedMethods = {
         company: { $in: company },
         category: { $in: category },
       })
+      .sort({ eventdate: -1 })
       .toArray();
   },
 
@@ -122,6 +123,7 @@ const exportedMethods = {
     const postCollection = await socialPost();
     return await postCollection
       .find({ fields: { $in: fields }, company: { $in: company } })
+      .sort({ eventdate: -1 })
       .toArray();
   },
 
@@ -139,6 +141,7 @@ const exportedMethods = {
     const postCollection = await socialPost();
     return await postCollection
       .find({ fields: { $in: fields }, category: { $in: category } })
+      .sort({ eventdate: -1 })
       .toArray();
   },
 
@@ -156,6 +159,7 @@ const exportedMethods = {
     const postCollection = await socialPost();
     return await postCollection
       .find({ company: { $in: company }, category: { $in: category } })
+      .sort({ eventdate: -1 })
       .toArray();
   },
 
@@ -166,7 +170,10 @@ const exportedMethods = {
       company = await validation.checkCompanyTags(company);
     }
     const postCollection = await socialPost();
-    return await postCollection.find({ company: { $in: company } }).toArray();
+    return await postCollection
+      .find({ company: { $in: company } })
+      .sort({ eventdate: -1 })
+      .toArray();
   },
 
   async getPostsByCategoryTag(category) {
@@ -176,7 +183,10 @@ const exportedMethods = {
       category = validation.checkCategoryTags(category);
     }
     const postCollection = await socialPost();
-    return await postCollection.find({ category: { $in: category } }).toArray();
+    return await postCollection
+      .find({ category: { $in: category } })
+      .sort({ eventdate: -1 })
+      .toArray();
   },
 
   async getPostsByFieldsTag(fields) {
@@ -186,7 +196,10 @@ const exportedMethods = {
       fields = validation.checkFieldsTags(fields);
     }
     const postCollection = await socialPost();
-    return await postCollection.find({ fields: { $in: fields } }).toArray();
+    return await postCollection
+      .find({ fields: { $in: fields } })
+      .sort({ eventdate: -1 })
+      .toArray();
   },
 
   async addPost(title, body, posterId, eventdate, fields, company, category) {
@@ -398,39 +411,6 @@ const exportedMethods = {
       ele._id = ele._id.toString();
     }
     return returnValue;
-  },
-
-  async removeComments(commentId) {
-    commentId = validation.checkId(commentId);
-    const comments = this.getCommentsByCommentId(commentId);
-    const socialPostCollection = await socialPost();
-    const deletionInfo = await socialPostCollection.findOneAndUpdate(
-      { "comments._id": new ObjectId(commentId) },
-      { $pull: { comments: { _id: new ObjectId(commentId) } } },
-      { new: true },
-      { returnDocument: "after" }
-    );
-    if (deletionInfo.lastErrorObject.n === 0)
-      throw `Error: Could not delete post with id of ${commentId}`;
-    const postId = deletionInfo.value._id.toString();
-
-    return comments;
-  },
-
-  async updateComments(commentId, content) {
-    commentId = validation.checkId(commentId);
-    content = validation.checkString(content, "Content");
-    const comments = this.getCommentsByCommentId(commentId);
-    const socialPostCollection = await socialPost();
-    const updateInfo = await socialPostCollection.findOneAndUpdate(
-      { "comments._id": new ObjectId(commentId) },
-      { $set: { "comments.$.comments": content } },
-      { returnDocument: "after" }
-    );
-    if (updateInfo.lastErrorObject.n === 0)
-      throw `Error: Update failed! Could not update post with id ${commentId}`;
-
-    return updateInfo.value;
   },
 
   //  Likes

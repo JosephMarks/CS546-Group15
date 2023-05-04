@@ -29,7 +29,7 @@ const exportedMethods = {
     return user;
   },
 
-    async createUser(fname, lname, age, email, password, candidateType) {
+  async createUser(fname, lname, age, email, password, candidateType) {
     //Validations
     fname = validations.checkString(fname, "First name");
     lname = validations.checkString(lname, "Last name");
@@ -63,7 +63,8 @@ const exportedMethods = {
     let likedPost = [];
     let collectedPost = [];
     let socialPost = [];
-
+    let likedReferPost = [];
+    let referPost = [];
     const newCreateUser = await userCollection.insertOne({
       fname,
       lname,
@@ -89,7 +90,9 @@ const exportedMethods = {
       updatedAt,
       socialPost,
       likedPost,
+      likedReferPost,
       collectedPost,
+      referPost,
     });
     if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(

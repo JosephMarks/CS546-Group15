@@ -77,7 +77,17 @@ router
   .post(async (req, res) => {
     let userId = req.session.user.userId;
     let postId = req.body.postid;
-
+    try {
+      const post = await socialPostData.getPostById(postId);
+      const author = await userData.getUserById(userId);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     if (await socialPostData.checkLikes(postId, userId)) {
       await socialPostData.addLikes(postId, userId);
     } else {
@@ -296,6 +306,7 @@ router
   .post(async (req, res) => {
     let updatedData = xss(req.body.comments);
     let auth = false;
+    let authorid = req.params.userid;
     if (authorid === req.session.user.userId) {
       auth = true;
     }
@@ -315,8 +326,8 @@ router
     } catch (error) {
       const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(post.userId);
-      const title = post.content;
-      const h1 = post.content;
+      const title = post.title;
+      const h1 = post.title;
       return res.render("socialPost/yourPostComments", {
         title: title,
         h1: h1,
@@ -337,8 +348,6 @@ router
       );
       const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(req.params.userid);
-      const title = post.content;
-      const h1 = post.content;
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -519,8 +528,6 @@ router
     };
     try {
       let updated = await socialPostData.updatePost(postId, updatePost);
-      console.log("this");
-      console.log(updated);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",

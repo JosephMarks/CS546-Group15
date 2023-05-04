@@ -159,7 +159,7 @@
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{../authorId}}" method="post">
+                    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{../userId}}" method="post">
                     <div class="col-md-12">
                         <input type="hidden" class="btn btn-outline-info" name='postid' value="{{_id}}"/>
                     </div>
