@@ -84,12 +84,12 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
-      companyName = validation.checkStringArray2(companyName, "company");
+      companyName = validation.checkCompanyTags(company);
     }
 
     const postCollection = await referral();
@@ -105,7 +105,7 @@ const exportedMethods = {
     if (!Array.isArray(company)) {
       companyName = [];
     } else {
-      companyName = validation.checkStringArray2(companyName, "company");
+      companyName = validation.checkCompanyTags(company);
     }
     const postCollection = await referral();
     return await postCollection
@@ -117,7 +117,7 @@ const exportedMethods = {
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
     const postCollection = await referral();
     return await postCollection.find({ fields: { $in: fields } }).toArray();
@@ -130,6 +130,7 @@ const exportedMethods = {
     duedate,
     fields,
     companyName,
+    companyEmail,
     jobTitle,
     jobDes,
     jobFields
@@ -141,16 +142,17 @@ const exportedMethods = {
     jobTitle = validation.checkString(jobTitle, "jobTitle");
     jobDes = validation.checkString(jobDes, "jobDes");
     companyName = validation.checkString(companyName, "company");
+    companyEmail = validation.checkEmail(companyEmail, "companyEmail");
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
-      fields = validation.checkStringArray2(fields, "fields");
+      fields = validation.checkFieldsTags(fields);
     }
 
     if (!Array.isArray(jobFields)) {
       jobFields = [];
     } else {
-      jobFields = validation.checkStringArray2(jobFields, "jobFields");
+      jobFields = validation.checkFieldsTags(fields);
     }
 
     const userThatPosted = await userData.getUserById(posterId);
@@ -165,7 +167,14 @@ const exportedMethods = {
       duedate: duedate,
       fields: fields,
       company: companyName,
-      jobs: { jobTitle: jobTitle, jobDes: jobDes, jobFields: jobFields },
+      jobs: {
+        _id: new ObjectId(),
+        companyName: companyName,
+        companyEmail: companyEmail,
+        jobTitle: jobTitle,
+        description: jobDes,
+        jobFields: jobFields,
+      },
       likes: [],
       comments: [],
       postdate: postdate,

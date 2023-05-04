@@ -1,0 +1,138 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+                    <li class="nav-item">
+                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
+                                style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
+                                Create New Post
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <br>
+    {{!-- Edit --}}
+   {{!-- Edit --}}
+    <div class="card" style="width: 50%;">
+        
+    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{userId}}/postId/{{postId}}/edit" method="post">
+
+      <span id="errorDisplay" style="color: red"> {{error}} </span>
+
+      <div class="col-md-12">
+
+        <label for="posttitle" class="posttitle">Post Title</label>
+        <input type="text" class="form-control" id="posttitle" name="posttitle" value="{{post.title}}">
+
+      </div>
+      
+      <div class="col-md-12">
+       <label for="postbody" class="postbody">Post Content</label>
+        <textarea name="postbody" id="postbody" rows="5"
+          placeholder="Write something here .... ">{{post.body}}</textarea>
+      </div>
+
+       <div class="col-md-12">
+
+        <label for="eventdate" class="eventdate">Event Date</label>
+        <input type="date" class="form-control" id="eventdate" name="eventdate" min="1990-01-01" max="2050-12-31">
+ 
+      </div>
+<p>Your previous choice for event date: {{post.eventdate}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+
+        <label for="field">Select field tag(s)</label>
+
+        <select multiple id="field" name="field">
+
+          <option value="front-end">front-end</option>
+          <option value="back-end">back-end</option>
+          <option value="full-stack">full-stack</option>
+          <option value="cybersecurity">cybersecurity</option>
+          <option value="ai">ai</option>
+          <option value="software development">software development</option>
+          <option value="finance quantitative analysis">finance quantitative analysis</option>
+          <option value="data science">data science</option>
+          <option value="medical">medical</option>
+          <option value="biology">biology</option>
+          <option value="chemistry">chemistry</option>
+          <option value="law">law</option>
+          <option value="business">business</option>
+          <option value="engineering">engineering</option>
+          <option value="art">art</option>
+          <option value="music">music</option>
+          <option value="others">others</option>
+        </select>
+
+      </div>
+      <p>Your previous choice for field tag(s): {{post.fields}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+
+        <label for="category">Select category tag(s)</label>
+
+        <select multiple id="category" name="category">
+
+          <option value="interview">interview</option>
+          <option value="daily thoughts">daily thoughts</option>
+          <option value="making friends">making friends</option>
+          <option value="housing">housing</option>
+          <option value="asking for help">asking for help</option>
+          <option value="others">others</option>
+        </select>
+
+      </div>
+      <p>Your previous choice for category tag(s): {{post.category}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+
+        <label for="company">Select company tag(s)</label>
+
+        <select multiple id="company" name="company">
+  
+        {{#each companyList}}
+          <option value="{{companyName}}">{{companyName}}</option>
+        {{/each}}
+        
+        </select>
+
+      </div>
+      <p>Your previous choice for company tag(s): {{post.company}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-outline-info">Post the Post</button>
+      </div>
+
+    </form>
+    <div id="error">{{error}}</div>
+        
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+    crossorigin="anonymous"></script>
+<script src="/public/js/socialPost.js"></script>
