@@ -177,13 +177,6 @@ app.use("/", (req, res, next) => {
   return next();
 });
 
-// let newEvent = await groupEventData.create(
-//   "644ea863311a2bb9a363e8f3",
-//   "NEW GROUPd2!",
-//   "09/30/2023"
-// );
-// console.log(newEvent);
-
 // let newGroupEvent = await groupEventsData.create(
 //   "644ea863311a2bb9a363e8f3",
 //   "Anja's big event",

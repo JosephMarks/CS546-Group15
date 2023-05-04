@@ -79,7 +79,22 @@ router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!
 
   const id = req.params.id;
+  let userId = req.session.user.userId;
+  userId = userId.toString();
+  console.log("heres the userId");
+  console.log(userId);
 
+  const group = await groupData.get(id);
+  let users = group.users;
+  console.log(users);
+  let isMember = false;
+  for (let i = 0; i < users.length; i++) {
+    const member = users[i];
+    if (member === userId) {
+      isMember = true;
+      break;
+    }
+  }
   try {
     let groupInfo = await groupData.get(id);
     let events = await groupEventData.getAll(id);
@@ -99,6 +114,7 @@ router.route("/:id").get(async (req, res) => {
       activity: groupInfo.activity,
       events: events,
       image: image,
+      isMember: isMember,
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -132,10 +148,8 @@ router.get("/:id/edit", async (req, res) => {
 router.post("/:id", upload.single("image"), async (req, res) => {
   const groupId = req.params.id;
   const { name, description } = req.body;
-  console.log(name);
-  console.log(description);
-
-  console.log(req.file);
+  const userId = req.session.user.userId;
+  const group = await groupData.get(groupId);
   try {
     // Check if an image was uploaded
     if (req.file) {

@@ -3,8 +3,14 @@
 <div class="container">
   <h1>Group Details</h1>
   <div>
-    <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
-    <a class="action-button" href="/groups/{{_id}}/join">Join</a>
+    {{#if isMember}}
+      <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
+      <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
+      <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
+      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
+    {{else}}
+      <a class="action-button" href="/groups/{{_id}}/join">Join</a>
+    {{/if}}
 
     <h2>Group Name: {{name}}</h2>
     <h2>Group Description: {{description}}</h2>
@@ -12,12 +18,6 @@
     {{#if image}}
       <img src="data:image/png;base64,{{image}}" alt="Group Image" />
     {{/if}}
-    <div>
-      <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
-      <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
-      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
-
-    </div>
 
     <h2>Upcoming Events:</h2>
     {{#each events}}
