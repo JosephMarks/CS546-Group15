@@ -70,7 +70,7 @@ router.route("/data").post(async (req, res) => {
   } catch (e) {
     if (e === "Error: User Email is already registered")
       return res.status(404).render('Auth/login', { error: e, title : 'Error' });
-    else return res.status(500).render('error', { error: "Sever Error", title : 'Server Error' });
+    else return res.status(500).render('error', { error: e, title : 'Server Error' });
   }
 });
 

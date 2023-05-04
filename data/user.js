@@ -63,43 +63,84 @@ const exportedMethods = {
     let likedPost = [];
     let collectedPost = [];
     let socialPost = [];
-    let likedReferPost = [];
-    let referPost = [];
-    const newCreateUser = await userCollection.insertOne({
-      fname,
-      lname,
-      email,
-      password,
-      age: age,
-      gender,
-      candidateType,
-      headerDescription,
-      aboutMe,
-      locationState,
-      image,
-      university,
-      collegeMajor,
-      gitHubUserName,
-      interestArea,
-      experience,
-      jobHistory,
-      seekingJob,
-      connections,
-      group,
-      createdAt,
-      updatedAt,
-      socialPost,
-      likedPost,
-      likedReferPost,
-      collectedPost,
-      referPost,
-    });
-    if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+
+    if (candidateType === "Student") {
+      const newCreateUser = await userCollection.insertOne({
+        fname,
+        lname,
+        email,
+        password,
+        age: age,
+        gender,
+        candidateType,
+        headerDescription,
+        aboutMe,
+        locationState,
+        image,
+        university,
+        collegeMajor,
+        gitHubUserName,
+        interestArea,
+        experience,
+        jobHistory,
+        seekingJob,
+        connections,
+        group,
+        createdAt,
+        updatedAt,
+        socialPost,
+        likedPost,
+        collectedPost,
+      });
+
+      if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(
       newCreateUser.insertedId.toString()
     );
     returnUser._id = returnUser._id.toString();
     return returnUser;
+
+    } else {
+      const newCreateUser = await userCollection.insertOne({
+        fname,
+        lname,
+        email,
+        password,
+        age: age,
+        gender,
+        candidateType,
+        companyName: "",
+        referralPosts: [],
+        headerDescription,
+        aboutMe,
+        locationState,
+        image,
+        university,
+        collegeMajor,
+        gitHubUserName,
+        interestArea,
+        experience,
+        jobHistory,
+        seekingJob,
+        connections,
+        group,
+        createdAt,
+        updatedAt,
+        socialPost,
+        likedPost,
+        collectedPost,
+      });
+
+      if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
+    const returnUser = await this.getUserById(
+      newCreateUser.insertedId.toString()
+    );
+    returnUser._id = returnUser._id.toString();
+    return returnUser;
+    }
+
+    
+    
   },
 
   async updateUsers(
@@ -343,6 +384,18 @@ const exportedMethods = {
 
     return { firstName: user.fname, lastName: user.lname };
   },
+
+  async getUserInterestArea(id) {
+
+    if (!id || ObjectId.isValid(id)){
+      throw "Error : Invalid Id";
+    }
+
+    let getUserInterests = await userCollection.findOne( {_id: new ObjectId(id)}, { projection: {interestArea: 1}} );
+    if (!getUserInterests) throw "Error : Users interest area is empty";
+    
+    return getUserInterests;
+  }
 };
 
 export default exportedMethods;

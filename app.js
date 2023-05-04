@@ -13,6 +13,7 @@ import { groupActivityData, userData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
+import * as groupEventData from "./data/groupEvents.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -184,6 +185,16 @@ app.use("/logout", (req, res, next) => {
   }
 });
 
+app.use("/recommendation", (req, res, next) => {
+
+  if (req.session && !req.session.user) {
+    return res.redirect("/login");
+  } else {
+    next();
+  }
+  
+});
+
 app.use("/", (req, res, next) => {
   let auth = "";
   if (req.session && req.session.user) {
@@ -203,6 +214,13 @@ app.use("/", (req, res, next) => {
   return next();
 });
 
+// let newGroupEvent = await groupEventsData.create(
+//   "644ea863311a2bb9a363e8f3",
+//   "Anja's big event",
+//   "09/30/2023",
+//   { users: ["643b2afed6271e8e940ad58e"] }
+// );
+// console.log(newGroupEvent);
 configRoutes(app);
 
 // let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");

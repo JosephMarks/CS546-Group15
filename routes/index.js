@@ -10,7 +10,10 @@ import networkRoutes from "./network.js";
 import profileRoutes from "./profile.js";
 import skillsRoutes from "./skills.js";
 import logoutRoutes from "./logout.js";
+import allCompanyRoutes from "./allCompany.js";
+import recommendationRoutes from "./recommendation.js"
 import referralRoutes from "./referral.js";
+
 const constructorMethod = (app) => {
   app.use("/", homeRoutes);
   app.use("/logIn", logInRoutes);
@@ -23,6 +26,9 @@ const constructorMethod = (app) => {
   app.use("/skills", skillsRoutes);
   app.use("/profile", profileRoutes);
   app.use("/logout", logoutRoutes);
+  app.use("/allCompany", allCompanyRoutes);
+  app.use("recommendation", recommendationRoutes);
+
   app.use("/socialmediaposts", socialPostRoutes);
   app.use("/referral", referralRoutes);
   // app.use("/profile", profileRoutes); Will update momentarily

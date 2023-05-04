@@ -1,28 +1,74 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Binary } from "mongodb";
 import { groups } from "../config/mongoCollections.js";
 import * as groupData from "./groups.js";
 import { parse, isValid } from "date-fns";
 import { users } from "../config/mongoCollections.js";
 
 // Functinon to create the new group sub-document.
-export const create = async (groupId, title) => {
+export const create = async (
+  groupId,
+  title,
+  description,
+  eventDate,
+  otherAttributes
+) => {
   groupId = groupId.trim();
   title = title.trim();
 
-  if (!groupId || !title) {
-    throw new Error("Parameters must be present");
+  if (!groupId || !title || !eventDate || !description) {
+    throw new Error("Parameters groupId and title must be present");
   }
-  if (typeof groupId !== "string" || typeof title !== "string") {
-    throw new Error("Paramterst must be of type string");
+  if (
+    typeof groupId !== "string" ||
+    typeof title !== "string" ||
+    typeof eventDate !== "string" ||
+    typeof description !== "string"
+  ) {
+    throw new Error("Parameters groupId and title must be of type string");
   }
 
-  if (groupId.length === 0 || title.length === 0) {
+  if (groupId.length === 0 || title.length === 0 || eventDate.length === 0) {
     throw new Error("Input must not be empty strings");
   }
+  if (typeof eventDate !== "string") {
+    throw new Error("Parameters must be of type string");
+  }
+  if (eventDate.length === 0) {
+    throw new Error("Cannot be an empty string");
+  }
 
-  let eventDate;
+  const dateObject = new Date(eventDate);
+  if (!isValid(dateObject)) {
+    throw new Error("Date is not of proper format");
+  }
+
+  const yearValue = dateObject.getFullYear();
+  if (yearValue < 2023 || yearValue > 2025) {
+    throw new Error("The date is out of the appropriate range");
+  }
+
   let users;
   let image;
+
+  if (otherAttributes && otherAttributes.users) {
+    if (!Array.isArray(otherAttributes.users)) {
+      throw new Error("users must be an array");
+    }
+    otherAttributes.users.forEach((user) => {
+      if (typeof user !== "string" || !ObjectId.isValid(user)) {
+        throw new Error("Each user in users array must be a valid ObjectId");
+      }
+    });
+    users = otherAttributes.users;
+  } else {
+    users = [];
+  }
+
+  if (otherAttributes && otherAttributes.image) {
+    const bufferImage = Buffer.from(otherAttributes.image, "base64");
+    const bin = new Binary(bufferImage);
+    image = bin;
+  }
 
   let newObjectId = new ObjectId();
 
@@ -31,17 +77,17 @@ export const create = async (groupId, title) => {
     groupId: groupId,
     title: title,
     eventDate: eventDate,
+    description: description,
     users: users,
     image: image,
   };
 
   const groupCollection = await groups();
-  console.log(groupCollection);
 
   let providedGroup = newEvent.title;
   const foundGroup = await groupCollection.findOne({
     _id: new ObjectId(groupId),
-    groups: {
+    events: {
       $elemMatch: { title: providedGroup },
     },
   });
@@ -64,7 +110,7 @@ export const create = async (groupId, title) => {
 
 export const getAll = async (groupId) => {
   groupId = groupId.trim();
-  if (!groupID) {
+  if (!groupId) {
     throw new Error("You must provide a group id");
   }
   if (typeof groupId !== "string") {
@@ -77,6 +123,8 @@ export const getAll = async (groupId) => {
     throw new Error("Group Id must be a valid Object Id");
   }
   let group = await groupData.get(groupId);
+  console.log("Here is teh group");
+  console.log(group);
   if (group === null) {
     throw new Error("Grouop does not exist");
   }
@@ -156,7 +204,7 @@ export const updateEventDate = async (groupId, eventId, eventDate) => {
     throw new Error("Cannot be an empty string");
   }
 
-  const dateObject = parse(eventDate, "MM/dd/yyyy", new Date());
+  const dateObject = parse(eventDate);
   if (!isValid(dateObject)) {
     throw new Error("Date is not of proper format");
   }
@@ -358,6 +406,87 @@ export const removeUser = async (groupId, eventId, user) => {
 
   if (updatedInfo.lastErrorObject.n === 0) {
     throw new Error("Could not update the event title successfully");
+  }
+  return updatedInfo;
+};
+
+export const update = async (groupId, eventId, newAttributes) => {
+  groupId = groupId.trim();
+  eventId = eventId.trim();
+
+  if (!groupId || !eventId) {
+    throw new Error("Parameters groupId and eventId must be provided");
+  }
+
+  if (typeof groupId !== "string" || typeof eventId !== "string") {
+    throw new Error("Parameters groupId and eventId must be of type string");
+  }
+
+  const groupCollection = await groups();
+  const foundGroup = await groupCollection.findOne({
+    _id: new ObjectId(groupId),
+  });
+
+  if (foundGroup === null) {
+    throw new Error("Group has not been found");
+  }
+
+  if (newAttributes.users) {
+    if (typeof newAttributes.users !== "string") {
+      throw new Error("Users must be of type string");
+    }
+    if (!ObjectId.isValid(newAttributes.users)) {
+      throw new Error("Users must be a valid ObjectId");
+    }
+  }
+
+  if (newAttributes.image) {
+    const bufferImage = Buffer.from(newAttributes.image, "base64");
+    const bin = new Binary(bufferImage);
+    newAttributes.image = bin;
+  }
+
+  if (newAttributes.eventDate) {
+    if (typeof newAttributes.eventDate !== "string") {
+      throw new Error("Parameters must be of type string");
+    }
+    if (newAttributes.eventDate.length === 0) {
+      throw new Error("Cannot be an empty string");
+    }
+
+    const dateObject = new Date(newAttributes.eventDate);
+    if (!isValid(dateObject)) {
+      throw new Error("Date is not of proper format");
+    }
+
+    const yearValue = dateObject.getFullYear();
+    if (yearValue < 2023 || yearValue > 2025) {
+      throw new Error("The date is out of the appropriate range");
+    }
+  }
+
+  const updateData = {};
+  for (const [key, value] of Object.entries(newAttributes)) {
+    if (typeof value !== "undefined") {
+      updateData[`events.$.${key}`] = value;
+    }
+  }
+
+  const updatedInfo = await groupCollection.findOneAndUpdate(
+    {
+      _id: new ObjectId(groupId),
+      events: {
+        $elemMatch: {
+          _id: new ObjectId(eventId),
+        },
+      },
+    },
+    { $set: updateData },
+    { returnDocument: "after" }
+  );
+
+  if (updatedInfo.lastErrorObject.n === 0) {
+    throw new Error("Could not update the event successfully");
   }
   return updatedInfo;
 };
