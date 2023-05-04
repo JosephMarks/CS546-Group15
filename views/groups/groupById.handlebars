@@ -21,11 +21,14 @@
 
     <h2>Upcoming Events:</h2>
     {{#each events}}
-      <div>Event Title:{{title}}</div>
-      <div>Event Description:{{description}}</div>
-      {{#if image}}
-        <img src="data:image/png;base64,{{image}}" alt="Group Image" />
-      {{/if}}
+      <div class="event-box">
+        <div>Event Title:{{title}}</div>
+        <div>Event Description:{{description}}</div>
+        <div>Event Date:{{eventDate}}</div>
+        {{#if image}}
+          <img src="data:image/png;base64,{{image}}" alt="Event Image" />
+        {{/if}}
+      </div>
     {{/each}}
 
     {{#each activity}}

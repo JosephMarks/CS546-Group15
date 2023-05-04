@@ -26,3 +26,18 @@ img {
   height: 30px;
   margin-right: 5px;
 }
+
+.event-box {
+  border: 1px solid rgb(6, 23, 50);
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #90b5bf;
+}
+
+.event-box img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 15px 0;
+}
