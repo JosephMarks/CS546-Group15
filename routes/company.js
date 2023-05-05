@@ -91,11 +91,12 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 // --- GET AND POST FOR CREATE COMPANY
 // --- Delete Company
 
-router.route("/delete/:id").get(async (req, res) => {
+router.route("/delete/:id").delete(async (req, res) => {
 
   let id = req.params.id;
 
-  if (!req.params.id  || !ObjectId.isValid(req.params.id)){
+
+  if (!id  || !ObjectId.isValid(id)){
 
     return res.status(404).render('error', { error: 'Error : Id is not Valid'});
 
@@ -157,7 +158,7 @@ router.route("/dataUpdate/:name").get(async (req, res) => { // done company upda
 });
 
 
-router.route("/updateCompany/:name").post(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
+router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
 
   const bodyData = req.body;
 
@@ -190,7 +191,9 @@ router.route("/updateCompany/:name").post(upload.single("uploadImage"), async (r
     validations.isNumberOfEmployee(numberOfEmployees);
     numberOfEmployees = Number(numberOfEmployees);
 
-    const data = await companyFunctions.updateCompany( companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename) );
+    console.log("routes", numberOfEmployees);
+
+    const data = await companyFunctions.updateCompany(req.session.user.email, companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename) );
 
     return res.redirect(`/company/data/${companyName}`);
 
@@ -402,7 +405,7 @@ router.route("/jobUpdate/:id").get(async (req, res) => { // get for job update
 
 });
 
-router.route("/jobUpdate/:id").post(async (req, res) => { // update page for jobs
+router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jobs
 
   let id = req.params.id;
   const bodyData = req.body;
@@ -481,17 +484,31 @@ router.route("/jobSingleDisplay/:id").get(async (req, res) => {
 
 });
 
-router.route("/jobDelete/:id").get(async (req, res) => {
+router.route("/jobDelete/:id").delete(async (req, res) => {
+
+  let id = req.params.id;
 
   if (!id || !ObjectId.isValid(id)) {
     return res.status(400).render("error", { error: "Error : Invalid Id", title: "Error" })
   }
 
+  id = id.trim();
+
   try {
 
     let deleteData = await companyFunctions.deleteJob(id);
+    let companyDetails = await companyFunctions.getCompanyDataFromEmail(req.session.user.email);
+
+    return res.redirect(`/company/viewJob/${companyDetails.companyName}`);
 
   } catch(e) {
+
+    if (e === "Error: Invalid Id" || e === "Error: Cannot delete the listing"){
+
+      return res.status(400).render("error", { error: e });
+
+    }
+
     return res.status(500).render("error", { error : e });
   }
 }) 

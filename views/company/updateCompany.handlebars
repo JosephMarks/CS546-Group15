@@ -7,17 +7,17 @@
 
                 <div class="col-md-12">
                 <label class="companyName">Company Name</label>
-                <input type="text" class="form-control" id = "companyName" name="companyName" value = {{ companyData.companyName }} >
+                <input type="text" class="form-control" id = "companyName" name="companyName" value = "{{ companyData.companyName }}" >
                 </div>
 
                 <div class="col-md-12">
                 <label class="companyEmail">Company Email</label>
-                <input type="text" class="form-control" id = "companyEmail" value="{{ session.email }}" name="companyEmail">
+                <input type="text" class="form-control" id = "companyEmail" value="{{ session.email }}" name="companyEmail" readonly>
                 </div>
 
                 <div class="col-md-12">
                     <label for="validationCustom01" class="industry">Industry</label>
-                    <input type="text" class="form-control" id="industry" name="industry" value = {{ companyData.industry }} >
+                    <input type="text" class="form-control" id="industry" name="industry" value = "{{ companyData.industry }}" >
                 </div>
 
                 <div class="col-md-12">
