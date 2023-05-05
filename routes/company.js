@@ -4,6 +4,7 @@ const router = Router();
 import multer from "multer";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
+import xss from "xss";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -53,6 +54,17 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
     if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename )
       throw "Error : You should provide all the parameters";
+
+    companyName = xss(companyName);
+    companyEmail = xss(companyEmail);
+    industry = xss(industry);
+    employee = xss(employee);
+    description = xss(description);
+
+    if (typeof(location) === 'string') location = [location];
+    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+    location = location.map(x => xss(x));
 
     if (!validations.isProperString([ companyName, companyEmail, industry,  description, req.file.filename ])) // TODO : Validations for industry.
       throw "Error : Parameters can only be string not just string with empty spaces";
@@ -178,6 +190,17 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
     if ( !validations.isProperString([ companyName, companyEmail, industry,  description ]) ) // TODO : Validations for industry.
       throw "Error : Parameters can only be string not just string with empty spaces";
 
+    companyName = xss(companyName);
+    companyEmail = xss(companyEmail);
+    industry = xss(industry);
+    numberOfEmployees = xss(numberOfEmployees);
+    description = xss(description);
+
+    if (typeof(location) === 'string') location = [location];
+    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+    location = location.map(x => xss(x));
+
     if (typeof(location) === 'string') location = [location];
     
     validations.isArrayWithTheNonEmptyStringForLocation([location]);
@@ -292,6 +315,25 @@ router.route("/job/:name").post(async (req, res) => { // create job post
 
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       throw "Error : All parameters are required";
+
+    companyName = xss(companyName);
+    companyEmail = xss(companyEmail);
+    jobTitle = xss(jobTitle);
+    salary = xss(salary);
+    level = xss(level);
+    description = xss(description);
+
+    if (typeof (jobType) === 'string') jobType = [jobType];
+    validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+    jobType = jobType.map(x => xss(x));
+
+    if (typeof(location) === 'string') location = [location];
+    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    location = location.map(x => xss(x));
+
+    if (typeof (skills) === 'string') skills = [skills];
+    validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+    skills = skills.map(x => xss(x));
 
     if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]) )
       throw "Error : Parameters can only be string not just string with empty spaces";
@@ -422,10 +464,32 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } = req.body;
 
+  
+
   try {
 
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       throw "Error : All parameters are required";
+
+      companyName = xss(companyName);
+      companyEmail = xss(companyEmail);
+      jobTitle = xss(jobTitle);
+      salary = xss(salary);
+      level = xss(level);
+      description = xss(description);
+    
+      if (typeof (jobType) === 'string') jobType = [jobType];
+      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      jobType = jobType.map(x => xss(x));
+    
+      if (typeof(location) === 'string') location = [location];
+      validations.isArrayWithTheNonEmptyStringForLocation([location]);
+      location = location.map(x => xss(x));
+    
+      if (typeof (skills) === 'string') skills = [skills];
+      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+      skills = skills.map(x => xss(x));
+    
 
     if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]) )
       throw "Error : Parameters can only be string not just string with empty spaces";
