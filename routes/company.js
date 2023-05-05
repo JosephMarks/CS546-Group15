@@ -202,11 +202,11 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
     let fileName = await companyFunctions.getCompanyDataFromEmail(req.session.user.email);
     let newData = { companyName, companyEmail,industry, numberOfEmployees, locations: location, description,imgSrc: fileName.imgSrc }
 
-    if ( e === "Error : No Company Found" ) return res.status(404).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user });
+    if ( e === "Error : No Company Found" ) return res.status(404).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"edit company" });
     
-    if ( e === "Error : Parameters can only be string not just string with empty spaces") return res.status(400).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user });
+    if ( e === "Error : Parameters can only be string not just string with empty spaces") return res.status(400).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"edit company" });
     
-    return res.status(500).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user });
+    return res.status(500).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"error" });
   
   }
 });

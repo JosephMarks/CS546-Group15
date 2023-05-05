@@ -3,25 +3,25 @@
 <div class="company-container">
         <div class="company">
             <form class="row g-3 needs-validation" action="/company/updateCompany/{{ companyData.companyName }}" method="post" enctype="multipart/form-data">
-                <span id="errorDisplay" style="color: red"> {{ error }} </span>
+                <span id="errorDisplay"> {{ error }} </span>
 
                 <div class="col-md-12">
-                <label class="companyName">Company Name</label>
+                <label for="companyName">Company Name</label>
                 <input type="text" class="form-control" id = "companyName" name="companyName" value = "{{ companyData.companyName }}" >
                 </div>
 
                 <div class="col-md-12">
-                <label class="companyEmail">Company Email</label>
+                <label for="companyEmail">Company Email</label>
                 <input type="text" class="form-control" id = "companyEmail" value="{{ session.email }}" name="companyEmail" readonly>
                 </div>
 
                 <div class="col-md-12">
-                    <label for="validationCustom01" class="industry">Industry</label>
+                    <label for="industry" class="industry">Industry</label>
                     <input type="text" class="form-control" id="industry" name="industry" value = "{{ companyData.industry }}" >
                 </div>
 
                 <div class="col-md-12">
-                    <label for="employee" class="form-label">Numbers of Employee</label>
+                    <label for="numberOfEmployees" class="form-label">Numbers of Employee</label>
                     <input type="number" class="form-control" id="numberOfEmployees" placeholder="There should be atleast one employee" min="1" max="100000" name="numberOfEmployees" value = {{ companyData.numberOfEmployees }}>
                 </div>
 
@@ -91,12 +91,12 @@
 
                 <div class="col-md-12">
                     <span>Current Image (Please Select the Image or Else no image will be there)</span>
-                    <img src=/public/uploads/{{companyData.imgSrc}} alt="current logo">
+                    <img src=/public/uploads/{{companyData.imgSrc}} alt="current logo" id="update-company-logo">
                 </div>
 
                 <div class="col-md-12">
                     <label for="uploadImage">Upload Profile Image</label>
-                    <input type="file" name="uploadImage" id="uploadImage" value={{ companyData.imgSrc }}></input>
+                    <input type="file" name="uploadImage" id="uploadImage">
                 </div> 
 
                 <div class="col-md-12">
