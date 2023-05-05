@@ -1,0 +1,33 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile Picture</title>
+    <link rel="stylesheet" href="/css/group-details.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Edit Profile Picture</h1>
+      <div>
+        <a href="/profile/{{_id}}">Back to Profile</a>
+        <form
+          action="/profile/{{_id}}/editProfilePic"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group">
+            <label for="image">Upload Profile Picture</label>
+            <input
+              type="file"
+              name="image"
+              id="image"
+              class="form-control-file"
+              required
+            />
+          </div>
+          <input type="submit" value="Submit" class="btn btn-primary" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

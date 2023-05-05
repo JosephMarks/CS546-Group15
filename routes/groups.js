@@ -74,12 +74,38 @@ router.route("/").get(async (req, res) => {
 //   }
 // });
 
+router.get("/create", (req, res) => {
+  console.log("we are creating a group");
+  res.render("./groups/createGroup");
+});
+
+router.post("/", async (req, res) => {
+  const { name, description } = req.body;
+  console.log(name);
+  console.log(description);
+
+  if (!name || !description) {
+    res.status(400).render("./error", {
+      message: "Parameters are required",
+    });
+  }
+  const newGroup = await groupData.create(name, description);
+
+  res.redirect(`/groups/${newGroup._id}`);
+});
+
 router.route("/:id").get(async (req, res) => {
+  console.log("Accessing /groups/:id route with ID:", req.params.id);
+
   // Need to do my error checking here!
 
   const id = req.params.id;
   let userId = req.session.user.userId;
   userId = userId.toString();
+
+  if (!ObjectId.isValid(id)) {
+    return res.status(400).send("Invalid ObjectId");
+  }
   let numOfUsers = await groupData.numberOfUsers(id);
 
   const group = await groupData.get(id);

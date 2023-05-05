@@ -3,7 +3,11 @@
   Group Master Page
 {{/inline}}
 <h1>Groups</h1>
-<h3>Below are all the groups that you have the option of joining!! What are you waiting for, check them out!</h3>
+<h3>Would you like to create a new group?</h3>
+<a class="action-button" href="/groups/create">Create Group!</a>
+
+<h3>You can check out these existing groups if you like!</h3>
+
   <ol>
 {{#each groups}}
 <li><a href="groups/{{this._id}}">{{this.name}}</a></li>
