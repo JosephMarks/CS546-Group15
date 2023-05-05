@@ -39,7 +39,7 @@
     </nav>
 
     <br>
-<div class="card" style="width: 50%;">
+<div class="card" style="width: 90%;">
         
     <form class="row g-3 needs-validation" method="post">
 
@@ -108,25 +108,25 @@
 
     </form>
     {{#if a}}
-    <p>Here is the results for fields {{fields}}, category {{category}} and company {{company}}</p>
+    <p>Here is the results for fields: {{fields}}, category: {{category}} and company: {{company}}</p>
     {{/if}}
     {{#if b}}
-    <p>Here is the results for fields {{fields}} and category {{category}}</p>
+    <p>Here is the results for fields: {{fields}} and category: {{category}}</p>
     {{/if}}
     {{#if c}}
-    <p>Here is the results for fields {{fields}} and company {{company}}</p>
+    <p>Here is the results for fields: {{fields}} and company: {{company}}</p>
     {{/if}}
     {{#if d}}
-    <p>Here is the results for category {{category}} and company {{company}}</p>
+    <p>Here is the results for category: {{category}} and company: {{company}}</p>
     {{/if}}
     {{#if e}}
-    <p>Here is the results for category {{category}}</p>
+    <p>Here is the results for category: {{category}}</p>
     {{/if}}
     {{#if f}}
-    <p>Here is the results for company {{company}}</p>
+    <p>Here is the results for company: {{company}}</p>
     {{/if}}
     {{#if g}}
-    <p>Here is the results for fields {{fields}}</p>
+    <p>Here is the results for fields: {{fields}}</p>
     {{/if}}
     <div id="error">{{error}}</div>
         
@@ -159,17 +159,16 @@
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{../userId}}" method="post">
+                    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{../userId}}" method="post" target="_blank">
                     <div class="col-md-12">
-                        <input type="hidden" class="btn btn-outline-info" name='postid' value="{{_id}}"/>
+                        <input type="hidden" class="btn btn-outline-info" name='postid' value="{{_id}}">
                     </div>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-outline-info">Like it</button>
                     </div>
                     </form>
                     {{!-- Check comments and leave comments --}}
-                    <a class="btn btn-primary" target="_blank" href={{link}} role="button"
-                        target="_blank">
+                    <a class="btn btn-primary" target="_blank" href={{link}} role="button">
                         Leave comments
                     </a>
                     <a class="btn btn-primary" target="_blank" href={{link}}

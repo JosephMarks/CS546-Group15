@@ -54,7 +54,7 @@ const exportedMethods = {
   async getPostedPostByUserId(userId) {
     let usersCollection = await users();
     let user = await userData.getUserById(userId);
-    let arr = user.referPost;
+    let arr = user.referralPostsclearcdsdsdc;
     let res = [];
     if (!arr) {
       return [];
@@ -73,7 +73,7 @@ const exportedMethods = {
             if (!post) {
               let newPost = await usersCollection.findOneAndUpdate(
                 { _id: new ObjectId(userId) },
-                { $pull: { referPost: id } },
+                { $pull: { referralPostsclearcdsdsdc: id } },
                 { returnDocument: "after" }
               );
               if (newPost.lastErrorObject.n === 0)
@@ -195,17 +195,13 @@ const exportedMethods = {
       skills = skills.map((x) => x.trim().toLowerCase());
     }
 
-    if (typeof location === "string") {
-      if (!validation.isProperString([location]))
-        throw "Error : location can only be a valid string or array with valid strings";
-    } else {
-      validation.isArrayWithTheNonEmptyStringForLocation([location]);
-      location = location.map((x) => x.trim().toLowerCase());
-    }
-
+    companyEmail = validation.checkEmail(companyEmail, "companyEmail");
     validation.isSalary(salary);
     salary = Number(salary);
-
+    jobType = validation.checkJobtypeTags(jobType);
+    location = validation.checkLocationTags(location);
+    skills = validation.checkSkillsTags(skills);
+    level = validation.checkLevelTags([level]);
     let jobData = {
       _id: new ObjectId(),
       jobTitle: jobTitle.trim().toLowerCase(),
@@ -256,25 +252,68 @@ const exportedMethods = {
     //user post in user database
     let usersCollection = await users();
     let newuserPost;
-    if (
-      await usersCollection.findOne({ _id: new ObjectId(posterId) }).referPost
-    ) {
-      newuserPost = await usersCollection.findOneAndUpdate(
-        { _id: new ObjectId(posterId) },
-        { $addtoSet: { referPost: newPostId.toString() } },
-        { returnDocument: "after" }
-      );
-    } else {
-      newuserPost = await usersCollection.findOneAndUpdate(
-        { _id: new ObjectId(posterId) },
-        { $set: { referPost: [newPostId.toString()] } },
-        { returnDocument: "after" }
-      );
-    }
+
+    newuserPost = await usersCollection.findOneAndUpdate(
+      { _id: new ObjectId(posterId) },
+      { $addtoSet: { referralPosts: newPostId.toString() } },
+      { returnDocument: "after" }
+    );
+
     if (newuserPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
 
     return await this.getPostById(newPostId.toString());
+  },
+
+  async updatePost(id, updatedPost) {
+    const updatedPostData = {};
+    if (updatedPost.posterId) {
+      updatedPostData["poster.id"] = validation.checkId(
+        updatedPost.poster.id,
+        "Poster ID"
+      );
+
+      const userThatPosted = await userData.getUserById(updatedPost.posterId);
+      updatedPostData["poster.name"] =
+        userThatPosted.fname + " " + userThatPosted.lname;
+    }
+    if (updatedPost.fields) {
+      updatedPostData.fields = validation.checkFieldsTags(updatedPost.fields);
+    }
+    if (updatedPost.category) {
+      updatedPostData.category = validation.checkCategoryTags(
+        updatedPost.category
+      );
+    }
+    if (updatedPost.company) {
+      updatedPostData.company = await validation.checkCompanyTags(
+        updatedPost.company
+      );
+    }
+
+    if (updatedPost.title) {
+      updatedPostData.title = validation.checkString(
+        updatedPost.title,
+        "title"
+      );
+    }
+    if (updatedPost.duedate) {
+      updatedPostData.eventdate = validation.checkDate(updatedPost.eventdate);
+    }
+    if (updatedPost.body) {
+      updatedPostData.body = validation.checkString(updatedPost.body, "Body");
+    }
+    updatedPostData.modifieddate = new Date().toUTCString();
+    const postCollection = await socialPost();
+    let newPost = await postCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: updatedPostData },
+      { returnDocument: "after" }
+    );
+    if (newPost.lastErrorObject.n === 0)
+      throw [404, `Could not update the post with id ${id}`];
+
+    return newPost.value;
   },
 
   async removePost(id, userId) {
@@ -291,7 +330,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
-      { $pull: { referPost: id } },
+      { $pull: { referralPostsclearcdsdsdc: id } },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
@@ -437,7 +476,7 @@ const exportedMethods = {
 
     let newPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
-      { $addToSet: { likedPost: postId } },
+      { $addToSet: { likedReferPost: postId } },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
@@ -462,7 +501,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
-      { $pull: { likedPost: postId } },
+      { $pull: { likedReferPost: postId } },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)

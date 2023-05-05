@@ -63,8 +63,7 @@ const exportedMethods = {
     let likedPost = [];
     let collectedPost = [];
     let socialPost = [];
-    let likedReferPost = [];
-    let referPost = [];
+
     const newCreateUser = await userCollection.insertOne({
       fname,
       lname,
@@ -90,9 +89,7 @@ const exportedMethods = {
       updatedAt,
       socialPost,
       likedPost,
-      likedReferPost,
       collectedPost,
-      referPost,
     });
     if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
     const returnUser = await this.getUserById(

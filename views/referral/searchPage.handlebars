@@ -18,53 +18,36 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
-                        {{!--/socialmediaposts/post/{{id}}--}}
+                        <a class="nav-link" target="_blank" href="/referral/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
-                        {{!--/socialmediaposts/post/{{id}}--}}
+                        <a class="nav-link" target="_blank" href="/referral/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
                     </li>
+                    {{#if identity}}
                     <li class="nav-item">
-                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                        <form style="display: inline" action="/referral/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
                             </button>
                         </form>
                     </li>
+                    {{/if}}
                 </ul>
             </div>
         </div>
     </nav>
-    {{!-- --}}
+
     <br>
-    {{!-- --}}
-    <div class="card" style="width: 50%;">
+<div class="card" style="width: 90%;">
         
     <form class="row g-3 needs-validation" method="post">
 
       <span id="errorDisplay" style="color: red"> {{error}} </span>
 
-      <div class="col-md-12">
-
-        <label for="posttitle" class="posttitle">Post Title</label>
-        <input type="text" class="form-control" id="posttitle" name="posttitle" value="{{posttitle}}">
-
-      </div>
       
-      <div class="col-md-12">
-       <label for="postbody" class="postbody">Post Content</label>
-        <textarea name="postbody" id="postbody" rows="5"
-          placeholder="Write something here .... ">{{postbody}}</textarea>
-      </div>
-
-       <div class="col-md-12">
-
-        <label for="eventdate" class="eventdate">Event Date</label>
-        <input type="date" class="form-control" id="eventdate" name="eventdate" min="1990-01-01" max="2050-12-31">
-
-      </div>
 
       <div class="col-md-12">
 
@@ -122,14 +105,91 @@
       </div>
 
       <div class="col-md-12">
-        <button type="submit" class="btn btn-outline-info">Post the Post</button>
+        <button type="submit" class="btn btn-outline-info">Search</button>
       </div>
 
     </form>
+    {{#if a}}
+    <p>Here is the results for fields: {{fields}}, category: {{category}} and company: {{company}}</p>
+    {{/if}}
+    {{#if b}}
+    <p>Here is the results for fields: {{fields}} and category: {{category}}</p>
+    {{/if}}
+    {{#if c}}
+    <p>Here is the results for fields: {{fields}} and company: {{company}}</p>
+    {{/if}}
+    {{#if d}}
+    <p>Here is the results for category: {{category}} and company: {{company}}</p>
+    {{/if}}
+    {{#if e}}
+    <p>Here is the results for category: {{category}}</p>
+    {{/if}}
+    {{#if f}}
+    <p>Here is the results for company: {{company}}</p>
+    {{/if}}
+    {{#if g}}
+    <p>Here is the results for fields: {{fields}}</p>
+    {{/if}}
     <div id="error">{{error}}</div>
         
     </div>
+    {{!-- Post --}}
+    <div class="accordion" id="your-post">
+        <div class="accordion-item">
+            <p class="alert alert-primary fs-4 font-monospace text-center">
+                Search Post
+            </p>
+        </div>
+        {{#if userPost.length}}
+        {{#each userPost}}
+    
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
+                    aria-expanded="true" aria-controls={{_id}}>
+                    Title: {{title}} <br >
+                    Content: {{body}} <br >
+                    Poster: {{poster.name}} <br >
+                    Eventdate: {{eventdate}} <br >
+                    Fields: {{fields}} <br >
+                    Category:{{category}} <br >
+                    Company: {{company}} <br >
+                    PostDate: {{postdate}} <br >
+                </button>
+            </h2>
+
+            <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
+                    <form class="row g-3 needs-validation" action="/referral/post/{{../userId}}" method="post" target="_blank">
+                    <div class="col-md-12">
+                        <input type="hidden" class="btn btn-outline-info" name='postid' value="{{_id}}">
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-outline-info">Like it</button>
+                    </div>
+                    </form>
+                    {{!-- Check comments and leave comments --}}
+                    <a class="btn btn-primary" target="_blank" href={{link}} role="button">
+                        Leave comments
+                    </a>
+                    <a class="btn btn-primary" target="_blank" href={{link}}
+                    role="button">
+                    See this post
+                    </a>
+                    <a class="btn btn-primary" target="_blank" href='/referral/post/{{poster.id}}'
+                    role="button">
+                    See author
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+
+    <br>
+
+
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-    crossorigin="anonymous"></script>
-<script src="/public/js/socialPost.js"></script>

@@ -447,6 +447,148 @@ const validations = {
     if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
     return arr;
   },
+
+  checkSkillsTags(arr) {
+    //if it's not empty, we will make sure all tags are strings
+    if (arr === undefined)
+      throw "Error: You must provide at least one interest area";
+    if (arr.length < 1)
+      throw `Error: You must provide at least one interest area`;
+    if (typeof arr === "string") return arr;
+    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    for (let i in arr) {
+      if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
+        throw `Error: One or more elements in tags array is not a string or is an empty string`;
+      }
+      arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
+    }
+    const tags = [
+      "python",
+      "c++",
+      "javascript",
+      "nodejs",
+      "react",
+      "datascience",
+      "others",
+    ];
+    const checker = (desired, target) =>
+      target.every((ele) => desired.includes(ele));
+    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    return arr;
+  },
+  checkJobtypeTags(arr) {
+    //if it's not empty, we will make sure all tags are strings
+    if (arr === undefined)
+      throw "Error: You must provide at least one interest area";
+    if (arr.length < 1)
+      throw `Error: You must provide at least one interest area`;
+    if (typeof arr === "string") return arr;
+    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    for (let i in arr) {
+      if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
+        throw `Error: One or more elements in tags array is not a string or is an empty string`;
+      }
+      arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
+    }
+    const tags = ["remote", "online", "hybrid"];
+    const checker = (desired, target) =>
+      target.every((ele) => desired.includes(ele));
+    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    return arr;
+  },
+  checkLevelTags(arr) {
+    //if it's not empty, we will make sure all tags are strings
+    if (arr === undefined)
+      throw "Error: You must provide at least one interest area";
+    if (arr.length < 1)
+      throw `Error: You must provide at least one interest area`;
+    if (typeof arr === "string") return arr;
+    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    for (let i in arr) {
+      if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
+        throw `Error: One or more elements in tags array is not a string or is an empty string`;
+      }
+      arr[i] = arr[i].trim().toLowerCase(); //lowercase for every tag elements' for easier detect
+    }
+    const tags = ["senior", "internship", "mid"];
+    const checker = (desired, target) =>
+      target.every((ele) => desired.includes(ele));
+    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    return arr[0];
+  },
+  checkLocationTags(arr) {
+    //if it's not empty, we will make sure all tags are strings
+    if (arr === undefined)
+      throw "Error: You must provide at least one interest area";
+    if (arr.length < 1)
+      throw `Error: You must provide at least one interest area`;
+    if (typeof arr === "string") return arr;
+    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    for (let i in arr) {
+      if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
+        throw `Error: One or more elements in tags array is not a string or is an empty string`;
+      }
+      arr[i] = arr[i].trim().toUpperCase(); //lowercase for every tag elements' for easier detect
+    }
+    const tags = [
+      "AK",
+      "AL",
+      "AR",
+      "AZ",
+      "CA",
+      "CO",
+      "CT",
+      "DC",
+      "DE",
+      "FL",
+      "GA",
+      "HI",
+      "IA",
+      "ID",
+      "IL",
+      "IN",
+      "KS",
+      "KY",
+      "LA",
+      "MA",
+      "MD",
+      "ME",
+      "MI",
+      "MN",
+      "MO",
+      "MS",
+      "MT",
+      "NC",
+      "ND",
+      "NE",
+      "NH",
+      "NJ",
+      "NM",
+      "NV",
+      "NY",
+      "OH",
+      "OK",
+      "OR",
+      "PA",
+      "RI",
+      "SC",
+      "SD",
+      "TN",
+      "TX",
+      "UT",
+      "VA",
+      "VT",
+      "WA",
+      "WI",
+      "WV",
+      "WY",
+    ];
+    const checker = (desired, target) =>
+      target.every((ele) => desired.includes(ele));
+    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    return arr;
+  },
+
   checkArrNumber(arr) {
     for (let x of arr) {
       if (!Number(x)) {
@@ -456,7 +598,6 @@ const validations = {
     return true;
   },
   checkDate(date) {
-    console.log(typeof date);
     if (!date || typeof date !== "string")
       throw "You should input eventDate in string.";
     if (date.trim().length === 0)
@@ -476,7 +617,30 @@ const validations = {
       throw "The date should be a number between 1990 and 2050.";
     return date;
   },
+  checkDueDate(date) {
+    if (!date || typeof date !== "string")
+      throw "You should input eventDate in string.";
+    if (date.trim().length === 0)
+      throw "The input eventDate should not be empty strings.(YYYY-MM-DD)";
+    date = date.trim();
+    if (
+      !date.includes("-") ||
+      date.split("-").length !== 3 ||
+      !checkArrNumber(date.split("-"))
+    )
+      throw "The input eventDate should be valid date format strings. (YYYY-MM-DD)";
+    let dateArr = date.split("-");
+    //Reference date format recognition: https://blog.csdn.net/qq_17627195/article/details/111486466
+    if (!Date.parse(new Date(date)))
+      throw "The input date should be valid date format strings. (YYYY-MM-DD)";
+    let cur = new Date().toLocaleDateString();
+    let cur_year = cur.split("/")[2];
+    if (Number(dateArr[0]) < cur_year || Number(dateArr[0]) > 2050)
+      throw "The date should be a number from current year to 2050.";
+    return date;
+  },
 };
+
 const checkArrNumber = (arr) => {
   for (let x of arr) {
     if (!Number(x)) {
