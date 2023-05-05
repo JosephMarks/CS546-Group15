@@ -24,7 +24,7 @@ const companyFunctions = {
     imgSrc = imgSrc.trim();
 
     if (typeof(locations) === 'string') locations = [locations];
-    validations.isArrayWithTheNonEmptyStringForLocation([locations]);
+    validations.checkLocationTags(locations);
     locations = locations.map((x) => x.trim());
 
     const ifAlready = await companyCollection.findOne({ companyName: companyName });
@@ -124,15 +124,15 @@ const companyFunctions = {
         throw "Error : Parameters can only be string not just string with empty spaces";
 
       if (typeof(jobType) === 'string') jobType = [jobType];
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      validations.checkJobtypeTags(jobType);
       jobType = jobType.map(x => x.trim().toLowerCase());
 
       if (typeof(skills) === 'string') skills = [skills];
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+      validations.checkSkillsTags(skills);
       skills = skills.map(x => x.trim().toLowerCase());
 
       if (typeof(location) === 'string') location = [location];
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
+      validations.checkLocationTags(location);
       location = location.map(x => x.trim().toLowerCase());
           
       validations.isSalary(salary);
@@ -173,15 +173,15 @@ const companyFunctions = {
         throw "Error : Parameters can only be string not just string with empty spaces";
 
       if (typeof (jobType) === 'string') jobType = [jobType];
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      validations.checkJobtypeTags(jobType);
       jobType = jobType.map(x => x.trim().toLowerCase());
 
       if (typeof (skills) === 'string') skills = [skills];
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+      validations.checkSkillsTags(skills);
       skills = skills.map(x => x.trim().toLowerCase());
 
       if (typeof (location) === 'string') location = [location];
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
+      validations.checkLocationTags(location);
       location = location.map(x => x.trim().toLowerCase());
 
       validations.isSalary(salary);
@@ -240,7 +240,6 @@ const companyFunctions = {
 
     async updateCompany(email, companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc) {
       
-      console.log("data", numberOfEmployees);
 
       if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description || !imgSrc )
         throw "Error : You should provide all the parameters";
@@ -252,7 +251,7 @@ const companyFunctions = {
       if (!validations.isProperString([companyName, industry, description]))
         throw "Error : Parameters can only be string not just string with empty spaces";
 
-      validations.isArrayWithTheNonEmptyString([locations])
+      validations.checkLocationTags(locations);
         
       companyName = companyName.trim().toLowerCase();
       industry = industry.trim().toLowerCase();
