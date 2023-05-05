@@ -214,7 +214,7 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
     validations.isNumberOfEmployee(numberOfEmployees);
     numberOfEmployees = Number(numberOfEmployees);
 
-    console.log("routes", numberOfEmployees);
+    // console.log("routes", numberOfEmployees);
 
     const data = await companyFunctions.updateCompany(req.session.user.email, companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename) );
 
