@@ -67,7 +67,7 @@ const exportedMethods = {
     let university = "";
     let collegeMajor = "";
     let gitHubUserName = "";
-    let interestArea = [];
+    let skills = [];
     let experience = 0;
     let jobHistory = [];
     let seekingJob = [];
@@ -95,7 +95,7 @@ const exportedMethods = {
         university,
         collegeMajor,
         gitHubUserName,
-        interestArea,
+        skills,
         experience,
         jobHistory,
         seekingJob,
@@ -133,7 +133,7 @@ const exportedMethods = {
         university,
         collegeMajor,
         gitHubUserName,
-        interestArea,
+        skills,
         experience,
         jobHistory,
         seekingJob,
@@ -186,8 +186,8 @@ const exportedMethods = {
       updateData.collegeMajor,
       "Major"
     );
-    let interestArea = validations.checkStringArray(
-      updateData.interestArea,
+    let skills = validations.checkStringArray(
+      updateData.skills,
       "Interest area"
     );
     let experience = validations.checkExperience(
@@ -233,7 +233,7 @@ const exportedMethods = {
       image: image,
       university: university,
       collegeMajor: collegeMajor,
-      interestArea: interestArea,
+      skills: skills,
       experience: experience,
       jobHistory: jobHistory,
       seekingJob: seekingJob,
@@ -398,7 +398,7 @@ const exportedMethods = {
     return { firstName: user.fname, lastName: user.lname };
   },
 
-  async getUserInterestArea(id) {
+  async getUserSkills(id) {
     if (!id || ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
