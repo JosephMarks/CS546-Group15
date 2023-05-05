@@ -100,31 +100,80 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 // need to change to patch
-router.post("/:id/updatename", async (req, res) => {
+
+router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const id = req.params.id;
-  const newName = req.body.name;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const gender = req.body.gender;
+  const headerDescription = req.body.headerDescription;
+  const aboutMe = req.body.aboutMe;
+  const locationState = req.body.locationState;
+  const university = req.body.university;
+  const collegeMajor = req.body.collegeMajor;
+  const gitHubUserName = req.body.gitHubUserName;
+
+  console.log({ fname, lname, gitHubUserName });
+
+  let imgBase64 = null;
+
+  if (req.file) {
+    // Convert the image to base64
+    const imgBuffer = fs.readFileSync(req.file.path);
+    imgBase64 = imgBuffer.toString("base64");
+
+    // Remove the temporary file
+    fs.unlinkSync(req.file.path);
+  }
+
+  let userObject = await userData.getUserById(id);
+  userObject.fname = fname;
+  userObject.lname = lname;
+  userObject.gitHubUserName = gitHubUserName;
+  userObject.image = imgBase64;
+  userObject.gender = gender;
+  userObject.headerDescription = headerDescription;
+  userObject.aboutMe = aboutMe;
+  userObject.locationState = locationState;
+  userObject.university = university;
+  userObject.collegeMajor = collegeMajor;
+
+  console.log({ userObject });
 
   try {
-    await userData.updateName(id, newName);
+    await userData.updateUsers(id, userObject);
     res.redirect(`/profile/${id}`);
   } catch (e) {
     console.error(e);
-    res.status(500).send("Not able to update name");
+    res.status(500).send("Error updating profile.");
   }
 });
 
-router.post("/:id/updategithubusername", async (req, res) => {
-  const id = req.params.id;
-  const newGitHubUserName = req.body.gitHubUserName;
+// router.post("/:id/updatename", async (req, res) => {
+//   const id = req.params.id;
+//   const newName = req.body.name;
 
-  try {
-    await userData.updateGitHubUserName(id, newGitHubUserName);
-    res.redirect(`/profile/${id}`);
-  } catch (e) {
-    console.error(e);
-    res.status(500).send("Not able to update GitHub username");
-  }
-});
+//   try {
+//     await userData.updateName(id, newName);
+//     res.redirect(`/profile/${id}`);
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send("Not able to update name");
+//   }
+// });
+
+// router.post("/:id/updategithubusername", async (req, res) => {
+//   const id = req.params.id;
+//   const newGitHubUserName = req.body.gitHubUserName;
+
+//   try {
+//     await userData.updateGitHubUserName(id, newGitHubUserName);
+//     res.redirect(`/profile/${id}`);
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send("Not able to update GitHub username");
+//   }
+// });
 
 router
   .route("/:id/messaging")
