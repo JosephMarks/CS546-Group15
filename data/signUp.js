@@ -70,7 +70,7 @@ const signUpFunctions = {
     let locationState = "";
     let university = "";
     let collegeMajor = "";
-    let interestArea = [];
+    let skills = [];
     let experience = 0;
     let seekingJob = [];
     let connections = [];
@@ -89,7 +89,7 @@ const signUpFunctions = {
       locationState,
       university,
       collegeMajor,
-      interestArea,
+      skills,
       experience,
       seekingJob,
       connections,
