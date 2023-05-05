@@ -403,13 +403,13 @@ const exportedMethods = {
       throw "Error : Invalid Id";
     }
 
-    let getUserInterests = await userCollection.findOne(
+    let getUserSkills = await userCollection.findOne(
       { _id: new ObjectId(id) },
-      { projection: { interestArea: 1 } }
+      { projection: { skills: 1 } }
     );
-    if (!getUserInterests) throw "Error : Users interest area is empty";
+    if (!getUserSkills) throw "Error : Users interest area is empty";
 
-    return getUserInterests;
+    return getUserSkills;
   },
 };
 
