@@ -1,13 +1,11 @@
 import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { messages, users } from "../config/mongoCollections.js";
 
-export const create = async (originUserId, targetUserId, subject, message) => {
-  if ((!originUserId || !targetUserId, !message)) {
+export const create = async (originUserId, targetUserId, message) => {
+  if (!originUserId || !targetUserId || !message) {
     throw new Error("Please ensure amounts have been populated");
   }
-  if (!subject) {
-    subject = "(no subject)";
-  }
+
   if (!ObjectId.isValid(originUserId)) {
     throw new Error("Sender is not a valid object ID");
   }
@@ -32,12 +30,12 @@ export const create = async (originUserId, targetUserId, subject, message) => {
   if (targetUser === null) {
     throw new Error("Target user id does not exist");
   }
-
+  let createdAt = Date.now();
   let newMessage = {
     originUserId: new ObjectId(originUserId),
     targetUserId: new ObjectId(targetUserId),
-    subject: subject,
     message: message,
+    createdAt: createdAt,
   };
 
   const messageCollection = await messages();
@@ -143,7 +141,15 @@ export const getUniqueConversationUserIds = async (userId) => {
       allConversationUserIds.push(userId);
     }
   }
+  let uniqueValues = [];
 
-  // Return the array of unique user IDs
-  return allConversationUserIds;
+  for (const item of allConversationUserIds) {
+    const itemString = item.toString();
+
+    if (!uniqueValues.some((value) => value.toString() === itemString)) {
+      uniqueValues.push(item);
+    }
+  }
+
+  return uniqueValues;
 };
