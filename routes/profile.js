@@ -10,9 +10,8 @@ import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
-import { connections } from "mongoose";
 
-router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
+router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.file) {
@@ -39,6 +38,23 @@ router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   }
 });
 
+router.get("/:id/editProfilePic", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileEditPhoto", userInfo);
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
 router.route("/:id").get(async (req, res) => {
   // Need to do my error checking here!np
 
@@ -52,8 +68,8 @@ router.route("/:id").get(async (req, res) => {
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
+    connections = connections.slice(0, 5);
     console.log(connections);
-    connections = connections.slice(0, 5); // Show only the first 5 connections
 
     res.render("./profile/profile", {
       title: "Profile Page",
@@ -85,12 +101,7 @@ router.get("/:id/edit", async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
 
-    res.render("./profile/profileEdit", {
-      _id: id,
-      name: userInfo.name,
-      aboutMe: userInfo.aboutMe,
-      image: userInfo.base64Image,
-    });
+    res.render("./profile/profileEdit", userInfo);
   } catch (e) {
     console.error(e);
     res.status(404).render("./error", {
@@ -101,31 +112,78 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 // need to change to patch
-router.post("/:id/updatename", async (req, res) => {
+
+router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const id = req.params.id;
-  const newName = req.body.name;
+  const fname = req.body.fname;
+  const lname = req.body.lname;
+  const gender = req.body.gender;
+  const headerDescription = req.body.headerDescription;
+  const aboutMe = req.body.aboutMe;
+  const locationState = req.body.locationState;
+  const university = req.body.university;
+  const collegeMajor = req.body.collegeMajor;
+  const gitHubUserName = req.body.gitHubUserName;
+
+  console.log({ fname, lname, gitHubUserName });
+
+  let imgBase64 = null;
+
+  if (req.file) {
+    // Convert the image to base64
+    const imgBuffer = req.file.buffer;
+    const imgBase64 = imgBuffer.toString("base64");
+
+    // Remove the temporary file
+    // fs.unlinkSync(req.file.path);
+  }
+
+  let userObject = await userData.getUserById(id);
+  userObject.fname = fname;
+  userObject.lname = lname;
+  userObject.gitHubUserName = gitHubUserName;
+  userObject.image = imgBase64;
+  userObject.gender = gender;
+  userObject.headerDescription = headerDescription;
+  userObject.aboutMe = aboutMe;
+  userObject.locationState = locationState;
+  userObject.university = university;
+  userObject.collegeMajor = collegeMajor;
 
   try {
-    await userData.updateName(id, newName);
+    await userData.updateUsers(id, userObject);
     res.redirect(`/profile/${id}`);
   } catch (e) {
     console.error(e);
-    res.status(500).send("Not able to update name");
+    res.status(500).send("Error updating profile.");
   }
 });
 
-router.post("/:id/updategithubusername", async (req, res) => {
-  const id = req.params.id;
-  const newGitHubUserName = req.body.gitHubUserName;
+// router.post("/:id/updatename", async (req, res) => {
+//   const id = req.params.id;
+//   const newName = req.body.name;
 
-  try {
-    await userData.updateGitHubUserName(id, newGitHubUserName);
-    res.redirect(`/profile/${id}`);
-  } catch (e) {
-    console.error(e);
-    res.status(500).send("Not able to update GitHub username");
-  }
-});
+//   try {
+//     await userData.updateName(id, newName);
+//     res.redirect(`/profile/${id}`);
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send("Not able to update name");
+//   }
+// });
+
+// router.post("/:id/updategithubusername", async (req, res) => {
+//   const id = req.params.id;
+//   const newGitHubUserName = req.body.gitHubUserName;
+
+//   try {
+//     await userData.updateGitHubUserName(id, newGitHubUserName);
+//     res.redirect(`/profile/${id}`);
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).send("Not able to update GitHub username");
+//   }
+// });
 
 router
   .route("/:id/messaging")
@@ -162,11 +220,29 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
+      let sortedConversations = conversations.sort((a, b) => {
+        console.log(a);
+        console.log(b);
+        let latestMessageA = a[a.length - 1];
+        let latestMessageB = b[b.length - 1];
+        if (!latestMessageA || !latestMessageB) {
+          return 0;
+        }
+        if ((latestMessageA.createdAt || 0) < (latestMessageB.createdAt || 0)) {
+          return -1;
+        }
+        if (
+          (latestMessageA.createdAt || 0) === (latestMessageB.createdAt || 0)
+        ) {
+          return 0;
+        }
+        return 1;
+      });
 
       res.render("./profile/profileMessage", {
         _id: id,
         connections: allConnections,
-        conversations: conversations,
+        conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
@@ -211,7 +287,6 @@ router
       let newMessage = await messageData.create(
         id,
         receivedInput.connection,
-        receivedInput.subjectInput,
         receivedInput.messageInput
       );
       let allMessages = await messageData.getAll(id);

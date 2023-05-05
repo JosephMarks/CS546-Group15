@@ -1,0 +1,49 @@
+<h1>{{h1}}</h1>
+<div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark">
+        <div class="container-fluid">
+            <img src="/public/images/aboutUs.png" alt="Logo" width="30" height="30"
+                class="d-inline-block align-text-top">
+            <a class="navbar-brand mb-0" href=""> &nbsp; Better Interview Book</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" aria-current="page" href="/">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/referral/post/{{userId}}">Post</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="/referral/search/{{userId}}">Search Posts</a>
+                        {{!--/network/post/{{id}}--}}
+                    </li>
+                    {{#if identity}}
+                    <li class="nav-item">
+                        <form style="display: inline" action="/referral/post/{{userId}}/new" method="get">
+                            <button class="nav-link btn btn-outline-primary"
+                                style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
+                                Create New Post
+                            </button>
+                        </form>
+                    </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="alert alert-danger" style="margin-top: 2%;" role="alert">
+        {{#if error}}
+        <p>{{error}}</p>
+        {{/if}}
+    </div>
+</div>

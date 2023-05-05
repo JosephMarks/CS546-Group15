@@ -346,6 +346,133 @@ const companyFunctions = {
     }
 
 
+  //   if (typeof location === "string") {
+  //     if (!validations.isProperString([location]))
+  //       throw "Error : location can only be a valid string or array with valid strings";
+  //   } else {
+  //     validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  //     location = location.map((x) => x.trim().toLowerCase());
+  //   }
+
+  //   validations.isSalary(salary);
+  //   salary = Number(salary);
+
+  //   let jobData = {
+  //     _id: new ObjectId(),
+  //     jobTitle: jobTitle.trim().toLowerCase(),
+  //     skills: skills,
+  //     salary,
+  //     location,
+  //     description: description.trim().toLowerCase(),
+  //   };
+
+  //   let updatedInfo = await companyCollection.findOneAndUpdate(
+  //     { "jobs._id": new ObjectId(id) }, // TODO validate id's
+  //     { $set: jobData },
+  //     { returnDocument: "after" }
+  //   );
+
+  //   return updatedInfo;
+  // },
+
+  // async getJobById(id) {
+  //   if (!id) throw "Error : Invalid Id";
+  //   if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
+
+  //   let getJob = await companyCollection.findOne({
+  //     "jobs._id": new ObjectId(id),
+  //   });
+  //   if (!getJob || getJob.length === 0) throw "Error : No Job Found";
+
+  //   return getJob;
+  // },
+
+  // async updateCompany(
+  //   companyName,
+  //   companyEmail,
+  //   industry,
+  //   locations,
+  //   numberOfEmployees,
+  //   description,
+  //   imgSrc
+  // ) {
+  //   validations.isNumberOfEmployee(numberOfEmployees);
+  //   validations.checkEmail(companyEmail);
+  //   numberOfEmployees = Number(numberOfEmployees);
+
+  //   if (!validations.isProperString([companyName, industry, description]))
+  //     throw "Error : Parameters can only be string not just string with empty spaces";
+
+  //   validations.isArrayWithTheNonEmptyString([locations]);
+
+  //   companyName = companyName.trim().toLowerCase();
+  //   industry = industry.trim().toLowerCase();
+  //   locations = locations.map((x) => x.trim()); // TODO : Must fall in the states array.
+  //   description = description.trim().toLowerCase();
+
+  //   let ifExists = await companyCollection.findOne({
+  //     companyEmail: companyEmail,
+  //   });
+  //   if (!ifExists) throw "Error : No Company Found";
+
+  //   let updatedData = {
+  //     companyName,
+  //     companyEmail,
+  //     industry,
+  //     locations,
+  //     numberOfEmployees,
+  //     description,
+  //     jobs: ifExists.jobs,
+  //     imgSrc,
+  //   };
+
+  //   const updatedInfo = await companyCollection.findOneAndUpdate(
+  //     { companyName: companyName },
+  //     { $set: updatedData },
+  //     { returnDocument: "after" }
+  //   );
+
+  //   if (updatedInfo.lastErrorObject.n === 0) {
+  //     throw "could not update company successfully";
+  //   }
+
+  //   updatedInfo.value._id = updatedInfo.value._id.toString();
+  //   return updatedInfo.value;
+  // },
+
+  // async getAllJobs(companyName) {
+  //   if (!companyName) throw "Error : company name cannot be empty";
+  //   if (!validations.isProperString([companyName]))
+  //     throw "Error : Company Name must be valid string";
+
+  //   let allJobs = await companyCollection
+  //     .find({ companyName: companyName }, { projection: { jobs: 1 } })
+  //     .toArray();
+
+  //   return allJobs;
+  // },
+
+  // async getAllCompanyName() {
+  //   let res = ["others"];
+  //   let companyNmae = await companyCollection
+  //     .find({}, { projection: { companyName: 1 } })
+  //     .sort({ companyName: 1 })
+  //     .toArray();
+  //   if (companyNmae.length === 0) throw "no company in database";
+  //   for (let x of companyNmae) {
+  //     res.push(x.companyName);
+  //   }
+  //   return res.sort();
+  // },
+  // async getAllCompanyNameinObject() {
+  //   let companyName = await companyCollection
+  //     .find({}, { projection: { companyName: 1 } })
+  //     .sort({ companyName: 1 })
+  //     .toArray();
+  //   if (companyName.length === 0) throw "no company in database";
+  //   companyName.push({ companyName: "others" });
+  //   return companyName;
+  // },
 };
 
 export default companyFunctions;
