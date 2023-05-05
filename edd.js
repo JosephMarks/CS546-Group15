@@ -1,6 +1,7 @@
 import spost from "./data/socialPost.js";
 import user from "./data/user.js";
 import refer from "./data/referral.js";
+import { ObjectId } from "mongodb";
 let title = "aefarfasf";
 let body = "aefarfasf";
 let posterId = "645066e314e24f951f70c23b";
@@ -27,25 +28,27 @@ let description = "asdfad";
 // );
 // let res = await spost.getPostsByFieldsTag(["front-end"]);
 // console.log(res);
-try {
-  let re = await refer.addPost(
-    title,
-    body,
-    posterId,
-    duedate,
-    fields,
-    companyName,
-    companyEmail,
-    jobTitle,
-    salary,
-    level,
-    jobType,
-    skills,
-    location,
-    description
-  );
-  console.log(re);
-} catch (error) {
-  console.log(error);
-}
-console.log(await user.getUserById("645066e314e24f951f70c23b"));
+// try {
+//   let re = await refer.addPost(
+//     title,
+//     body,
+//     posterId,
+//     duedate,
+//     fields,
+//     companyName,
+//     companyEmail,
+//     jobTitle,
+//     salary,
+//     level,
+//     jobType,
+//     skills,
+//     location,
+//     description
+//   );
+//   console.log(re);
+// } catch (error) {
+//   console.log(error);
+// }
+// console.log(await user.getUserById("645066e314e24f951f70c23b"));
+let cur = new Object().toUTCString();
+console.log(cur);

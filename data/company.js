@@ -556,6 +556,7 @@ const companyFunctions = {
     let res = ["others"];
     let companyNmae = await companyCollection
       .find({}, { projection: { companyName: 1 } })
+      .sort({ companyName: 1 })
       .toArray();
     if (companyNmae.length === 0) throw "no company in database";
     for (let x of companyNmae) {
@@ -566,6 +567,7 @@ const companyFunctions = {
   async getAllCompanyNameinObject() {
     let companyName = await companyCollection
       .find({}, { projection: { companyName: 1 } })
+      .sort({ companyName: 1 })
       .toArray();
     if (companyName.length === 0) throw "no company in database";
     companyName.push({ companyName: "others" });

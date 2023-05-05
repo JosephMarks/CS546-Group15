@@ -108,7 +108,20 @@ app.use("/skills", (req, res, next) => {
   }
   next();
 });
-
+app.use("/referral", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
+app.use("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
+  req.method = "patch";
+  next();
+});
 app.use("/socialmediaposts", (req, res, next) => {
   if (
     !req.session.user ||
@@ -122,17 +135,6 @@ app.use("/socialmediaposts", (req, res, next) => {
 
 app.post("/socialmediaposts/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
-  next();
-});
-
-app.use("/referral", (req, res, next) => {
-  if (
-    !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
-  ) {
-    return res.redirect("/login");
-  }
   next();
 });
 

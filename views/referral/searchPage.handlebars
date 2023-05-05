@@ -18,21 +18,23 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/referral/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        <a class="nav-link" target="_blank" href="/referral/search/{{userId}}">Search Posts</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
+                    {{#if identity}}
                     <li class="nav-item">
-                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                        <form style="display: inline" action="/referral/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
                             </button>
                         </form>
                     </li>
+                    {{/if}}
                 </ul>
             </div>
         </div>
@@ -73,21 +75,7 @@
         </select>
 
       </div>
-      <div class="col-md-12">
 
-        <label for="category">Select category tag(s)</label>
-
-        <select multiple id="category" name="category">
-
-          <option value="interview">interview</option>
-          <option value="daily thoughts">daily thoughts</option>
-          <option value="making friends">making friends</option>
-          <option value="housing">housing</option>
-          <option value="asking for help">asking for help</option>
-          <option value="others">others</option>
-        </select>
-
-      </div>
       <div class="col-md-12">
 
         <label for="company">Select company tag(s)</label>
@@ -108,26 +96,15 @@
 
     </form>
     {{#if a}}
-    <p>Here is the results for fields: {{fields}}, category: {{category}} and company: {{company}}</p>
-    {{/if}}
-    {{#if b}}
-    <p>Here is the results for fields: {{fields}} and category: {{category}}</p>
-    {{/if}}
-    {{#if c}}
     <p>Here is the results for fields: {{fields}} and company: {{company}}</p>
     {{/if}}
-    {{#if d}}
-    <p>Here is the results for category: {{category}} and company: {{company}}</p>
+    {{#if b}}
+     <p>Here is the results for fields: {{fields}}</p>
     {{/if}}
-    {{#if e}}
-    <p>Here is the results for category: {{category}}</p>
-    {{/if}}
-    {{#if f}}
+    {{#if c}}
     <p>Here is the results for company: {{company}}</p>
     {{/if}}
-    {{#if g}}
-    <p>Here is the results for fields: {{fields}}</p>
-    {{/if}}
+
     <div id="error">{{error}}</div>
         
     </div>
@@ -148,18 +125,27 @@
                     Title: {{title}} <br >
                     Content: {{body}} <br >
                     Poster: {{poster.name}} <br >
-                    Eventdate: {{eventdate}} <br >
+                    Duedate: {{duedate}} <br >
                     Fields: {{fields}} <br >
-                    Category:{{category}} <br >
                     Company: {{company}} <br >
+                    Job title: {{jobs.jobTitle}}<br >
+                    Required skills: {{jobs.skills}}
+                    Yearly salary ($): {{jobs.salary}}
+                    Location: {{jobs.location}}
+                    Job level: {{jobs.level}}
+                    Job type: {{jobs.jobType}}
+                    Job description: {{jobs.description}}
                     PostDate: {{postdate}} <br >
+                    {{#if modifieddate}}
+                    Modified date: {{modifieddate}}</h6>
+                    {{/if}}
                 </button>
             </h2>
 
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}&nbsp; Likes: {{likes.length}}</a>&nbsp;
-                    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{../userId}}" method="post" target="_blank">
+                    <form class="row g-3 needs-validation" action="/referral/post/{{../userId}}" method="post" target="_blank">
                     <div class="col-md-12">
                         <input type="hidden" class="btn btn-outline-info" name='postid' value="{{_id}}">
                     </div>
@@ -175,7 +161,7 @@
                     role="button">
                     See this post
                     </a>
-                    <a class="btn btn-primary" target="_blank" href='/socialmediaposts/post/{{poster.id}}'
+                    <a class="btn btn-primary" target="_blank" href='/referral/post/{{poster.id}}'
                     role="button">
                     See author
                     </a>
