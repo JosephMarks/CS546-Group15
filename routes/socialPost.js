@@ -68,7 +68,7 @@ router
     return res.render("socialPost/UserPost", {
       title: title,
       h1: h1,
-      userId: userId,
+      userId: req.session.user.userId,
       userPost: userPostedPostList,
       userLike: userLikedPostList,
       authorId: authorId,
@@ -177,7 +177,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -188,7 +188,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -199,7 +199,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -210,7 +210,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -221,7 +221,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -232,7 +232,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -295,7 +295,7 @@ router
     const h1 = post.title;
     res.render("socialPost/yourPostComments", {
       title: title,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
       h1: h1,
       auth: auth,
       post: post,
@@ -332,6 +332,7 @@ router
         title: title,
         h1: h1,
         post: post,
+        userId: req.session.user.userId,
         auth: auth,
         fname: author.fname,
         lname: author.lname,
@@ -343,7 +344,7 @@ router
     try {
       const updatedPost = await socialPostData.addComments(
         req.params.id,
-        req.params.userid,
+        req.session.user.userId,
         updatedData
       );
       const post = await socialPostData.getPostById(req.params.id);
@@ -424,7 +425,7 @@ router
       title: title,
       h1: h1,
       post: post,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
       postId: req.params.id,
       companyList: companyList,
     });
@@ -880,7 +881,7 @@ router
       title: title,
       h1: h1,
       post: post,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
     });
   })
   .delete(async (req, res) => {

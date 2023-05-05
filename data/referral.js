@@ -152,7 +152,7 @@ const exportedMethods = {
     location,
     description
   ) {
-    title = validation.checkString(title, "Title");
+    title = validation.validateNameAllNumberReturn(title);
     body = validation.checkString(body, "Body");
     posterId = validation.checkId(posterId, "Poster ID");
     duedate = validation.checkDate(duedate);
@@ -209,6 +209,8 @@ const exportedMethods = {
       salary,
       location,
       description: description.trim().toLowerCase(),
+      level,
+      jobType,
     };
     if (!Array.isArray(fields)) {
       fields = [];
@@ -255,7 +257,7 @@ const exportedMethods = {
 
     newuserPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(posterId) },
-      { $addtoSet: { referralPosts: newPostId.toString() } },
+      { $push: { referralPosts: newPostId.toString() } },
       { returnDocument: "after" }
     );
 
@@ -292,9 +294,8 @@ const exportedMethods = {
     }
 
     if (updatedPost.title) {
-      updatedPostData.title = validation.checkString(
-        updatedPost.title,
-        "title"
+      updatedPostData.title = validation.validateNameAllNumberReturn(
+        updatedPost.title
       );
     }
     if (updatedPost.duedate) {

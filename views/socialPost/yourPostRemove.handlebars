@@ -54,6 +54,10 @@
                 {{post.poster.name}}</h6>
             <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
             {{post.postdate}}</h6>
+            {{#if post.modifieddate}}
+            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Modified date: 
+            {{post.modifieddate}}</h6>
+            {{/if}}
         </div>
         <form method="POST" id="network-post-update">
             <!-- Add a hidden input field with the _method attribute set to PATCH -->

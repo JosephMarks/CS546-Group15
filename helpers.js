@@ -29,7 +29,29 @@ const validations = {
       }
     }
   },
+  validateNameReturn(param) {
+    if (param.trim().length < 2 || param.trim().length > 25)
+      throw "Error : Enter a valid firstName and the lastName";
 
+    for (let i = 0; i < param.length; i++) {
+      if (!Boolean(param[i].match(/^[A-Za-z]*$/))) {
+        if (
+          param[i] !== " " &&
+          !param[i].match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)
+        )
+          throw "Error : Enter a valid firstName and the lastName";
+      }
+    }
+    return param;
+  },
+  validateNameAllNumberReturn(param) {
+    if (param.trim().length < 2 || param.trim().length > 25)
+      throw "Error : Enter a valid Name and the Name";
+
+    if (!param.match(/[a-zA-Z]/g)) throw "Error : Enter a valid Name";
+
+    return param;
+  },
   isProperString(param) {
     // check if the parameters are string or not takes an array as an input
 
@@ -473,7 +495,7 @@ const validations = {
     ];
     const checker = (desired, target) =>
       target.every((ele) => desired.includes(ele));
-    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    if (!checker(tags, arr)) throw `Error: skill tags is not valid tags`;
     return arr;
   },
   checkJobtypeTags(arr) {
@@ -493,7 +515,7 @@ const validations = {
     const tags = ["remote", "online", "hybrid"];
     const checker = (desired, target) =>
       target.every((ele) => desired.includes(ele));
-    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    if (!checker(tags, arr)) throw `Error: job type tags is not valid tags`;
     return arr;
   },
   checkLevelTags(arr) {
@@ -513,7 +535,7 @@ const validations = {
     const tags = ["senior", "internship", "mid"];
     const checker = (desired, target) =>
       target.every((ele) => desired.includes(ele));
-    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+    if (!checker(tags, arr)) throw `Error: level tags is not valid tags`;
     return arr[0];
   },
   checkLocationTags(arr) {
@@ -585,7 +607,8 @@ const validations = {
     ];
     const checker = (desired, target) =>
       target.every((ele) => desired.includes(ele));
-    if (!checker(tags, arr)) throw `Error: category tags is not valid tags`;
+
+    if (!checker(tags, arr)) throw `Error: location tags is not valid tags`;
     return arr;
   },
 

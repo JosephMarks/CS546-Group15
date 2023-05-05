@@ -75,21 +75,7 @@
         </select>
 
       </div>
-      <div class="col-md-12">
 
-        <label for="category">Select category tag(s)</label>
-
-        <select multiple id="category" name="category">
-
-          <option value="interview">interview</option>
-          <option value="daily thoughts">daily thoughts</option>
-          <option value="making friends">making friends</option>
-          <option value="housing">housing</option>
-          <option value="asking for help">asking for help</option>
-          <option value="others">others</option>
-        </select>
-
-      </div>
       <div class="col-md-12">
 
         <label for="company">Select company tag(s)</label>
@@ -110,26 +96,15 @@
 
     </form>
     {{#if a}}
-    <p>Here is the results for fields: {{fields}}, category: {{category}} and company: {{company}}</p>
-    {{/if}}
-    {{#if b}}
-    <p>Here is the results for fields: {{fields}} and category: {{category}}</p>
-    {{/if}}
-    {{#if c}}
     <p>Here is the results for fields: {{fields}} and company: {{company}}</p>
     {{/if}}
-    {{#if d}}
-    <p>Here is the results for category: {{category}} and company: {{company}}</p>
+    {{#if b}}
+     <p>Here is the results for fields: {{fields}}</p>
     {{/if}}
-    {{#if e}}
-    <p>Here is the results for category: {{category}}</p>
-    {{/if}}
-    {{#if f}}
+    {{#if c}}
     <p>Here is the results for company: {{company}}</p>
     {{/if}}
-    {{#if g}}
-    <p>Here is the results for fields: {{fields}}</p>
-    {{/if}}
+
     <div id="error">{{error}}</div>
         
     </div>
@@ -150,11 +125,20 @@
                     Title: {{title}} <br >
                     Content: {{body}} <br >
                     Poster: {{poster.name}} <br >
-                    Eventdate: {{eventdate}} <br >
+                    Duedate: {{duedate}} <br >
                     Fields: {{fields}} <br >
-                    Category:{{category}} <br >
                     Company: {{company}} <br >
+                    Job title: {{jobs.jobTitle}}<br >
+                    Required skills: {{jobs.skills}}
+                    Yearly salary ($): {{jobs.salary}}
+                    Location: {{jobs.location}}
+                    Job level: {{jobs.level}}
+                    Job type: {{jobs.jobType}}
+                    Job description: {{jobs.description}}
                     PostDate: {{postdate}} <br >
+                    {{#if modifieddate}}
+                    Modified date: {{modifieddate}}</h6>
+                    {{/if}}
                 </button>
             </h2>
 

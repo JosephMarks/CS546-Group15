@@ -97,32 +97,18 @@
 
 {{!-- Job --}}
 
+
       <div class="col-md-12">
 
-        <label for="company">Select a company tag</label>
-
-        <select id="company" name="company">
-  
-        {{#each companyList}}
-          <option value="{{companyName}}">{{companyName}}</option>
-        {{/each}}
-        
-        </select>
+        <label class="companyEmail">Contact Email</label>
+        <input type="text" class="form-control" id="companyEmail" value="{{companyEmail}}" name="companyEmail" >
 
       </div>
 
       <div class="col-md-12">
 
-        <label class="companyEmail">Company Email</label>
-        <input type="text" class="form-control" id="companyEmail" value="{{session.email}}" name="companyEmail"
-          readonly >{{session.email}}
-
-      </div>
-
-      <div class="col-md-12">
-
-        <label for="jobTitle" class="jobTitle" value="{{jobTitle}}">Job Title</label>
-        <input type="text" class="form-control" id="jobTitle" name="jobTitle" >
+        <label for="jobTitle" class="jobTitle" >Job Title</label>
+        <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="{{jobTitle}}">
 
       </div>
 

@@ -251,7 +251,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newuserPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(posterId) },
-      { $addToSet: { socialPost: newPostId.toString() } },
+      { $addtoSet: { socialPost: newPostId.toString() } },
       { returnDocument: "after" }
     );
     if (newuserPost.lastErrorObject.n === 0)
