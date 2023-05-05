@@ -3,15 +3,15 @@ import { groups, users } from "../config/mongoCollections.js";
 import userData from "./user.js";
 
 export const create = async (name, description) => {
-  name = name.trim();
-  description = description.trim();
-
   if (!name || !description) {
     throw new Error("You must provide all required parameters");
   }
   if (typeof name !== "string" || typeof description !== "string") {
     throw new Error("Items must be of type string");
   }
+
+  name = name.trim();
+  description = description.trim();
   if (name.length === 0 || description.length === 0) {
     throw new Error("Strings cannot be empty strings");
   }
