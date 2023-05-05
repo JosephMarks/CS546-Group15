@@ -1,0 +1,9 @@
+<div class="container">
+  <h1>List of Users in {{groupName}}</h1>
+  <ul>
+    {{#each users}}
+      <li><a href="/profile/{{id}}">{{name.firstName}}</a></li>
+    {{/each}}
+  </ul>
+  <a href="/groups/{{groupId}}">Back to Group Details</a>
+</div>

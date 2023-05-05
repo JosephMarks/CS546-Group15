@@ -68,7 +68,7 @@ router
     return res.render("socialPost/UserPost", {
       title: title,
       h1: h1,
-      userId: userId,
+      userId: req.session.user.userId,
       userPost: userPostedPostList,
       userLike: userLikedPostList,
       authorId: authorId,
@@ -77,7 +77,17 @@ router
   .post(async (req, res) => {
     let userId = req.session.user.userId;
     let postId = req.body.postid;
-
+    try {
+      const post = await socialPostData.getPostById(postId);
+      const author = await userData.getUserById(userId);
+    } catch (error) {
+      return res.status(400).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     if (await socialPostData.checkLikes(postId, userId)) {
       await socialPostData.addLikes(postId, userId);
     } else {
@@ -167,7 +177,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -178,7 +188,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -189,7 +199,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -200,7 +210,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -211,7 +221,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -222,7 +232,7 @@ router
         error,
         posttitle,
         postbody,
-        userId,
+        userId: req.session.user.userId,
         companyList,
       });
     }
@@ -285,7 +295,7 @@ router
     const h1 = post.title;
     res.render("socialPost/yourPostComments", {
       title: title,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
       h1: h1,
       auth: auth,
       post: post,
@@ -296,6 +306,7 @@ router
   .post(async (req, res) => {
     let updatedData = xss(req.body.comments);
     let auth = false;
+    let authorid = req.params.userid;
     if (authorid === req.session.user.userId) {
       auth = true;
     }
@@ -315,12 +326,13 @@ router
     } catch (error) {
       const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(post.userId);
-      const title = post.content;
-      const h1 = post.content;
+      const title = post.title;
+      const h1 = post.title;
       return res.render("socialPost/yourPostComments", {
         title: title,
         h1: h1,
         post: post,
+        userId: req.session.user.userId,
         auth: auth,
         fname: author.fname,
         lname: author.lname,
@@ -332,13 +344,11 @@ router
     try {
       const updatedPost = await socialPostData.addComments(
         req.params.id,
-        req.params.userid,
+        req.session.user.userId,
         updatedData
       );
       const post = await socialPostData.getPostById(req.params.id);
       const author = await userData.getUserById(req.params.userid);
-      const title = post.content;
-      const h1 = post.content;
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -415,7 +425,7 @@ router
       title: title,
       h1: h1,
       post: post,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
       postId: req.params.id,
       companyList: companyList,
     });
@@ -519,8 +529,6 @@ router
     };
     try {
       let updated = await socialPostData.updatePost(postId, updatePost);
-      console.log("this");
-      console.log(updated);
     } catch (error) {
       return res.status(400).render("socialPost/error", {
         title: "error",
@@ -873,7 +881,7 @@ router
       title: title,
       h1: h1,
       post: post,
-      userId: req.params.userid,
+      userId: req.session.user.userId,
     });
   })
   .delete(async (req, res) => {

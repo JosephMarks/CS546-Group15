@@ -2,7 +2,22 @@ import { ObjectId, Binary } from "mongodb";
 import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import bcrypt from "bcryptjs";
-
+import passwordValidator from "password-validator";
+let rules = new passwordValidator();
+rules
+  .is()
+  .min(8)
+  .is()
+  .max(100)
+  .has()
+  .uppercase()
+  .has()
+  .digits()
+  .has()
+  .not()
+  .spaces()
+  .has()
+  .symbols();
 const exportedMethods = {
   async getAllUser() {
     //get all users data from collectoin
@@ -29,10 +44,10 @@ const exportedMethods = {
     return user;
   },
 
-    async createUser(fname, lname, age, email, password, candidateType) {
+  async createUser(fname, lname, age, email, password, candidateType) {
     //Validations
-    fname = validations.checkString(fname, "First name");
-    lname = validations.checkString(lname, "Last name");
+    fname = validations.validateNameReturn(fname);
+    lname = validations.validateNameReturn(lname);
     candidateType = validations.checkString(candidateType, "Candidate Type");
     age = validations.isAge(Number(age));
     const userCollection = await users();
@@ -94,13 +109,13 @@ const exportedMethods = {
       });
 
       if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
-    const returnUser = await this.getUserById(
-      newCreateUser.insertedId.toString()
-    );
-    returnUser._id = returnUser._id.toString();
-    return returnUser;
-
+      const returnUser = await this.getUserById(
+        newCreateUser.insertedId.toString()
+      );
+      returnUser._id = returnUser._id.toString();
+      return returnUser;
     } else {
+      let referralPosts = [];
       const newCreateUser = await userCollection.insertOne({
         fname,
         lname,
@@ -110,7 +125,7 @@ const exportedMethods = {
         gender,
         candidateType,
         companyName: "",
-        referralPosts: [],
+        referralPosts,
         headerDescription,
         aboutMe,
         locationState,
@@ -132,15 +147,12 @@ const exportedMethods = {
       });
 
       if (!newCreateUser.insertedId) throw `Error: Insert failed!!`;
-    const returnUser = await this.getUserById(
-      newCreateUser.insertedId.toString()
-    );
-    returnUser._id = returnUser._id.toString();
-    return returnUser;
+      const returnUser = await this.getUserById(
+        newCreateUser.insertedId.toString()
+      );
+      returnUser._id = returnUser._id.toString();
+      return returnUser;
     }
-
-    
-    
   },
 
   async updateUsers(
@@ -148,8 +160,9 @@ const exportedMethods = {
     updateData // update user's profile
   ) {
     userId = validations.checkId(userId);
-    let fname = validations.checkString(updateData.fname, "First Name");
-    let lname = validations.checkString(updateData.lname, "Last Name");
+    rules.validate(updateData.password);
+    let fname = validations.validateNameReturn(updateData.fname);
+    let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
     let password = validations.checkString(updateData.password, "Password");
     let age = validations.isAge(updateData.age, "age");
@@ -386,16 +399,18 @@ const exportedMethods = {
   },
 
   async getUserInterestArea(id) {
-
-    if (!id || ObjectId.isValid(id)){
+    if (!id || ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
 
-    let getUserInterests = await userCollection.findOne( {_id: new ObjectId(id)}, { projection: {interestArea: 1}} );
+    let getUserInterests = await userCollection.findOne(
+      { _id: new ObjectId(id) },
+      { projection: { interestArea: 1 } }
+    );
     if (!getUserInterests) throw "Error : Users interest area is empty";
-    
+
     return getUserInterests;
-  }
+  },
 };
 
 export default exportedMethods;

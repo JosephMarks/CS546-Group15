@@ -18,21 +18,23 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/post/{{userId}}">Post</a>
+                        <a class="nav-link" target="_blank" href="/referral/post/{{userId}}">Post</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" target="_blank" href="/socialmediaposts/search/{{userId}}">Search Posts</a>
+                        <a class="nav-link" target="_blank" href="/referral/search/{{userId}}">Search Posts</a>
                         {{!--/network/post/{{id}}--}}
                     </li>
+                    {{#if identity}}
                     <li class="nav-item">
-                        <form style="display: inline" action="/socialmediaposts/post/{{userId}}/new" method="get">
+                        <form style="display: inline" action="/referral/post/{{userId}}/new" method="get">
                             <button class="nav-link btn btn-outline-primary"
                                 style="--bs-btn-padding-y: .01rem; --bs-btn-padding-x: .2rem; --bs-btn-font-size: .4rem;">
                                 Create New Post
                             </button>
                         </form>
                     </li>
+                    {{/if}}
                 </ul>
             </div>
         </div>
@@ -46,10 +48,16 @@
                 <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h6>
             </div>
             <h5 class="card-title">Content: {{post.body}}</h5>
-            <h5 class="card-title">Eventdate: {{post.eventdate}}</h5>
+            <h5 class="card-title">Duedate: {{post.duedate}}</h5>
             <h5 class="card-title">Fields: {{post.fields}}</h5>
-            <h5 class="card-title">Category: {{post.category}}</h5>
             <h5 class="card-title">Company: {{post.company}}</h5>
+            <h5 class="card-title">Job title: {{post.jobs.jobTitle}}</h5>
+            <h5 class="card-title">Required skills: {{post.jobs.skills}}</h5>
+            <h5 class="card-title">Yearly salary ($): {{post.jobs.salary}}</h5>
+            <h5 class="card-title">Location: {{post.jobs.location}}</h5>
+            <h5 class="card-title">Job level: {{post.jobs.level}}</h5>jobType
+            <h5 class="card-title">Job type: {{post.jobs.jobType}}</h5>
+            <h5 class="card-title">Job description: {{post.jobs.description}}</h5>
             <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
                 {{post.poster.name}}</h6>
             <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
