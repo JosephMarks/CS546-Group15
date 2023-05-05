@@ -11,7 +11,7 @@ import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
 
-router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
+router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
 
   if (!req.file) {
@@ -35,6 +35,23 @@ router.post("/:id/updateimage", upload.single("image"), async (req, res) => {
   } catch (e) {
     console.error(e); // Log the error to console
     res.status(500).send("Error uploading image.");
+  }
+});
+
+router.get("/:id/editProfilePic", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileEditPhoto", userInfo);
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
   }
 });
 
@@ -84,12 +101,7 @@ router.get("/:id/edit", async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
 
-    res.render("./profile/profileEdit", {
-      _id: id,
-      name: userInfo.name,
-      aboutMe: userInfo.aboutMe,
-      image: userInfo.base64Image,
-    });
+    res.render("./profile/profileEdit", userInfo);
   } catch (e) {
     console.error(e);
     res.status(404).render("./error", {
