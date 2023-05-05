@@ -119,11 +119,11 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
 
   if (req.file) {
     // Convert the image to base64
-    const imgBuffer = fs.readFileSync(req.file.path);
-    imgBase64 = imgBuffer.toString("base64");
+    const imgBuffer = req.file.buffer;
+    const imgBase64 = imgBuffer.toString("base64");
 
     // Remove the temporary file
-    fs.unlinkSync(req.file.path);
+    // fs.unlinkSync(req.file.path);
   }
 
   let userObject = await userData.getUserById(id);
@@ -137,8 +137,6 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   userObject.locationState = locationState;
   userObject.university = university;
   userObject.collegeMajor = collegeMajor;
-
-  console.log({ userObject });
 
   try {
     await userData.updateUsers(id, userObject);
