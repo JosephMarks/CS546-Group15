@@ -6,13 +6,13 @@
 
     <form class="row g-3 needs-validation" action=/company/jobUpdate/{{jobDetail._id}} method="post">
 
-      <span id="errorDisplay" style="color: red"> {{error}} </span>
+      <span id="errorDisplay"> {{error}} </span>
 
       <div class="col-md-12">
 
         <label class="companyName">Company Name</label>
-        <input type="text" class="form-control" id="companyName" name="companyName" value={{
-          company.companyName}} readonly >
+        <input type="text" class="form-control" id="companyName" name="companyName" value="{{
+          company.companyName}}" readonly >
 
       </div>
 
