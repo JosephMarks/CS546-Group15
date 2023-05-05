@@ -130,9 +130,8 @@ router.route("/delete/:id").get(async (req, res) => {
 
 router.route("/dataUpdate/:name").get(async (req, res) => { // done company update display
 
-  const bodyData = req.body;
 
-  if (!req.params.name || !bodyData || Object.keys(bodyData).length === 0) {
+  if (!req.params.name){
     
     return res.render("error", { error: "Error : Invalid Company Name", title: "Error" });
 
@@ -405,88 +404,50 @@ router.route("/jobUpdate/:id").get(async (req, res) => { // get for job update
 
 router.route("/jobUpdate/:id").post(async (req, res) => { // update page for jobs
 
+  let id = req.params.id;
   const bodyData = req.body;
-  console.log(req.params.id);
+
+  if (!id || !ObjectId.isValid(id)) {
+    return res.status(400).render("error", { error: "Error : Invalid Id" });
+  };
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
-
     return res.status(400).render("error", { error: "There are no fields in the request body" });
-
   }
 
-  let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
-  req.body;
+  id = id.trim();
 
-  console.log(req.body);
+  let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } = req.body;
 
   try {
 
-    if (
-      !companyName ||
-      !companyEmail ||
-      !jobTitle ||
-      !salary ||
-      !level ||
-      !jobType ||
-      !location ||
-      !description ||
-      !skills
-    )
+    if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       throw "Error : All parameters are required";
 
-    if (
-      !validations.isProperString([
-        companyName,
-        companyEmail,
-        jobTitle,
-        description,
-        level
-      ])
-    )
+    if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]) )
       throw "Error : Parameters can only be string not just string with empty spaces";
 
-    if (typeof (jobType) === 'string') {
+    if (typeof (jobType) === 'string') jobType = [jobType];
+    validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+    jobType = jobType.map(x => x.trim().toLowerCase());
 
-      if (!validations.isProperString([jobType])) throw "Error : job type can only be a valid string or array with valid strings";
+    if (typeof (skills) === 'string') skills = [skills];
+    validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+    skills = skills.map(x => x.trim().toLowerCase());
 
-    } else {
-
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-      jobType = jobType.map(x => x.trim().toLowerCase());
-
-    }
-
-    if (typeof (skills) === 'string') {
-
-      if (!validations.isProperString([jobType])) throw "Error : skills can only be a valid string or array with valid strings";
-
-    } else {
-
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-      skills = skills.map(x => x.trim().toLowerCase());
-
-    }
-
-    if (typeof (location) === 'string') {
-
-      if (!validations.isProperString([location])) throw "Error : location can only be a valid string or array with valid strings";
-
-    } else {
-
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
-      location = location.map(x => x.trim().toLowerCase());
-
-    }
+    if (typeof (location) === 'string') location = [location];
+    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    location = location.map(x => x.trim().toLowerCase());
 
     validations.isSalary(salary);
     salary = Number(salary);
 
-    let createJob = await companyFunctions.updateJob(req.params.id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description);
+    let createJob = await companyFunctions.updateJob(id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description);
     
     return res.redirect(`/company/viewJob/${companyName}`);
 
   } catch (e) {
-    let getJob = await companyFunctions.getJobById(req.params.id);
+    let getJob = await companyFunctions.getJobById(id);
 
     return res.render('company/updateJob', { error: e, title: 'Edit Job', company: getJob, jobDetail: getJob.jobs[0], session: req.session.user }); 
 
@@ -494,20 +455,10 @@ router.route("/jobUpdate/:id").post(async (req, res) => { // update page for job
 
 });
 
-router.route("/jobDetails/:id").get(async (req, res) => {
-
-  // if (!req.params.id) throw "Error : No id found or Invalid Job Id";
-
-  // let jobDetail = await companyFunctions.getJobById()
-  // return console.log(jobDetail);
-
-});
-
 router.route("/jobSingleDisplay/:id").get(async (req, res) => {
 
   let id = req.params.id.replace(":", "");
-  console.log(id);
-  console.log(ObjectId.isValid(id));
+ 
   if (!id || !ObjectId.isValid(id)) {
     return res.status(400).render('error', { error: "No Id or Invalid Id" });
   }
@@ -529,6 +480,21 @@ router.route("/jobSingleDisplay/:id").get(async (req, res) => {
   }
 
 });
+
+router.route("/jobDelete/:id").get(async (req, res) => {
+
+  if (!id || !ObjectId.isValid(id)) {
+    return res.status(400).render("error", { error: "Error : Invalid Id", title: "Error" })
+  }
+
+  try {
+
+    let deleteData = await companyFunctions.deleteJob(id);
+
+  } catch(e) {
+    return res.status(500).render("error", { error : e });
+  }
+}) 
 
 
 // TODO : Remove all console.logs 

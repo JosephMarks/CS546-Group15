@@ -189,62 +189,26 @@ const companyFunctions = {
     },
 
     async updateJob (id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description) {
+
+      if (!id || !ObjectId.isValid(id)) throw "Error: Invalid Id";
       
-      if (
-        !companyName ||
-        !companyEmail ||
-        !jobTitle ||
-        !salary ||
-        !level ||
-        !jobType ||
-        !location ||
-        !description
-      )
+      if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description)
         throw "Error : All parameters are required";
   
-      if (
-        !validations.isProperString([
-          companyName,
-          companyEmail,
-          jobTitle,
-          description,
-          level
-        ])
-      )
+      if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]))
         throw "Error : Parameters can only be string not just string with empty spaces";
 
-        if (typeof(jobType) === 'string'){
+      if (typeof (jobType) === 'string') jobType = [jobType];
+      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      jobType = jobType.map(x => x.trim().toLowerCase());
 
-          if (!validations.isProperString([jobType])) throw "Error : job type can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-          jobType = jobType.map(x => x.trim().toLowerCase());
-    
-        }
-    
-        if (typeof(skills) === 'string'){
-    
-          if (!validations.isProperString([jobType])) throw "Error : skills can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-          skills = skills.map(x => x.trim().toLowerCase());
-          
-        }
-    
-        if (typeof(location) === 'string'){
-    
-          if (!validations.isProperString([location])) throw "Error : location can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForLocation([location]);
-          location = location.map(x => x.trim().toLowerCase());
-          
-        }
+      if (typeof (skills) === 'string') skills = [skills];
+      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+      skills = skills.map(x => x.trim().toLowerCase());
+
+      if (typeof (location) === 'string') location = [location];
+      validations.isArrayWithTheNonEmptyStringForLocation([location]);
+      location = location.map(x => x.trim().toLowerCase());
 
       validations.isSalary(salary);
       salary = Number(salary);
@@ -263,21 +227,26 @@ const companyFunctions = {
       } 
 
       let temp = await this.getJobById(id);
-      // console.log("temp", temp);
+
+      let getCompanyDetails = await this.getCompanyDataFromEmail(companyEmail);
 
       let updatedInfo = await companyCollection.updateOne(
 
-        {"jobs._id": new ObjectId(id)}, // TODO validate id's
+        {"jobs._id": new ObjectId(id)},
         {$pull: {jobs: { jobTitle: temp.jobs[0].jobTitle }}},
         {returnDocument: 'after'}
 
       );
 
-      // this.createJob()
+      let getCompanyInfo = await companyCollection.updateOne(
 
-      // console.log(updatedInfo.value.jobs);
+        {_id: getCompanyDetails._id},
+        {$push: {jobs: jobData}},
+        {returnDocument: 'after'}
 
-      return updatedInfo;
+      )
+
+      return getCompanyInfo;
     },
 
     async getJobById (id) {
@@ -355,84 +324,84 @@ const companyFunctions = {
     },
 
     
-  async updateJob(
-    companyName,
-    companyEmail,
-    jobTitle,
-    salary,
-    level,
-    jobType,
-    skills,
-    location,
-    description
-  ) {
-    if (
-      !companyName ||
-      !companyEmail ||
-      !jobTitle ||
-      !salary ||
-      !level ||
-      !jobType ||
-      !location ||
-      !description
-    )
-      throw "Error : All parameters are required";
+  // async updateJob(
+  //   companyName,
+  //   companyEmail,
+  //   jobTitle,
+  //   salary,
+  //   level,
+  //   jobType,
+  //   skills,
+  //   location,
+  //   description
+  // ) {
+  //   if (
+  //     !companyName ||
+  //     !companyEmail ||
+  //     !jobTitle ||
+  //     !salary ||
+  //     !level ||
+  //     !jobType ||
+  //     !location ||
+  //     !description
+  //   )
+  //     throw "Error : All parameters are required";
 
-    if (
-      !validations.isProperString([
-        companyName,
-        companyEmail,
-        jobTitle,
-        description,
-        level,
-      ])
-    )
-      throw "Error : Parameters can only be string not just string with empty spaces";
+  //   if (
+  //     !validations.isProperString([
+  //       companyName,
+  //       companyEmail,
+  //       jobTitle,
+  //       description,
+  //       level,
+  //     ])
+  //   )
+  //     throw "Error : Parameters can only be string not just string with empty spaces";
 
-    if (typeof jobType === "string") {
-      if (!validations.isProperString([jobType]))
-        throw "Error : job type can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-      jobType = jobType.map((x) => x.trim().toLowerCase());
-    }
+  //   if (typeof jobType === "string") {
+  //     if (!validations.isProperString([jobType]))
+  //       throw "Error : job type can only be a valid string or array with valid strings";
+  //   } else {
+  //     validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+  //     jobType = jobType.map((x) => x.trim().toLowerCase());
+  //   }
 
-    if (typeof skills === "string") {
-      if (!validations.isProperString([jobType]))
-        throw "Error : skills can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-      skills = skills.map((x) => x.trim().toLowerCase());
-    }
+  //   if (typeof skills === "string") {
+  //     if (!validations.isProperString([jobType]))
+  //       throw "Error : skills can only be a valid string or array with valid strings";
+  //   } else {
+  //     validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+  //     skills = skills.map((x) => x.trim().toLowerCase());
+  //   }
 
-    if (typeof location === "string") {
-      if (!validations.isProperString([location]))
-        throw "Error : location can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
-      location = location.map((x) => x.trim().toLowerCase());
-    }
+  //   if (typeof location === "string") {
+  //     if (!validations.isProperString([location]))
+  //       throw "Error : location can only be a valid string or array with valid strings";
+  //   } else {
+  //     validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  //     location = location.map((x) => x.trim().toLowerCase());
+  //   }
 
-    validations.isSalary(salary);
-    salary = Number(salary);
+  //   validations.isSalary(salary);
+  //   salary = Number(salary);
 
-    let jobData = {
-      _id: new ObjectId(),
-      jobTitle: jobTitle.trim().toLowerCase(),
-      skills: skills,
-      salary,
-      location,
-      description: description.trim().toLowerCase(),
-    };
+  //   let jobData = {
+  //     _id: new ObjectId(),
+  //     jobTitle: jobTitle.trim().toLowerCase(),
+  //     skills: skills,
+  //     salary,
+  //     location,
+  //     description: description.trim().toLowerCase(),
+  //   };
 
-    let updatedInfo = await companyCollection.findOneAndUpdate(
-      { "jobs._id": new ObjectId(id) }, // TODO validate id's
-      { $set: jobData },
-      { returnDocument: "after" }
-    );
+  //   let updatedInfo = await companyCollection.findOneAndUpdate(
+  //     { "jobs._id": new ObjectId(id) }, // TODO validate id's
+  //     { $set: jobData },
+  //     { returnDocument: "after" }
+  //   );
 
-    return updatedInfo;
-  },
+  //   return updatedInfo;
+  // },
 
   async getJobById(id) {
     if (!id) throw "Error : Invalid Id";
