@@ -273,7 +273,7 @@ router.route("/job").get(async (req, res) => { // display page for create Job
 
 });
 
-router.route("/job").post(async (req, res) => { // create job post
+router.route("/job/:name").post(async (req, res) => { // create job post
 
   const bodyData = req.body;
 
