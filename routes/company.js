@@ -49,6 +49,17 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
   let { companyName, companyEmail, industry, employee, location, description } = bodyData;
   let createdAt = new Date();
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  employee = xss(req.body.employee);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+  location = location.map(x => xss(x));
+
   try {
 
     if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename )
@@ -170,6 +181,16 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
 
   let { companyName, companyEmail, industry, numberOfEmployees, location, description } = bodyData;
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  employee = xss(req.body.employee);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+  location = location.map(x => xss(x));
   try {
 
     if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename )
@@ -287,6 +308,8 @@ router.route("/job/:name").post(async (req, res) => { // create job post
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
   req.body;
+
+  
 
   try {
 
