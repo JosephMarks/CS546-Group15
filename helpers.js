@@ -105,7 +105,7 @@ const validations = {
 
     if (typeof param !== "number" || isNaN(Number(param)))
       throw "Error: Salary must be a number";
-    if (param < 1 || param > 100000) throw "Error: Salary with in 1 to 100000";
+    if (param < 15000 ) throw "Error: Salary cannot be lower than 15000";
     if (!Number.isInteger(param)) throw "Error: Salary an Integer";
     return param;
   },

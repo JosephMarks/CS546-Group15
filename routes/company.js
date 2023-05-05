@@ -476,7 +476,7 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
       description = xss(description);
     
       if (typeof (jobType) === 'string') jobType = [jobType];
-      validations.checkLocationTags([jobType]);
+      validations.checkJobtypeTags(jobType);
       jobType = jobType.map(x => xss(x));
     
       if (typeof(location) === 'string') location = [location];
@@ -492,7 +492,7 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
       throw "Error : Parameters can only be string not just string with empty spaces";
 
     if (typeof (jobType) === 'string') jobType = [jobType];
-    validations.checkLocationTags([jobType]);
+    validations.checkJobtypeTags(jobType);
     jobType = jobType.map(x => x.trim().toLowerCase());
 
     if (typeof (skills) === 'string') skills = [skills];
