@@ -7,7 +7,7 @@
       <a class="action-button" href="/groups/{{_id}}/edit">Edit</a>
       <a class="action-button" href="/groups/{{_id}}/eventAdd">Add Event</a>
       <a class="action-button" href="/groups/{{_id}}/eventEdit">Edit Events</a>
-      <a class="action-button" href="/groups/{{_id}}/postActivity">Post Activity</a>
+      <a class="action-button" href="/groups/{{_id}}/activityAdd">Post Activity</a>
     {{else}}
       <a class="action-button" href="/groups/{{_id}}/join">Join</a>
     {{/if}}
@@ -18,6 +18,12 @@
     {{#if image}}
       <img src="data:image/png;base64,{{image}}" alt="Group Image" />
     {{/if}}
+
+    <div>
+      <a href="/groups/{{_id}}/users">
+        <h5 class="oval-text">Number of Users: {{numOfUsers}}</h5>
+      </a>
+    </div>
 
     <h2>Upcoming Events:</h2>
     {{#each events}}
@@ -33,6 +39,20 @@
     {{/each}}
 
     <h2>Group Activity:</h2>
+
+    {{#each activity}}
+      <div class="activity-box">
+        <div><span class="activity-title">Activity Title:</span><span
+            class="activity-title-text"
+          >{{title}}</span></div>
+        <div><span class="activity-title">Author:</span><span
+            class="activity-title-text"
+          >{{author}}</span></div>
+        <div><span class="activity-title">Message:</span><span
+            class="activity-title-text"
+          >{{message}}</span></div>
+      </div>
+    {{/each}}
 
     <a href="javascript:history.back();">Back to Search Results</a>
 
