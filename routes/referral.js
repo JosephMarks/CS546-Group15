@@ -48,19 +48,20 @@ router
     const title = "Post";
     const h1 = "Post";
     let userPostedPostList, userLikedPostList;
-
-    try {
-      userPostedPostList = await referralData.getPostedPostByUserId(
-        req.params.userid
-      );
-    } catch (error) {
-      return res.status(400).render("referral/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-        identity: identity,
-      });
+    if (req.session.user.candidateType === "Company") {
+      try {
+        userPostedPostList = await referralData.getPostedPostByUserId(
+          req.params.userid
+        );
+      } catch (error) {
+        return res.status(400).render("referral/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+          identity: identity,
+        });
+      }
     }
 
     try {

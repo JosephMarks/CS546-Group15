@@ -8,8 +8,10 @@ const exportedMethods = {
     const postCollection = await referral();
     let ori = await postCollection.find({}).sort({ duedate: -1 }).toArray();
     for (let x in ori) {
-      let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      if (await this.getPostById(ori[x]._id.toString())) {
+        let a = await this.getPostById(ori[x]._id.toString());
+        ori[x].jobs = a.jobs[0];
+      }
     }
     return ori;
   },
@@ -20,9 +22,11 @@ const exportedMethods = {
     const post = await postCollection.findOne({ _id: new ObjectId(id) });
 
     if (!post) throw "Error: Post not found";
-    let jobs = await companyData.getJobById(post.jobs._id.toString());
-    let job = jobs.jobs[0];
-    post.jobs = job;
+    if (await companyData.getJobById(post.jobs._id.toString())) {
+      let jobs = await companyData.getJobById(post.jobs._id.toString());
+      let job = jobs.jobs[0];
+      post.jobs = job;
+    }
     return post;
   },
   async getLikedPostByUserId(userId) {
@@ -49,11 +53,14 @@ const exportedMethods = {
             if (newPost.lastErrorObject.n === 0)
               throw [404, `Could not delete the post with id ${id}`];
             continue;
+          } else {
+            if (await companyData.getJobById(post.jobs._id.toString())) {
+              let jobs = await companyData.getJobById(post.jobs._id.toString());
+              let job = jobs.jobs[0];
+              post.jobs = job;
+              res.push(post);
+            }
           }
-          let jobs = await companyData.getJobById(post.jobs._id.toString());
-          let job = jobs.jobs[0];
-          post.jobs = job;
-          res.push(post);
         }
       }
     }
@@ -89,11 +96,16 @@ const exportedMethods = {
               if (newPost.lastErrorObject.n === 0)
                 throw [404, `Could not delete the post with id ${id}`];
               continue;
+            } else {
+              if (await companyData.getJobById(post.jobs._id.toString())) {
+                let jobs = await companyData.getJobById(
+                  post.jobs._id.toString()
+                );
+                let job = jobs.jobs[0];
+                post.jobs = job;
+                res.push(post);
+              }
             }
-            let jobs = await companyData.getJobById(post.jobs._id.toString());
-            let job = jobs.jobs[0];
-            post.jobs = job;
-            res.push(post);
           }
         }
       }
@@ -207,20 +219,17 @@ const exportedMethods = {
     )
       throw "Error : Parameters can only be string not just string with empty spaces";
 
-    if (typeof jobType === "string") {
-      if (!validation.isProperString([jobType]))
-        throw "Error : job type can only be a valid string or array with valid strings";
+    if (!Array.isArray(jobType)) {
+      jobType = [];
     } else {
-      validation.isArrayWithTheNonEmptyStringForJobType([jobType]);
       jobType = jobType.map((x) => x.trim().toLowerCase());
+      jobType = validation.checkJobtypeTags(jobType);
     }
-
-    if (typeof skills === "string") {
-      if (!validation.isProperString([jobType]))
-        throw "Error : skills can only be a valid string or array with valid strings";
+    if (!Array.isArray(skills)) {
+      skills = [];
     } else {
-      validation.isArrayWithTheNonEmptyStringForSkills([skills]);
       skills = skills.map((x) => x.trim().toLowerCase());
+      skills = validation.checkSkillsTags(skills);
     }
 
     companyEmail = validation.checkEmail(companyEmail, "companyEmail");
