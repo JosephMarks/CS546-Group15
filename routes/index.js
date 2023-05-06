@@ -27,7 +27,7 @@ const constructorMethod = (app) => {
   app.use("/profile", profileRoutes);
   app.use("/logout", logoutRoutes);
   app.use("/allCompany", allCompanyRoutes);
-  app.use("recommendation", recommendationRoutes);
+  app.use("/recommendation", recommendationRoutes);
 
   app.use("/socialmediaposts", socialPostRoutes);
   app.use("/referral", referralRoutes);
