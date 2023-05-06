@@ -4,8 +4,11 @@ import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import { create } from "express-handlebars";
 import spost from "./data/socialPost.js";
+import * as seed from "./seed_1.js";
 const db = await dbConnection();
 await db.dropDatabase();
+
+seed.pseudoData();
 
 // user error testing
 
@@ -1076,7 +1079,8 @@ await db.dropDatabase();
 // console.log(await networkData.getPostByConnections(did))
 /**---------social media posts------------ */
 
-try {
+try
+{
   let title = "aefarfasf";
   let body = "aefarfasf";
   let posterId = "644feec03e6bc5df8c7ee4cd";
@@ -1095,10 +1099,12 @@ try {
   );
   let res = await spost.getPostsByFieldsTag(["full-stack"]);
   console.log(res);
-} catch (error) {
+} catch(error)
+{
   console.log(error);
 }
-try {
+try
+{
   let title = "ewrfskma";
   let body = "aefarfasf";
   let posterId = "644feec03e6bc5df8c7ee4cd";
@@ -1117,10 +1123,12 @@ try {
   );
   let res = await spost.getPostsByFieldsTag(["full-stack"]);
   console.log(res);
-} catch (error) {
+} catch(error)
+{
   console.log(error);
 }
-try {
+try
+{
   let title = "ewrfskma";
   let body = "aefarfasf";
   let posterId = "644feeda3e6bc5df8c7ee4ce";
@@ -1139,7 +1147,8 @@ try {
   );
   let res = await spost.getPostsByFieldsTag(["full-stack"]);
   console.log(res);
-} catch (error) {
+} catch(error)
+{
   console.log(error);
 }
 // try {

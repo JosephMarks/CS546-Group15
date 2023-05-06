@@ -67,7 +67,7 @@ router.route("/data").post(async (req, res) => {
     };
 
     return res.render("welcome", {
-      message: `You are Logged In as ${email}}`,
+      message: `You are Logged In as ${req.session.user.email} and candidate Type as ${req.session.user.candidateType}`,
       title: "Welcome",
     });
   } catch (e) {
