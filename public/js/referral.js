@@ -69,83 +69,126 @@ let updateJob = document.getElementById("update-refer");
 let search = document.getElementById("search");
 let errorMsg = document.getElementById("errorDisplay");
 
-if (createSocial) {
+if (createJob) {
   createJob.addEventListener("submit", (e) => {
     let posttitle = document.getElementById("posttitle").value;
     let postbody = document.getElementById("postbody").value;
-    let eventdate = document.getElementById("eventdate").value;
+    let duedate = document.getElementById("duedate").value;
     let field = document.getElementById("field").value;
-    let category = document.getElementById("category").value;
-    let company = document.getElementById("company").value;
+    let companyEmail = document.getElementById("companyEmail").value;
+    let jobTitle = document.getElementById("jobTitle").value;
+    let salary = document.getElementById("salary").value;
+    let level = document.getElementById("level").value;
+    let jobType = document.getElementById("jobType").value;
+    let skills = document.getElementById("skills").value;
+    let location = document.getElementById("location").value;
+    let description = document.getElementById("description").value;
 
+    if (typeof location === "string") location = [location];
+    if (typeof skills === "string") skills = [skills];
+    if (typeof jobType === "string") jobType = [jobType];
     if (typeof field === "string") field = [field];
-    if (typeof category === "string") category = [category];
-    if (typeof company === "string") company = [company];
-    if (posttitle.trim() || postbody.trim() || eventdate.trim()) {
+    if (
+      posttitle.trim() ||
+      postbody.trim() ||
+      duedate.trim() ||
+      companyEmail.trim() ||
+      jobTitle.trim() ||
+      salary.trim() ||
+      level.trim() ||
+      description.trim() ||
+      posttitle.trim() ||
+      postbody.trim() ||
+      duedate.trim()
+    ) {
       try {
-        if (!mainValidations.isProperString([posttitle, postbody])) {
+        if (
+          !mainValidations.isProperString([
+            jobTitle,
+            description,
+            salary,
+            posttitle,
+            postbody,
+          ])
+        ) {
           throw "Error : All inputs must be a valid strings";
         }
-        mainValidations.checkDate(eventdate);
-        mainValidations.checkFieldsTags(field);
 
+        helpersValidation.validateMyEmail(companyEmail.trim());
+        mainValidations.checkDueDate(duedate);
+        mainValidations.checkLocationTags(location);
+        mainValidations.checkJobtypeTags(jobType);
+        mainValidations.checkSkillsTags(skills);
+        mainValidations.checkFieldsTags(field);
+        mainValidations.isSalary(salary);
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
+        document.getElementById("companyEmail").value = companyEmail;
+        document.getElementById("jobTitle").value = jobTitle;
+
+        document.getElementById("description").value = description;
         errorMsg.innerHTML = "";
       } catch (error) {
         errorMsg.innerHTML = error;
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
+        document.getElementById("companyEmail").value = companyEmail;
+        document.getElementById("jobTitle").value = jobTitle;
+
+        document.getElementById("description").value = description;
         e.preventDefault();
       }
     } else {
       errorMsg.innerHTML = "All parameters are required";
       document.getElementById("posttitle").value = posttitle;
       document.getElementById("postbody").value = postbody;
+      document.getElementById("companyEmail").value = companyEmail;
+      document.getElementById("jobTitle").value = jobTitle;
+
+      document.getElementById("description").value = description;
       e.preventDefault();
     }
   });
 }
 
-if (updateSocial) {
+if (updateJob) {
   updateJob.addEventListener("submit", (e) => {
     let posttitle = document.getElementById("posttitle").value;
     let postbody = document.getElementById("postbody").value;
-    let eventdate = document.getElementById("eventdate").value;
+    let duedate = document.getElementById("duedate").value;
     let field = document.getElementById("field").value;
-    let category = document.getElementById("category").value;
-    let company = document.getElementById("company").value;
+    let companyEmail = document.getElementById("companyEmail").value;
 
     if (typeof field === "string") field = [field];
-    if (typeof category === "string") category = [category];
-    if (typeof company === "string") company = [company];
 
-    if (posttitle.trim() || postbody.trim()) {
+    if (posttitle.trim() || postbody.trim() || companyEmail.trim()) {
       try {
-        if (!mainValidations.isProperString([posttitle, postbody])) {
+        if (
+          !mainValidations.isProperString([posttitle, postbody, companyEmail])
+        ) {
           throw "Error : All inputs must be a valid strings";
         }
 
-        mainValidations.checkDate(eventdate);
+        helpersValidation.validateMyEmail(companyEmail.trim());
+
+        mainValidations.checkDueDate(duedate);
         mainValidations.checkFieldsTags(field);
-        mainValidations.checkCategoryTags(category);
-        mainValidations.checkCompanyTags(company);
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
-
+        document.getElementById("companyEmail").value = companyEmail;
         errorMsg.innerHTML = "";
       } catch (error) {
         errorMsg.innerHTML = error;
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
-
+        document.getElementById("companyEmail").value = companyEmail;
         e.preventDefault();
       }
     } else {
       errorMsg.innerHTML = "All parameters are required";
       document.getElementById("posttitle").value = posttitle;
       document.getElementById("postbody").value = postbody;
-
+      document.getElementById("companyEmail").value = companyEmail;
       e.preventDefault();
     }
   });
@@ -153,16 +196,12 @@ if (updateSocial) {
 if (search) {
   search.addEventListener("submit", (e) => {
     let field = document.getElementById("field").value;
-    let category = document.getElementById("category").value;
     let company = document.getElementById("company").value;
     if (typeof field === "string") field = [field];
     if (typeof company === "string") company = [company];
     try {
       if (field) {
         mainValidations.checkFieldsTags(field);
-      }
-      if (category) {
-        mainValidations.checkCategoryTags(category);
       }
       if (company) {
         mainValidations.checkStringArray(company, "company");

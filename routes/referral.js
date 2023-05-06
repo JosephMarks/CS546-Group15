@@ -45,23 +45,23 @@ router
     if (req.session.user.candidateType === "Company") {
       identity = true;
     }
+
     const title = "Post";
     const h1 = "Post";
     let userPostedPostList, userLikedPostList;
-    if (req.session.user.candidateType === "Company") {
-      try {
-        userPostedPostList = await referralData.getPostedPostByUserId(
-          req.params.userid
-        );
-      } catch (error) {
-        return res.status(400).render("referral/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-          identity: identity,
-        });
-      }
+
+    try {
+      userPostedPostList = await referralData.getPostedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
     }
 
     try {
@@ -312,7 +312,9 @@ router
         companyEmail,
       });
     }
-
+    companyEmail = companyEmail.trim();
+    jobTitle = jobTitle.trim();
+    description = description.trim();
     try {
       jobTitle = validation.validateNameAllNumberReturn(jobTitle);
     } catch (error) {
@@ -438,6 +440,7 @@ router
       });
     }
     try {
+      salary = salary.trim();
       validation.isSalary(salary);
       salary = Number(salary);
     } catch (error) {
@@ -1006,7 +1009,7 @@ router
         if (typeof req.body.field === "string") {
           fields.push(req.body.field);
         } else {
-          fields = req.body.fields;
+          fields = req.body.field;
         }
         fields = fields.map((x) => xss(x));
       }
@@ -1108,7 +1111,6 @@ router
         return res.render("referral/searchPage", {
           title: "Search Post",
           h1: "Search Post",
-          g: g,
           userId: req.session.user.userId,
           userPost: userPost,
           companyList: companyList,

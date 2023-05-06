@@ -10,7 +10,7 @@ const exportedMethods = {
     for (let x in ori) {
       if (await this.getPostById(ori[x]._id.toString())) {
         let a = await this.getPostById(ori[x]._id.toString());
-        ori[x].jobs = a.jobs[0];
+        ori[x].jobs = a.jobs;
       }
     }
     return ori;
@@ -135,13 +135,13 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
 
   async getPostsByCompanyTag(companyName) {
-    if (!Array.isArray(company)) {
+    if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
       companyName = await validation.checkCompanyTags(companyName);
@@ -153,7 +153,7 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
@@ -171,7 +171,7 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
@@ -233,6 +233,7 @@ const exportedMethods = {
     }
 
     companyEmail = validation.checkEmail(companyEmail, "companyEmail");
+    salary = salary.trim();
     validation.isSalary(salary);
     salary = Number(salary);
     jobType = validation.checkJobtypeTags(jobType);
@@ -270,7 +271,7 @@ const exportedMethods = {
       },
       duedate: duedate,
       fields: fields,
-      companyEmail: companyEmail,
+      companyEmail: companyEmail.toLowerCase(),
       company: [companyName],
       jobs: jobData,
       likes: [],

@@ -152,31 +152,48 @@ router
     let field;
     let category;
     let company;
+    if (req.body.field) {
+      if (typeof req.body.field === "string") {
+        field = [req.body.field];
+      } else {
+        field = req.body.field;
+      }
+      field = field.map((x) => xss(x));
+    }
 
-    if (typeof req.body.field === "string") {
-      field = [req.body.field];
-    } else {
-      field = req.body.field;
+    if (req.body.category) {
+      if (typeof req.body.category === "string") {
+        category = [req.body.category];
+      } else {
+        category = req.body.category;
+      }
+      category = category.map((x) => xss(x));
     }
-    field = field.map((x) => xss(x));
-    if (typeof req.body.category === "string") {
-      category = [req.body.category];
-    } else {
-      category = req.body.category;
+    if (req.body.company) {
+      if (typeof req.body.company === "string") {
+        company = [req.body.company];
+      } else {
+        company = req.body.company;
+      }
+      company = company.map((x) => xss(x));
     }
-    category = category.map((x) => xss(x));
-    if (typeof req.body.company === "string") {
-      company = [req.body.company];
-    } else {
-      company = req.body.company;
-    }
-    company = company.map((x) => xss(x));
 
     let posterId = req.session.user.userId;
     let userId = req.params.userid;
     let companyList = await companyData.getAllCompanyNameinObject();
     try {
       posttitle = validation.checkString(posttitle, "Post title");
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId: req.session.user.userId,
+        companyList,
+      });
+    }
+    try {
+      field = validation.checkFieldsTags(field);
     } catch (error) {
       return res.render("socialPost/createNewPost", {
         error,
@@ -208,17 +225,7 @@ router
         companyList,
       });
     }
-    try {
-      field = validation.checkFieldsTags(field);
-    } catch (error) {
-      return res.render("socialPost/createNewPost", {
-        error,
-        posttitle,
-        postbody,
-        userId: req.session.user.userId,
-        companyList,
-      });
-    }
+
     try {
       category = validation.checkCategoryTags(category);
     } catch (error) {
