@@ -273,8 +273,11 @@ router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
     await groupEventData.update(groupId, eventId, updatedEvent);
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    console.error(e);
-    res.status(500).send("Error updating event.");
+    res.status(400).render("./groups/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error here: ${e.message}`,
+    });
   }
 });
 
@@ -287,10 +290,10 @@ router.get("/:id/eventAdd", async (req, res) => {
       title: "Add Event",
     });
   } catch (e) {
-    res.status(404).render("./error", {
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `We're sorry, a venue with that id does not exist .`,
+      errorMessage: `Error here: ${e.message}`,
     });
   }
 });
@@ -322,6 +325,7 @@ router.get("/:id/activityAdd", async (req, res) => {
   try {
     res.render("./groups/activityAdd", {
       _id: id,
+      title: "Add Activity",
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -346,10 +350,10 @@ router.post("/:id/activityAdd", async (req, res) => {
     );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    res.status(400).render("./error", {
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `Error adding the event: ${e.message}`,
+      errorMessage: `Error adding the activity: ${e.message}`,
     });
   }
 });
