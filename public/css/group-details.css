@@ -124,3 +124,27 @@ img {
   color: red;
   font-size: 14px;
 }
+
+.calendar {
+  max-width: 35%; /* or any other desired width */
+  overflow: auto;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture {
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  color: white !important;
+}
+
+.btn-sky-blue {
+  background-color: skyblue;
+  color: white;
+}

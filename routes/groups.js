@@ -136,6 +136,15 @@ router.route("/:id").get(async (req, res) => {
     // }
     // console.log(eventsArray);
 
+    // Get author names for each activity and update the author field
+    for (let i = 0; i < groupInfo.activity.length; i++) {
+      const authorId = groupInfo.activity[i].author;
+      const authorName = await userData.getUserFullNameById(authorId);
+      groupInfo.activity[
+        i
+      ].author = `${authorName.firstName} ${authorName.lastName}`;
+    }
+
     res.render("./groups/groupById", {
       title: "Group Specific Page",
       _id: id,

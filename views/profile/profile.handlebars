@@ -1,122 +1,131 @@
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profile</title>
-    <link rel="stylesheet" href="/public/css/group-details.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+<link rel="stylesheet" href="/public/css/group-details.css" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css"
+/>
+<script
+  src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
+></script>
+<link
+  rel="stylesheet"
+  href="node_modules/leetcode-card/dist/leetcode-card.min.css"
+/>
+<script
+  defer
+  src="node_modules/leetcode-card/dist/leetcode-card.min.js"
+></script>
+<script
+  src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
+></script>
+<div class="profile-container">
+  {{#if image}}
+    <img
+      src="data:image/png;base64,{{image}}"
+      alt="Group Image"
+      class="profile-picture"
     />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/github-calendar@latest/dist/github-calendar-responsive.css"
-    />
-    <script
-      src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
-    ></script>
-    <link
-      rel="stylesheet"
-      href="node_modules/leetcode-card/dist/leetcode-card.min.css"
-    />
-    <script
-      defer
-      src="node_modules/leetcode-card/dist/leetcode-card.min.js"
-    ></script>
-    <script
-      src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
-    ></script>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Profile:</h1>
-      {{#if image}}
-        <img src="data:image/png;base64,{{image}}" alt="Group Image" />
-      {{/if}}
-      <div>
-        {{#if isMyProfile}}
-        <a href="/profile/{{_id}}/edit"><button>Edit</button></a>
-        <a href="/profile/{{_id}}/editProfilePic"><button>Edit Profile Picture</button></a>
+  {{/if}}
 
-        <a href="/profile/{{_id}}/messaging">
-          <button class="btn btn-primary">
-            <i class="fas fa-comments"></i>
-            Messaging
-          </button>
-        </a>
-        <a href="/groups"><button>Go to Groups</button></a>
-        {{else}}
-        <a href="/profile/{{_id}}/connect/"><button>Add Friend</button></a>
-        {{connectionMessage}}
-      {{/if}}
-        <h4>Name: {{fname}} {{lname}}</h4>
-        <h4>Description: {{description}}</h4>
-        <h4>Education: {{university}}</h4>
-        <h4>College Major: {{collegeMajor}}</h4>
-        <h4>Location: {{locationState}}</h4>
+  <div class="profile-buttons">
+    {{#if isMyProfile}}
+      <a href="/profile/{{_id}}/edit" class="btn btn-primary">Edit</a>
+      <a href="/profile/{{_id}}/editProfilePic" class="btn btn-primary">Edit
+        Profile Picture</a>
+      <a href="/profile/{{_id}}/messaging" class="btn btn-primary">
+        <i class="fas fa-comments"></i>
+        Messaging
+      </a>
+      <a href="/groups" class="btn btn-primary">Go to Groups</a>
+    {{else}}
+      <a href="/profile/{{_id}}/connect/" class="btn">Add Friend</a>
+      {{connectionMessage}}
+    {{/if}}
+  </div>
+</div>
+<h4>Name: {{fname}} {{lname}}</h4>
+<h4>Description: {{description}}</h4>
+<h4>Education: {{university}}</h4>
+<h4>College Major: {{collegeMajor}}</h4>
+<h4>Location: {{locationState}}</h4>
 
+<div class="leetcode-card" data-user="neal_wu" data-theme="dark"></div>
+<script>
+  window.addEventListener('load', function() { LeetCodeCard.init(); });
+</script>
 
+<h3>Job History:</h3>
+<a
+  href="/profile/{{_id}}/addJobHistory"
+  class="btn btn-sm btn-outline-secondary btn-sky-blue"
+>
+  Add Job History
+</a>
 
+<a
+  href="/profile/{{_id}}/addJobHistory"
+  class="btn btn-sm btn-outline-secondary btn-sky-blue"
+>
+  Edit Job History
+</a>
 
-        <div class="leetcode-card" data-user="neal_wu" data-theme="dark"></div>
-        <script>
-          window.addEventListener('load', function() { LeetCodeCard.init(); });
-        </script>
-
-        <h3>Job History:</h3>
-        {{#if jobHistory}}
-          <div>
-            {{#each jobHistory}}
-              <div class="job-card">
-                {{#if this.logo}}
-                  <img
-                    src="data:image/png;base64,{{this.logo}}"
-                    alt="{{this.organization}} Logo"
-                    style="width: 50px; height: 50px;"
-                  />
-                {{/if}}
-                <strong>Organization: {{this.organization}}</strong><br />
-                Title:
-                {{this.role}}<br />
-                Dates:
-                {{this.startDate}}
-                -
-                {{this.endDate}}<br />
-                Description:
-                {{this.description}}<br />
-
-              </div>
-            {{/each}}
-          </div>
-        {{else}}
-          <p>No job history available.</p>
+{{#if jobHistory}}
+  <div>
+    {{#each jobHistory}}
+      <div class="job-card">
+        {{#if this.logo}}
+          <img
+            src="data:image/png;base64,{{this.logo}}"
+            alt="{{this.organization}} Logo"
+            style="width: 50px; height: 50px;"
+          />
         {{/if}}
+        <strong>Organization: {{this.organization}}</strong><br />
+        Title:
+        {{this.role}}<br />
+        Dates:
+        {{this.startDate}}
+        -
+        {{this.endDate}}<br />
+        Description:
+        {{this.description}}<br />
 
-        {{#if gitHubUserName}}
-          <p>Github profile for {{gitHubUserName}}</p>
-              <img src="https://github.com/favicon.ico" alt="Github logo" class="github-logo" />
-
-
-          <!-- Prepare a container for your calendar. -->
-          <div class="calendar">
-            <!-- Loading stuff -->
-            Loading the data just for you.
-          </div>
-
-          <script>
-            document.addEventListener('DOMContentLoaded', function() { const
-            gitHubUsername = '{{gitHubUserName}}'; GitHubCalendar(".calendar",
-            gitHubUsername); GitHubCalendar(".calendar", gitHubUsername, {
-            responsive: true }); });
-          </script>
-        {{/if}}
-<div>{{#if connections}}
-  <h2>Connections:</h2>
-  <ul>
-    {{#each connections}}
-      <li><a href="/profile/{{this._id}}">{{this.name}}</a></li>
+      </div>
     {{/each}}
-  </ul>
-{{/if}}</div>
-        
-  </body>
-</html>
+  </div>
+{{else}}
+  <p>No job history available.</p>
+{{/if}}
+
+{{#if gitHubUserName}}
+  <p>Github profile for {{gitHubUserName}}</p>
+  <img
+    src="https://github.com/favicon.ico"
+    alt="Github logo"
+    class="github-logo"
+  />
+
+  <!-- Prepare a container for your calendar. -->
+  <div class="calendar">
+    <!-- Loading stuff -->
+    Loading the data just for you.
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() { const
+    gitHubUsername = '{{gitHubUserName}}'; GitHubCalendar(".calendar",
+    gitHubUsername); GitHubCalendar(".calendar", gitHubUsername, { responsive:
+    true }); });
+  </script>
+{{/if}}
+<div>{{#if connections}}
+    <h2>Connections:</h2>
+    <ul>
+      {{#each connections}}
+        <li><a href="/profile/{{this._id}}">{{this.name}}</a></li>
+      {{/each}}
+    </ul>
+  {{/if}}</div>
