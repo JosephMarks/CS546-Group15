@@ -57,7 +57,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
   description = xss(req.body.description);
 
   if (typeof(location) === 'string') location = [location];
-  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  validations.checkLocationTags(location);
 
   location = location.map(x => xss(x));
 
@@ -201,7 +201,7 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
   description = xss(req.body.description);
 
   if (typeof(location) === 'string') location = [location];
-  validations.checkLocationTags([location]);
+  validations.checkLocationTags(location);
 
   location = location.map(x => xss(x));
 
@@ -266,7 +266,6 @@ router.route("/data/:name").get(async (req, res) => { // done company details di
   try {
 
     let companyData = await companyFunctions.getCompanyDetailsFromCompanyName(req.params.name.trim());
-    // companyData.imgSrc = encodeURIComponent( companyData.imgSrc );
     if (companyData.companyEmail === req.session.user.email){
       if (companyData) {
         return res.render("company/displayCompany", {
