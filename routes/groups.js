@@ -282,6 +282,7 @@ router.get("/:id/eventAdd", async (req, res) => {
   try {
     res.render("./groups/eventAdd", {
       _id: id,
+      title: "Add Event",
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -304,7 +305,8 @@ router.post("/:id/eventAdd", async (req, res) => {
     );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    res.status(400).render("./error", {
+    console.log(e);
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
       errorMessage: `Error adding the event: ${e.message}`,
