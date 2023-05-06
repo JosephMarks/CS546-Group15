@@ -325,6 +325,15 @@ const companyFunctions = {
       return companyName;
     },
 
+    async getAllCompanyJobs() {
+      let companyName = await companyCollection
+        .find({}, { projection: { jobs: 1 } })
+        .toArray();
+      if (companyName.length === 0) throw "no company in database";
+      companyName.push({ companyName: "others" });
+      return companyName;
+    },
+
     async deleteJob (id) {
 
       if (!id || !ObjectId.isValid(id)) throw "Error: Invalid Id";
