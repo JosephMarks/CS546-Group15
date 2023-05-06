@@ -64,12 +64,12 @@ const helpersValidation = {
   },
 };
 
-let createJob = document.getElementById("create-refer");
-let updateJob = document.getElementById("update-refer");
+let createJob = document.getElementById("createSocial");
+let updateJob = document.getElementById("updateSocial");
 let search = document.getElementById("search");
 let errorMsg = document.getElementById("errorDisplay");
 
-if (createSocial) {
+if (createJob) {
   createJob.addEventListener("submit", (e) => {
     let posttitle = document.getElementById("posttitle").value;
     let postbody = document.getElementById("postbody").value;
@@ -107,7 +107,7 @@ if (createSocial) {
   });
 }
 
-if (updateSocial) {
+if (updateJob) {
   updateJob.addEventListener("submit", (e) => {
     let posttitle = document.getElementById("posttitle").value;
     let postbody = document.getElementById("postbody").value;
