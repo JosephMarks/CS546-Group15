@@ -85,10 +85,10 @@
                         <p class="card-text mb-0 join" style="display:inline">{{createdAt}}</p>
                     </div>
                 </div>
-                <form method="POST" id="network-follower-create">
+                <form method="POST" class="network-follower-create">
                     <input type="hidden" name="_method" value="POST">
                     <input type="hidden" name="followerId" value="{{_id}}">
-                    <button id="network-add-button"  type="submit" class="btn btn-link btn-lg"
+                    <button type="submit" class="btn btn-link btn-lg network-add-button"
                         onclick="if (!confirm('Are you sure?')) { return false }"
                         style="position: relative;   top: 50%;  left:30%; width: 30rem"><span>Add</span></button>
                 </form>
