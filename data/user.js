@@ -68,6 +68,8 @@ const exportedMethods = {
     email = validations.checkEmail(email, "email"); //check email is valid
     password = validations.checkString(password, "Password");
 
+    if ((candidateType !== 'Student') && (candidateType !== 'Company')) throw "Error : Candidate Type can only be Strictly 'Student' or 'Company'";
+
     password = await bcrypt.hash(password, 10);
 
     // attributes need, but to be populated later when profile filled out by user
