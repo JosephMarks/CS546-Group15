@@ -8,6 +8,8 @@ import fs from "fs";
 import network from "../data/network.js";
 import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
+// import { checkProfileAccess } from "../app.js";
+import validation from "../helpers.js";
 
 import { messages } from "../config/mongoCollections.js";
 // import { de } from "date-fns/locale";
@@ -70,7 +72,19 @@ router.route("/:id").get(async (req, res) => {
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
     connections = connections.slice(0, 5);
-    console.log(connections);
+    let connectionsObj = [];
+    for (const connection of connections) {
+      const { firstName, lastName } = await userData.getUserFullNameById(
+        connection
+      );
+      let userObj = {};
+      userObj.firstName = firstName;
+      userObj.lastName = lastName;
+      userObj.id = connection;
+      connectionsObj.push(userObj);
+    }
+
+    console.log(connectionsObj);
 
     res.render("./profile/profile", {
       title: "Profile Page",
@@ -82,7 +96,7 @@ router.route("/:id").get(async (req, res) => {
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
-      connections: connections,
+      connections: connectionsObj,
       university: university,
       locationState: locationState,
       collegeMajor: collegeMajor,
@@ -99,6 +113,16 @@ router.route("/:id").get(async (req, res) => {
 
 router.get("/:id/edit", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -117,11 +141,51 @@ router.get("/:id/edit", async (req, res) => {
 
 router.get("/:id/addJobHistory", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   try {
     let userInfo = await userData.getUserById(id);
 
-    res.render("./profile/profileAddJobHistory", userInfo);
+    res.render("./profile/profileAddJobHistory", {
+      ...userInfo,
+      title: "Add Job History",
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
+router.get("/:id/updateJobHistory", async (req, res) => {
+  const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileUpdateJobHistory", userInfo);
   } catch (e) {
     console.error(e);
     res.status(404).render("./error", {
@@ -134,6 +198,17 @@ router.get("/:id/addJobHistory", async (req, res) => {
 
 router.post("/:id/addJobHistory", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   let { role, organization, startDate, endDate, description } = req.body;
 
   if (!role || !organization || !startDate || !endDate || !description) {
@@ -199,6 +274,17 @@ router.post("/:id/addJobHistory", async (req, res) => {
 
 router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   const fname = req.body.fname;
   const lname = req.body.lname;
   const gender = req.body.gender;
@@ -242,6 +328,36 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send("Error updating profile.");
+  }
+});
+
+router.post("/:userId/updateJobHistory", async (req, res) => {
+  const userId = req.params.userId;
+  const jobs = await jobHistoryData.getAll(userId);
+  try {
+    for (let i = 0; i < jobs.length; i++) {
+      let { _id, role, organization, startDate, endDate, description } =
+        jobs[i];
+      _id = _id.toString();
+      await jobHistoryData.update(
+        userId,
+        _id,
+        req.body[`role${_id}`],
+        req.body[`organization${_id}`],
+        req.body[`startDate${_id}`],
+        req.body[`endDate${_id}`],
+        req.body[`description${_id}`]
+      );
+    }
+
+    res.redirect(`/profile/${userId}`);
+  } catch (e) {
+    console.error(e);
+    res.status(400).render("./profile/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Failed to update the job history: ${e.message}`,
+    });
   }
 });
 

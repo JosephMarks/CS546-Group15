@@ -151,24 +151,24 @@ app.post(
 );
 
 app.post("/company/updateCompany/:name", (req, res, next) => {
-  req.method = "patch"
+  req.method = "patch";
   next();
 });
 
 app.get("/company/delete/:id", (req, res, next) => {
-  req.method = "delete"
+  req.method = "delete";
   next();
 });
 
 ///jobUpdate/:id
 
 app.get("/company/jobDelete/:id", (req, res, next) => {
-  req.method = "delete"
+  req.method = "delete";
   next();
 });
 
 app.post("/company/jobUpdate/:id", (req, res, next) => {
-  req.method = "patch"
+  req.method = "patch";
   next();
 });
 
@@ -259,20 +259,23 @@ app.use("/", (req, res, next) => {
   return next();
 });
 
-// let newGroupEvent = await groupEventsData.create(
-//   "644ea863311a2bb9a363e8f3",
-//   "Anja's big event",
-//   "09/30/2023",
-//   { users: ["643b2afed6271e8e940ad58e"] }
-// );
-// console.log(newGroupEvent);
+// export function checkProfileAccess(req, res, next) {
+//   const userId = req.params.id;
+//   const currentUserId = req.session.user.userId;
 
-// let foundGroup = await groupData.numberOfUsers("644ea863311a2bb9a363e8f3");
-// console.log(foundGroup);
+//   if (userId !== currentUserId) {
+//     res.status(403).render("./error", {
+//       class: "error",
+//       title: "Error Page",
+//       errorMessage: `You do not have permission to access this page.`,
+//     });
+//     return;
+//   }
+
+//   next();
+// }
+
 configRoutes(app);
-
-// let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
-// console.log(jobHistory);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

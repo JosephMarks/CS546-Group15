@@ -1,0 +1,59 @@
+{{#each jobHistory}}
+  <div class="job">
+    <h2>{{role}} at {{organization}}</h2>
+<form id="jobHistoryForm" action="/profile/{{../_id}}/updateJobHistory" method="post">
+<div class="error"></div>
+
+      <div class="form-group">
+        <label for="role-{{_id}}">Role:</label>
+        <input type="text" class="form-control" id="role-{{_id}}" name="role{{_id}}" value="{{role}}" required />
+      </div>
+      <div class="form-group">
+        <label for="organization-{{_id}}">Organization:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="organization-{{_id}}"
+          name="organization{{_id}}"
+          value="{{organization}}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="startDate-{{_id}}">Start Date (MM/DD/YYYY):</label>
+        <input
+          type="text"
+          class="form-control"
+          id="startDate-{{_id}}"
+          name="startDate{{_id}}"
+          value="{{startDate}}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="endDate-{{_id}}">End Date (MM/DD/YYYY or 'present'):</label>
+        <input
+          type="text"
+          class="form-control"
+          id="endDate-{{_id}}"
+          name="endDate{{_id}}"
+          value="{{endDate}}"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="description-{{_id}}">Description:</label>
+        <textarea
+          class="form-control"
+          id="description-{{_id}}"
+          name="description{{_id}}"
+          rows="3"
+          required
+        >{{description}}</textarea>
+      </div>
+<button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+    </form>
+  </div>
+{{/each}}
+
+<script src="/public/js/updateJobs.js"></script>
