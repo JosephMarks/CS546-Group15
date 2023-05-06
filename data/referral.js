@@ -1,12 +1,17 @@
 import { ObjectId } from "mongodb";
 import { users, referral, company } from "../config/mongoCollections.js";
 import validation from "../helpers.js";
-import userData from "./user.js";
+import { userData, companyData } from "./index.js";
 
 const exportedMethods = {
   async getAllPosts() {
     const postCollection = await referral();
-    return await postCollection.find({}).sort({ duedate: -1 }).toArray();
+    let ori = await postCollection.find({}).sort({ duedate: -1 }).toArray();
+    for (let x in ori) {
+      let a = await this.getPostById(ori[x]._id.toString());
+      ori[x].jobs = a.jobs[0];
+    }
+    return ori;
   },
 
   async getPostById(id) {
@@ -15,7 +20,9 @@ const exportedMethods = {
     const post = await postCollection.findOne({ _id: new ObjectId(id) });
 
     if (!post) throw "Error: Post not found";
-
+    let jobs = await companyData.getJobById(post.jobs._id.toString());
+    let job = jobs.jobs[0];
+    post.jobs = job;
     return post;
   },
   async getLikedPostByUserId(userId) {
@@ -43,6 +50,9 @@ const exportedMethods = {
               throw [404, `Could not delete the post with id ${id}`];
             continue;
           }
+          let jobs = await companyData.getJobById(post.jobs._id.toString());
+          let job = jobs.jobs[0];
+          post.jobs = job;
           res.push(post);
         }
       }
@@ -80,6 +90,9 @@ const exportedMethods = {
                 throw [404, `Could not delete the post with id ${id}`];
               continue;
             }
+            let jobs = await companyData.getJobById(post.jobs._id.toString());
+            let job = jobs.jobs[0];
+            post.jobs = job;
             res.push(post);
           }
         }
@@ -97,30 +110,40 @@ const exportedMethods = {
     if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
-      companyName = validation.checkCompanyTags(company);
+      companyName = await validation.checkCompanyTags(companyName);
     }
 
     const postCollection = await referral();
-    return await postCollection
+    let ori = await postCollection
       .find({
         fields: { $in: fields },
         company: { $in: companyName },
       })
       .sort({ duedate: -1 })
       .toArray();
+    for (let x in ori) {
+      let a = await this.getPostById(ori[x]._id.toString());
+      ori[x].jobs = a.jobs[0];
+    }
+    return ori;
   },
 
   async getPostsByCompanyTag(companyName) {
     if (!Array.isArray(company)) {
       companyName = [];
     } else {
-      companyName = validation.checkCompanyTags(company);
+      companyName = await validation.checkCompanyTags(companyName);
     }
     const postCollection = await referral();
-    return await postCollection
+    let ori = await postCollection
       .find({ company: { $in: companyName } })
       .sort({ duedate: -1 })
       .toArray();
+    for (let x in ori) {
+      let a = await this.getPostById(ori[x]._id.toString());
+      ori[x].jobs = a.jobs[0];
+    }
+    return ori;
   },
 
   async getPostsByFieldsTag(fields) {
@@ -130,10 +153,15 @@ const exportedMethods = {
       fields = validation.checkFieldsTags(fields);
     }
     const postCollection = await referral();
-    return await postCollection
+    let ori = await postCollection
       .find({ fields: { $in: fields } })
       .sort({ duedate: -1 })
       .toArray();
+    for (let x in ori) {
+      let a = await this.getPostById(ori[x]._id.toString());
+      ori[x].jobs = a.jobs[0];
+    }
+    return ori;
   },
 
   async addPost(
@@ -202,8 +230,9 @@ const exportedMethods = {
     location = validation.checkLocationTags(location);
     skills = validation.checkSkillsTags(skills);
     level = validation.checkLevelTags([level]);
+    let jobid = new ObjectId();
     let jobData = {
-      _id: new ObjectId(),
+      _id: jobid,
       jobTitle: jobTitle.trim().toLowerCase(),
       skills: skills,
       salary,
@@ -212,6 +241,7 @@ const exportedMethods = {
       level,
       jobType,
     };
+
     if (!Array.isArray(fields)) {
       fields = [];
     } else {
@@ -231,6 +261,7 @@ const exportedMethods = {
       },
       duedate: duedate,
       fields: fields,
+      companyEmail: companyEmail,
       company: [companyName],
       jobs: jobData,
       likes: [],
@@ -271,7 +302,7 @@ const exportedMethods = {
     const updatedPostData = {};
     if (updatedPost.posterId) {
       updatedPostData["poster.id"] = validation.checkId(
-        updatedPost.poster.id,
+        updatedPost.posterId,
         "Poster ID"
       );
 
@@ -279,7 +310,8 @@ const exportedMethods = {
       updatedPostData["poster.name"] =
         userThatPosted.fname + " " + userThatPosted.lname;
     }
-    if (updatedPost.fields) {
+
+    if (updatedPost.fields.length > 0) {
       updatedPostData.fields = validation.checkFieldsTags(updatedPost.fields);
     }
 
@@ -301,61 +333,17 @@ const exportedMethods = {
       updatedPostData.duedate = validation.checkDate(updatedPost.duedate);
     }
     const postCollection = await referral();
-    let oldPost = await postCollection.findOne({
-      _id: new ObjectId(id),
-    });
-    let jobid = oldPost.jobs._id.toString();
-    let jobTitle = oldPost.jobs.jobTitle;
-    let description = oldPost.jobs.description;
-    let salary = oldPost.jobs.salary;
-    let companyEmail = oldPost.jobs.companyEmail;
-    let level = oldPost.jobs.level;
-    let jobType = oldPost.jobs.jobType;
-    let location = oldPost.jobs.location;
-    let skills = oldPost.jobs.skills;
+    let oldPost = await this.getPostById(id);
 
-    if (updatedPost.jobTitle) {
-      jobTitle = validation.validateNameAllNumberReturn(updatedPost.jobTitle);
-    }
-    if (updatedPost.salary) {
-      validation.isSalary(updatedPost.salary);
-      salary = Number(updatedPost.salary);
-    }
+    let companyEmail = oldPost.jobs.companyEmail;
+
     if (updatedPost.companyEmail) {
       companyEmail = validation.checkEmail(
         updatedPost.companyEmail,
         "companyEmail"
       );
     }
-    if (updatedPost.description) {
-      description = validation.checkString(
-        updatedPost.description,
-        "Job description"
-      );
-    }
-    if (updatedPost.level) {
-      level = validation.checkLevelTags([updatedPost.level]);
-    }
-    if (updatedPost.jobType) {
-      jobType = validation.checkJobtypeTags(updatedPost.jobType);
-    }
-    if (updatedPost.location) {
-      location = validation.checkLocationTags(updatedPost.location);
-    }
-    if (updatedPost.skills) {
-      skills = validation.checkSkillsTags(updatedPost.skills);
-    }
 
-    let jobData = {
-      jobTitle: jobTitle,
-      skills: skills,
-      salary: salary,
-      location: location,
-      description: description,
-      level: level,
-      jobType: jobType,
-    };
-    updatedPostData.jobs = jobData;
     updatedPostData.modifieddate = new Date().toUTCString();
 
     let newPost = await postCollection.findOneAndUpdate(
@@ -365,16 +353,7 @@ const exportedMethods = {
     );
     if (newPost.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
-    //job in company database
-
-    let companyCollection = await company();
-    let newJobInser = await companyCollection.findOneAndUpdate(
-      { companyName: companyName, "jobs._id": new ObjectId(jobid) },
-      { $set: { jobs: jobData } },
-      { returnDocument: "after" }
-    );
-    if (newJobInser.lastErrorObject.n === 0)
-      throw [404, `Could not update the post with id ${id}`];
+    //only can update job in company database
 
     return newPost.value;
   },

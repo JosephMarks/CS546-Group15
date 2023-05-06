@@ -44,7 +44,6 @@ const exportedMethods = {
     article = validations.checkString(article, "Article");
     videoUrl = validations.checkVideoUrl(videoUrl); // Can allow empty string.
     tags = validations.checkTags(tags);
-    
     const newSkills = {
       userId: userId,
       title: title,

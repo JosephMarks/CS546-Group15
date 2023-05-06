@@ -166,7 +166,24 @@ const exportedMethods = {
       return returnUser;
     }
   },
-
+  async updateUsersCompany(
+    userId,
+    updateData // update user's profile
+  ) {
+    const userCollection = await users();
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $set: { companyName: updateData } },
+      { returnDocument: "after" }
+    );
+    if (updateInfo.lastErrorObject.n === 0)
+      throw [
+        404,
+        `Error: Update failed, could not find a user with id of ${userId}`,
+      ];
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return await updateInfo.value;
+  },
   async updateUsers(
     userId,
     updateData // update user's profile
@@ -228,6 +245,11 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
+
+    let gitHubUserName = updateData.gitHubUserName.trim();
+    if (typeof gitHubUserName !== "string" || gitHubUserName.length === 0) {
+      throw new Error("Github username must be a string that is not empty");
+    }
     const userCollection = await users();
     let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
@@ -246,6 +268,7 @@ const exportedMethods = {
       image: image,
       university: university,
       collegeMajor: collegeMajor,
+      gitHubUserName: gitHubUserName,
       skills: skills,
       experience: experience,
       jobHistory: jobHistory,

@@ -10,6 +10,7 @@ import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
 
 import { messages } from "../config/mongoCollections.js";
+// import { de } from "date-fns/locale";
 
 router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -75,7 +76,8 @@ router.route("/:id").get(async (req, res) => {
       title: "Profile Page",
       _id: id,
       isMyProfile: id === req.session.user.userId,
-      name: userInfo.name,
+      fname: userInfo.fname,
+      lname: userInfo.lname,
       description: userInfo.aboutMe,
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
@@ -112,6 +114,88 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 // need to change to patch
+
+router.get("/:id/addJobHistory", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileAddJobHistory", userInfo);
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
+router.post("/:id/addJobHistory", async (req, res) => {
+  const id = req.params.id;
+  let { role, organization, startDate, endDate, description } = req.body;
+
+  if (!role || !organization || !startDate || !endDate || !description) {
+    res.status(400).render("./profile/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: "Parameters are required",
+    });
+  }
+  if (
+    typeof role !== "string" ||
+    typeof organization !== "string" ||
+    typeof startDate !== "string" ||
+    typeof endDate !== "string" ||
+    typeof description !== "string"
+  ) {
+    res.status(400).render("/profile.error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: "Need strings",
+    });
+  }
+
+  role = role.trim();
+  organization = organization.trim();
+  startDate = startDate.trim();
+  endDate = endDate.trim();
+  description = description.trim();
+
+  if (
+    role.length === 0 ||
+    organization.length === 0 ||
+    startDate.length === 0 ||
+    endDate.length === 0 ||
+    description.length === 0
+  ) {
+    res.status(400).render("/profile.error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: "Need strings",
+    });
+  }
+  try {
+    const newJob = await jobHistoryData.create(
+      id,
+      role,
+      organization,
+      startDate,
+      endDate,
+      description
+    );
+
+    res.redirect(`/profile/${id}`);
+  } catch (error) {
+    console.error(error);
+    res.status(400).render("./profile/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error adding job history: ${error.message}`,
+    });
+  }
+});
 
 router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const id = req.params.id;
