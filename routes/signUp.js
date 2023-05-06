@@ -32,10 +32,10 @@ router.route("/data").post(async (req, res) => {
       .render('error', { error: "There are no fields in the request body", title : 'Error' });
   }
 
-  let { firstName, lastName, age, emailAddress, password, candidateType } = bodyData;
+  let { firstName, lastName, age, emailAddress, password, candidateType, cpassword } = bodyData;
   try {
     
-    if (!firstName || !lastName || !emailAddress || !password || !candidateType || !age) throw "Error : You should provide all the parameters";
+    if (!firstName || !lastName || !emailAddress || !password || !candidateType || !age || !cpassword) throw "Error : You should provide all the parameters";
     validations.isAge(age);
     age = Number(age);
     validations.validateIsString([firstName, lastName, emailAddress, password, candidateType]);
@@ -49,6 +49,7 @@ router.route("/data").post(async (req, res) => {
     validations.validateName(lastName);
     if (!emailValidator.validate(emailAddress)) throw "Error : Invalid Email";
     if (!rules.validate(password)) throw "Error : Invalid Password";
+    if (password !== cpassword) throw "Error : Both passwords should match";
 
   } catch (e) {
     return res.status(400).render('Auth/signup', { error : e, title: 'Error' });
