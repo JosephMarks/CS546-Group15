@@ -165,34 +165,32 @@ router
         identity: identity,
       });
     }
-    // try {
-    //   if (!(await userData.getUserById(req.session.user.userId).companyName))
-    //     throw "You should fill in your company name in your profile first, then refer a job to that company!";
-    // } catch (error) {
-    //   return res.status(403).render("referral/error", {
-    //     title: "error",
-    //     h1: "error",
-    //     userId: req.session.user.userId,
-    //     error: error,
-    //     identity: identity,
-    //   });
-    // }
-    // try {
-    //   if (
-    //     !(await companyData.getAllCompanyName()).includes(
-    //       await userData.getUserById(req.session.user.userId).companyName
-    //     )
-    //   )
-    //     throw "You should update your company name in your profile first, then refer a job to that company!";
-    // } catch (error) {
-    //   return res.status(403).render("referral/error", {
-    //     title: "error",
-    //     h1: "error",
-    //     userId: req.session.user.userId,
-    //     error: error,
-    //     identity: identity,
-    //   });
-    // }
+    let s = await userData.getUserById(req.session.user.userId);
+    try {
+      if (!s.companyName)
+        throw "You should fill in your company name in your profile first, then refer a job to that company!";
+    } catch (error) {
+      return res.status(403).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
+    }
+    let arrofcom = await companyData.getAllCompanyName();
+    try {
+      if (!arrofcom.includes(s.companyName))
+        throw "You should update your company name in your profile first, then refer a job to that company!";
+    } catch (error) {
+      return res.status(403).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
+    }
     let companyList = await companyData.getAllCompanyNameinObject();
 
     return res.render("referral/createNewPost", {
@@ -235,8 +233,9 @@ router
         identity: identity,
       });
     }
+    let s = await userData.getUserById(req.session.user.userId);
     try {
-      if (!(await userData.getUserById(req.session.user.userId).companyName))
+      if (!s.companyName)
         throw "You should fill in your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -247,12 +246,9 @@ router
         identity: identity,
       });
     }
+    let arrofcom = await companyData.getAllCompanyName();
     try {
-      if (
-        !(await companyData.getAllCompanyName()).includes(
-          await userData.getUserById(req.session.user.userId).companyName
-        )
-      )
+      if (!arrofcom.includes(s.companyName))
         throw "You should update your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -275,30 +271,46 @@ router
     let skills = [];
     let jobType = [];
     let location = [];
-    if (typeof req.body.field === "string") {
-      field = [req.body.field];
-    } else {
-      field = req.body.field;
+    let companyList = await companyData.getAllCompanyNameinObject();
+    try {
+      if (typeof req.body.field === "string") {
+        field.push(req.body.field);
+      } else {
+        field = req.body.field;
+      }
+      field = field.map((x) => xss(x));
+      if (typeof req.body.skills === "string") {
+        skills.push(req.body.skills);
+      } else {
+        skills = req.body.skills;
+      }
+      skills = skills.map((x) => xss(x));
+      if (typeof req.body.jobType === "string") {
+        jobType.push(req.body.jobType);
+      } else {
+        jobType = req.body.jobType;
+      }
+      jobType = jobType.map((x) => xss(x));
+      if (typeof req.body.location === "string") {
+        location.push(req.body.location);
+      } else {
+        location = req.body.location;
+      }
+      location = location.map((x) => xss(x));
+    } catch (error) {
+      return res.status(400).render("referral/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId: req.session.user.userId,
+        companyList,
+        session: req.session.user,
+        jobTitle,
+        salary,
+        description,
+        companyEmail,
+      });
     }
-    field = field.map((x) => xss(x));
-    if (typeof req.body.skills === "string") {
-      skills = [req.body.skills];
-    } else {
-      skills = req.body.skills;
-    }
-    skills = skills.map((x) => xss(x));
-    if (typeof req.body.jobType === "string") {
-      jobType = [req.body.jobType];
-    } else {
-      jobType = req.body.jobType;
-    }
-    jobType = jobType.map((x) => xss(x));
-    if (typeof req.body.location === "string") {
-      location = [req.body.location];
-    } else {
-      location = req.body.location;
-    }
-    location = location.map((x) => xss(x));
 
     try {
       jobTitle = validation.validateNameAllNumberReturn(jobTitle);
@@ -316,12 +328,29 @@ router
         companyEmail,
       });
     }
-    let company = await userData.getUserById(req.session.user.userId)
-      .companyName;
 
     let posterId = req.session.user.userId;
     let userId = req.params.userid;
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let company;
+    let companys = s.companyName;
+    try {
+      companys = await validation.checkCompanyTags([companys]);
+      company = companys[0];
+    } catch (error) {
+      return res.status(400).render("referral/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId: req.session.user.userId,
+        companyList,
+        session: req.session.user,
+        jobTitle,
+        salary,
+        description,
+        companyEmail,
+      });
+    }
+
     try {
       posttitle = validation.validateNameAllNumberReturn(posttitle);
     } catch (error) {
@@ -511,22 +540,6 @@ router
       });
     }
 
-    try {
-      company = await validation.checkCompanyTags([company])[0];
-    } catch (error) {
-      return res.status(400).render("referral/createNewPost", {
-        error,
-        posttitle,
-        postbody,
-        userId: req.session.user.userId,
-        companyList,
-        session: req.session.user,
-        jobTitle,
-        salary,
-        description,
-        companyEmail,
-      });
-    }
     let newPost;
     try {
       newPost = await referralData.addPost(
@@ -744,8 +757,9 @@ router
         identity: identity,
       });
     }
+    let s = await userData.getUserById(req.session.user.userId);
     try {
-      if (!(await userData.getUserById(req.session.user.userId).companyName))
+      if (!s.companyName)
         throw "You should fill in your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -756,12 +770,9 @@ router
         identity: identity,
       });
     }
+    let arrofcom = await companyData.getAllCompanyName();
     try {
-      if (
-        !(await companyData.getAllCompanyName()).includes(
-          await userData.getUserById(req.session.user.userId).companyName
-        )
-      )
+      if (!arrofcom.includes(s.companyName))
         throw "You should update your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -834,8 +845,9 @@ router
         identity: identity,
       });
     }
+    let s = await userData.getUserById(req.session.user.userId);
     try {
-      if (!(await userData.getUserById(req.session.user.userId).companyName))
+      if (!s.companyName)
         throw "You should fill in your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -846,12 +858,9 @@ router
         identity: identity,
       });
     }
+    let arrofcom = await companyData.getAllCompanyName();
     try {
-      if (
-        !(await companyData.getAllCompanyName()).includes(
-          await userData.getUserById(req.session.user.userId).companyName
-        )
-      )
+      if (!arrofcom.includes(s.companyName))
         throw "You should update your company name in your profile first, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
@@ -870,11 +879,12 @@ router
     let salary = xss(req.body.salary);
     let level = xss(req.body.level); //
     let description = xss(req.body.description);
-    let field;
-    let skills;
-    let jobType;
-    let location;
-    let company = await userData.getUserById(userId).companyName;
+    let field = [];
+    let skills = [];
+    let jobType = [];
+    let location = [];
+    let cs = await userData.getUserById(userId);
+    let company = cs.companyName;
     try {
       if (title) {
         title = validation.validateNameAllNumberReturn(title);
@@ -898,7 +908,7 @@ router
 
       if (req.body.field) {
         if (typeof req.body.field === "string") {
-          field = [req.body.field];
+          field.push(req.body.field);
         } else {
           field = req.body.field;
         }
@@ -906,7 +916,7 @@ router
       }
       if (req.body.skills) {
         if (typeof req.body.skills === "string") {
-          skills = [req.body.skills];
+          skills.push(req.body.skills);
         } else {
           skills = req.body.skills;
         }
@@ -914,7 +924,7 @@ router
       }
       if (req.body.jobType) {
         if (typeof req.body.jobType === "string") {
-          jobType = [req.body.jobType];
+          jobType.push(req.body.jobType);
         } else {
           jobType = req.body.jobType;
         }
@@ -922,7 +932,7 @@ router
       }
       if (req.body.location) {
         if (typeof req.body.location === "string") {
-          location = [req.body.location];
+          location.push(req.body.location);
         } else {
           location = req.body.location;
         }
@@ -1028,12 +1038,12 @@ router
       });
     }
 
-    let fields;
+    let fields = [];
 
-    let company;
+    let company = [];
     if (req.body.field) {
       if (typeof req.body.field === "string") {
-        fields = [req.body.field];
+        fields.push(req.body.field);
       } else {
         fields = req.body.fields;
       }
@@ -1041,7 +1051,7 @@ router
     }
     if (req.body.company) {
       if (typeof req.body.company === "string") {
-        company = [req.body.company];
+        company.push(req.body.company);
       } else {
         company = req.body.company;
       }
@@ -1052,7 +1062,7 @@ router
     let a,
       b,
       c = false;
-    if (fields && company) {
+    if (fields.length > 0 && company.length > 0) {
       a = true;
       try {
         let userPost = await referralData.getPostsByAllTag(fields, company);
@@ -1076,7 +1086,7 @@ router
           identity: identity,
         });
       }
-    } else if (fields) {
+    } else if (fields.length > 0) {
       b = true;
       try {
         let userPost = await referralData.getPostsByFieldsTag(fields);
@@ -1099,7 +1109,7 @@ router
           identity: identity,
         });
       }
-    } else if (company) {
+    } else if (company.length > 0) {
       c = true;
       try {
         let userPost = await referralData.getPostsByCompanyTag(company);

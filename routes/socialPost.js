@@ -149,9 +149,9 @@ router
     let posttitle = xss(req.body.posttitle);
     let postbody = xss(req.body.postbody);
     let eventdate = xss(req.body.eventdate).toString();
-    let field = [];
-    let category = [];
-    let company = [];
+    let field;
+    let category;
+    let company;
 
     if (typeof req.body.field === "string") {
       field = [req.body.field];
@@ -480,46 +480,57 @@ router
     let title = xss(req.body.posttitle);
     let body = xss(req.body.postbody);
     let eventdate = xss(req.body.eventdate).toString();
-
-    if (title) {
-      title = validation.checkString(title, "title");
-    }
-    if (body) {
-      body = validation.checkString(body, "Content");
-    }
     let fields;
     let category;
     let company;
-    if (req.body.field) {
-      if (typeof req.body.field === "string") {
-        fields = [req.body.field];
-      } else {
-        fields = req.body.field;
-      }
-      fields = fields.map((x) => xss(x));
-    }
-    if (req.body.company) {
-      if (typeof req.body.company === "string") {
-        company = [req.body.company];
-      } else {
-        company = req.body.company;
-      }
-      company = company.map((x) => xss(x));
-    }
-    if (req.body.category) {
-      if (typeof req.body.category === "string") {
-        category = [req.body.category];
-      } else {
-        category = req.body.category;
-      }
-      category = category.map((x) => xss(x));
-    }
 
-    if (eventdate) {
-      eventdate = validation.checkDate(eventdate);
-    }
     try {
-    } catch (error) {}
+      if (title) {
+        title = validation.checkString(title, "title");
+      }
+      if (body) {
+        body = validation.checkString(body, "Content");
+      }
+
+      if (req.body.field) {
+        if (typeof req.body.field === "string") {
+          fields = [req.body.field];
+        } else {
+          fields = req.body.field;
+        }
+        fields = fields.map((x) => xss(x));
+      }
+      if (req.body.company) {
+        if (typeof req.body.company === "string") {
+          company = [req.body.company];
+        } else {
+          company = req.body.company;
+        }
+        company = company.map((x) => xss(x));
+      }
+      if (req.body.category) {
+        if (typeof req.body.category === "string") {
+          category = [req.body.category];
+        } else {
+          category = req.body.category;
+        }
+        category = category.map((x) => xss(x));
+      }
+
+      if (eventdate) {
+        eventdate = validation.checkDate(eventdate);
+      }
+    } catch (error) {
+      return res.status(400).render("socialPost/yourPostEdit", {
+        title: title,
+        h1: h1,
+        post: post,
+        error: error,
+        userId: req.session.user.userId,
+        postId: req.params.id,
+        companyList: companyList,
+      });
+    }
     let updatePost = {
       title: title,
       body: body,

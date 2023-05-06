@@ -108,13 +108,13 @@
       <div class="col-md-12">
 
         <label for="jobTitle" class="jobTitle" >Job Title</label>
-        <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="{{post.jobTitle}}">
+        <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="{{post.jobs.jobTitle}}">
 
       </div>
 
       <div class="col-md-12">
 
-        <label for="salary" class="form-label" value={{post.salary}}>Salary (USD : Yearly)</label>
+        <label for="salary" class="form-label" value={{post.jobs.salary}}>Salary (USD : Yearly)</label>
         <input type="number" class="form-control" id="salary" name="salary" >
 
       </div>
@@ -131,7 +131,7 @@
         </select>
 
       </div>      
-<p>Your previous choice for Experience Level: {{post.level}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for Experience Level: {{post.jobs.level}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="jobType">Job Type (multiple selection)</label>
@@ -144,7 +144,7 @@
         </select>
 
       </div>
-<p>Your previous choice for Job Type: {{post.jobType}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for Job Type: {{post.jobs.jobType}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="skills">Skills Required (multiple selection)</label>
@@ -161,7 +161,7 @@
         </select>
 
       </div>
-<p>Your previous choice for Skills Required: {{post.skills}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for Skills Required: {{post.jobs.skills}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="location">Select the location (multiple selection)</label>
@@ -223,12 +223,12 @@
         </select>
 
       </div>
-<p>Your previous choice for location: {{post.location}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for location: {{post.jobs.location}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="description">Job Description</label>
         <textarea name="description" id="description" rows="5"
-          placeholder="Give A Brief Description About the Job .... ">{{post.description}}</textarea>
+          placeholder="Give A Brief Description About the Job .... ">{{post.jobs.description}}</textarea>
 
       </div>
       

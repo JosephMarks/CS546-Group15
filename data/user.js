@@ -154,7 +154,24 @@ const exportedMethods = {
       return returnUser;
     }
   },
-
+  async updateUsersCompany(
+    userId,
+    updateData // update user's profile
+  ) {
+    const userCollection = await users();
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $set: { companyName: updateData } },
+      { returnDocument: "after" }
+    );
+    if (updateInfo.lastErrorObject.n === 0)
+      throw [
+        404,
+        `Error: Update failed, could not find a user with id of ${userId}`,
+      ];
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return await updateInfo.value;
+  },
   async updateUsers(
     userId,
     updateData // update user's profile

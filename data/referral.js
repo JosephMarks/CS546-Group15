@@ -97,7 +97,7 @@ const exportedMethods = {
     if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
-      companyName = validation.checkCompanyTags(company);
+      companyName = await validation.checkCompanyTags(companyName);
     }
 
     const postCollection = await referral();
@@ -114,7 +114,7 @@ const exportedMethods = {
     if (!Array.isArray(company)) {
       companyName = [];
     } else {
-      companyName = validation.checkCompanyTags(company);
+      companyName = await validation.checkCompanyTags(companyName);
     }
     const postCollection = await referral();
     return await postCollection
@@ -231,6 +231,7 @@ const exportedMethods = {
       },
       duedate: duedate,
       fields: fields,
+      companyEmail: companyEmail,
       company: [companyName],
       jobs: jobData,
       likes: [],
@@ -271,7 +272,7 @@ const exportedMethods = {
     const updatedPostData = {};
     if (updatedPost.posterId) {
       updatedPostData["poster.id"] = validation.checkId(
-        updatedPost.poster.id,
+        updatedPost.posterId,
         "Poster ID"
       );
 
@@ -279,7 +280,8 @@ const exportedMethods = {
       updatedPostData["poster.name"] =
         userThatPosted.fname + " " + userThatPosted.lname;
     }
-    if (updatedPost.fields) {
+
+    if (updatedPost.fields.length > 0) {
       updatedPostData.fields = validation.checkFieldsTags(updatedPost.fields);
     }
 
@@ -301,9 +303,8 @@ const exportedMethods = {
       updatedPostData.duedate = validation.checkDate(updatedPost.duedate);
     }
     const postCollection = await referral();
-    let oldPost = await postCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    let oldPost = await this.getPostById(id);
+
     let jobid = oldPost.jobs._id.toString();
     let jobTitle = oldPost.jobs.jobTitle;
     let description = oldPost.jobs.description;
@@ -333,25 +334,27 @@ const exportedMethods = {
         "Job description"
       );
     }
-    if (updatedPost.level) {
+    if (updatedPost.level.length > 0) {
       level = validation.checkLevelTags([updatedPost.level]);
     }
-    if (updatedPost.jobType) {
+    if (updatedPost.jobType.length > 0) {
       jobType = validation.checkJobtypeTags(updatedPost.jobType);
     }
-    if (updatedPost.location) {
+    if (updatedPost.location.length > 0) {
       location = validation.checkLocationTags(updatedPost.location);
     }
-    if (updatedPost.skills) {
+    if (updatedPost.skills.length > 0) {
       skills = validation.checkSkillsTags(updatedPost.skills);
     }
 
     let jobData = {
+      _id: new ObjectId(jobid),
       jobTitle: jobTitle,
       skills: skills,
       salary: salary,
       location: location,
       description: description,
+      companyEmail: companyEmail,
       level: level,
       jobType: jobType,
     };
@@ -369,7 +372,12 @@ const exportedMethods = {
 
     let companyCollection = await company();
     let newJobInser = await companyCollection.findOneAndUpdate(
-      { companyName: companyName, "jobs._id": new ObjectId(jobid) },
+      {
+        $and: [
+          { companyName: updatedPostData.company[0] },
+          { "jobs._id": new ObjectId(jobid) },
+        ],
+      },
       { $set: { jobs: jobData } },
       { returnDocument: "after" }
     );
