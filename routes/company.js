@@ -182,9 +182,13 @@ router.route("/dataUpdate/:name").get(async (req, res) => { // done company upda
 });
 
 
-router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
+router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
 
   const bodyData = req.body;
+  let id = req.params.id;
+
+  if (!id || !ObjectId.isValid(id)) return res.render('error', { error: 'Error : Not a Valid Id' });
+  id = id.trim();
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
 
