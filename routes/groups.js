@@ -247,6 +247,7 @@ router.get("/:id/eventEdit", async (req, res) => {
   try {
     res.render("./groups/eventEdit", {
       _id: id,
+      title: "Events Edit",
       events: groupEvents,
     });
   } catch (e) {
@@ -261,11 +262,12 @@ router.get("/:id/eventEdit", async (req, res) => {
 router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
   const { groupId, eventId } = req.params;
   const { title, eventDate, description } = req.body;
+  console.log({ title, eventDate, description });
 
   const updatedEvent = {
-    title,
-    eventDate,
-    description,
+    title: title,
+    eventDate: eventDate,
+    description: description,
   };
   try {
     await groupEventData.update(groupId, eventId, updatedEvent);
