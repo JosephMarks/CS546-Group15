@@ -5,15 +5,26 @@ import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
 const router = Router();
 
-router.route("/:id").get(async (req, res) => {
+router.route("/").get(async (req, res) => {
   // done
+  let email = req.session.user.email;
+  let id = "";
+
+  try {
+    id = userFunctions.getUserById()
+  } catch (e) {
+
+  }
 
   if (!req.params.id || ObjectId.isValid(req.params.id)) {
     return res.status(404).render("error", { error: "Error : Not a valid Id" });
   }
 
   try {
+
     let getSkills = await userFunctions.getUserSkills(id);
+    return res.json({getSkills});
+
   } catch (e) {
     if (
       e === "Error : Users interest area is empty" ||

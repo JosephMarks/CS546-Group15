@@ -44,6 +44,10 @@ const exportedMethods = {
     return user;
   },
 
+  async getUserByEmail(email){
+    
+  },
+
   async createUser(fname, lname, age, email, password, candidateType) {
     //Validations
     fname = validations.validateNameReturn(fname);
