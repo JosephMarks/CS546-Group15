@@ -1,15 +1,24 @@
 {{! This will be your default layout for all handlebars file rendered. This will be inherited by all other templates. }}
 {{! Refer lecture code to learn more on how this works: https://github.com/stevens-cs546-cs554/CS-546/tree/master/lecture_08/code/HTML_Templating }}
-<!DOCTYPE html>
+
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/public/css/main-styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <title>{{ title }}</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/public/css/main-styles.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+      crossorigin="anonymous"
+    />
+    <title>{{title}}</title>
   </head>
   <body>
 
@@ -17,131 +26,141 @@
   Nav Bar
 ===== -->
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary" id="navbar-all">
-  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary" id="navbar-all">
+      <div class="container-fluid">
 
-    <a class="navbar-brand" href="/">Better Interview Book</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+        <a class="navbar-brand" href="/">Better Interview Book</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Ruobing Liu
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/socialmediaposts">Social Media Post</a></li>
-            <li><a class="dropdown-item" href="/referral">Refer a Job </a></li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Ruobing Liu
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/socialmediaposts">Social
+                    Media Post</a></li>
+                <li><a class="dropdown-item" href="/referral">Refer a Job
+                  </a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Joe Marks
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/groups">Groups</a></li>
+                <li><a class="dropdown-item" href="/team">Team</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Tzu-Ming Lu
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/network">Network</a></li>
+                <li><a
+                    class="dropdown-item"
+                    href="/skills"
+                  >Skills/Learning</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Pradyumn
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/logIn">LogIn</a></li>
+                <li><a class="dropdown-item" href="/signUp">signUp</a></li>
+                <li><a class="dropdown-item" href="/company">company</a></li>
+              </ul>
+            </li>
+
           </ul>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Joe Marks
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/groups">Groups</a></li>
-            <li><a class="dropdown-item" href="/team">Team</a></li>
-          </ul>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Tzu-Ming Lu
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/network">Network</a></li>
-            <li><a class="dropdown-item" href="/skills">Skills/Learning</a></li>
-          </ul>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Pradyumn
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/logIn">LogIn</a></li>
-            <li><a class="dropdown-item" href="/signUp">signUp</a></li>
-            <li><a class="dropdown-item" href="/company">company</a></li>
-          </ul>
-        </li>
-
-      </ul>
-
-      {{#if status}}
-
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            {{userName}}
-          </a>
 
           {{#if status}}
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">My Profile</a></li>
-            <li><a class="dropdown-item" href="/logout">Logout</a></li>
-          </ul>
+
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {{userName}}
+                </a>
+
+                {{#if status}}
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/profile/{{userId}}">My
+                        Profile</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                  </ul>
+                {{/if}}
+
+              </li>
+            </ul>
           {{/if}}
 
-        </li>
-      </ul>
-      {{/if}}
-      
-    </div>
+        </div>
 
-  </div>
-</nav>
+      </div>
+    </nav>
 
-<!-- =====
+    <!-- =====
   Nav Bar
 ===== -->
 
     {{{body}}}
 
+
 <script src="/public/js/job.js" type="module"></script>
 <script src="/public/js/company.js" type="module"></script>
 <script src="/public/js/login.js" type="module"></script>
 <script src="/public/js/networkAndSkillsErrorHandling.js"></script>
+
+    <script src="/public/js/networkAndSkillsErrorHandling.js"></script>
+
   </body>
 </html>

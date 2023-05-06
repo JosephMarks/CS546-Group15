@@ -124,6 +124,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const university = req.body.university;
   const collegeMajor = req.body.collegeMajor;
   const gitHubUserName = req.body.gitHubUserName;
+  const skills = req.body.skills;
 
   console.log({ fname, lname, gitHubUserName });
 
@@ -149,6 +150,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   userObject.locationState = locationState;
   userObject.university = university;
   userObject.collegeMajor = collegeMajor;
+  userObject.skills = skills; // Add the skills to the user object
 
   try {
     await userData.updateUsers(id, userObject);

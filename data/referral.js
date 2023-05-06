@@ -54,7 +54,7 @@ const exportedMethods = {
   async getPostedPostByUserId(userId) {
     let usersCollection = await users();
     let user = await userData.getUserById(userId);
-    let arr = user.referralPostsclearcdsdsdc;
+    let arr = user.referralPosts;
     let res = [];
     if (!arr) {
       return [];
@@ -73,7 +73,7 @@ const exportedMethods = {
             if (!post) {
               let newPost = await usersCollection.findOneAndUpdate(
                 { _id: new ObjectId(userId) },
-                { $pull: { referralPostsclearcdsdsdc: id } },
+                { $pull: { referralPosts: id } },
                 { returnDocument: "after" }
               );
               if (newPost.lastErrorObject.n === 0)
@@ -282,11 +282,7 @@ const exportedMethods = {
     if (updatedPost.fields) {
       updatedPostData.fields = validation.checkFieldsTags(updatedPost.fields);
     }
-    if (updatedPost.category) {
-      updatedPostData.category = validation.checkCategoryTags(
-        updatedPost.category
-      );
-    }
+
     if (updatedPost.company) {
       updatedPostData.company = await validation.checkCompanyTags(
         updatedPost.company
@@ -298,20 +294,86 @@ const exportedMethods = {
         updatedPost.title
       );
     }
-    if (updatedPost.duedate) {
-      updatedPostData.eventdate = validation.checkDate(updatedPost.eventdate);
-    }
     if (updatedPost.body) {
       updatedPostData.body = validation.checkString(updatedPost.body, "Body");
     }
+    if (updatedPost.duedate) {
+      updatedPostData.duedate = validation.checkDate(updatedPost.duedate);
+    }
+    const postCollection = await referral();
+    let oldPost = await postCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    let jobid = oldPost.jobs._id.toString();
+    let jobTitle = oldPost.jobs.jobTitle;
+    let description = oldPost.jobs.description;
+    let salary = oldPost.jobs.salary;
+    let companyEmail = oldPost.jobs.companyEmail;
+    let level = oldPost.jobs.level;
+    let jobType = oldPost.jobs.jobType;
+    let location = oldPost.jobs.location;
+    let skills = oldPost.jobs.skills;
+
+    if (updatedPost.jobTitle) {
+      jobTitle = validation.validateNameAllNumberReturn(updatedPost.jobTitle);
+    }
+    if (updatedPost.salary) {
+      validation.isSalary(updatedPost.salary);
+      salary = Number(updatedPost.salary);
+    }
+    if (updatedPost.companyEmail) {
+      companyEmail = validation.checkEmail(
+        updatedPost.companyEmail,
+        "companyEmail"
+      );
+    }
+    if (updatedPost.description) {
+      description = validation.checkString(
+        updatedPost.description,
+        "Job description"
+      );
+    }
+    if (updatedPost.level) {
+      level = validation.checkLevelTags([updatedPost.level]);
+    }
+    if (updatedPost.jobType) {
+      jobType = validation.checkJobtypeTags(updatedPost.jobType);
+    }
+    if (updatedPost.location) {
+      location = validation.checkLocationTags(updatedPost.location);
+    }
+    if (updatedPost.skills) {
+      skills = validation.checkSkillsTags(updatedPost.skills);
+    }
+
+    let jobData = {
+      jobTitle: jobTitle,
+      skills: skills,
+      salary: salary,
+      location: location,
+      description: description,
+      level: level,
+      jobType: jobType,
+    };
+    updatedPostData.jobs = jobData;
     updatedPostData.modifieddate = new Date().toUTCString();
-    const postCollection = await socialPost();
+
     let newPost = await postCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: updatedPostData },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
+      throw [404, `Could not update the post with id ${id}`];
+    //job in company database
+
+    let companyCollection = await company();
+    let newJobInser = await companyCollection.findOneAndUpdate(
+      { companyName: companyName, "jobs._id": new ObjectId(jobid) },
+      { $set: { jobs: jobData } },
+      { returnDocument: "after" }
+    );
+    if (newJobInser.lastErrorObject.n === 0)
       throw [404, `Could not update the post with id ${id}`];
 
     return newPost.value;
@@ -331,7 +393,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(userId) },
-      { $pull: { referralPostsclearcdsdsdc: id } },
+      { $pull: { referralPosts: id } },
       { returnDocument: "after" }
     );
     if (newPost.lastErrorObject.n === 0)
@@ -339,7 +401,7 @@ const exportedMethods = {
 
     //job in company database
     const companyCollection = await company();
-    let companyName = oldinfo.company;
+    let companyName = oldinfo.company[0];
     let job = oldinfo.jobs;
 
     let newJobInser = await companyCollection.findOneAndUpdate(

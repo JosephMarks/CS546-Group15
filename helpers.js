@@ -536,6 +536,7 @@ const validations = {
       throw "Error: You must provide at least one interest area";
     if (arr.length < 1)
       throw `Error: You must provide at least one interest area`;
+    if (arr.length > 1) throw "Error: You must only select one tag for level.";
     if (typeof arr === "string") return arr;
     if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
     for (let i in arr) {

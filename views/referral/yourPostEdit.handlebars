@@ -42,12 +42,11 @@
 
     <br>
     {{!-- Edit --}}
-   {{!-- Edit --}}
     <div class="card" style="width: 50%;">
         
-    <form class="row g-3 needs-validation" action="/referral/post/{{userId}}/postId/{{postId}}/edit" method="post">
+    <form class="row g-3 needs-validation" method="post">
 
-      <span id="errorDisplay" style="color: red"> {{error}} </span>
+      <span id="errorDisplay" > {{error}} </span>
 
       <div class="col-md-12">
 
@@ -64,11 +63,11 @@
 
        <div class="col-md-12">
 
-        <label for="eventdate" class="eventdate">Event Date</label>
-        <input type="date" class="form-control" id="eventdate" name="eventdate" min="1990-01-01" max="2050-12-31">
- 
+        <label for="duedate" class="duedate">Due Date</label>
+        <input type="date" class="form-control" id="duedate" name="duedate" min="2023-01-01" max="2050-12-31">
+
       </div>
-<p>Your previous choice for event date: {{post.eventdate}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for due date: {{post.duedate}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
         <label for="field">Select field tag(s)</label>
@@ -95,39 +94,147 @@
         </select>
 
       </div>
-      <p>Your previous choice for field tag(s): {{post.fields}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for field tag(s): {{post.fields}}, if you do not want to modify it, just leave it.</p>
+{{!-- Job --}}
+
+
       <div class="col-md-12">
 
-        <label for="category">Select category tag(s)</label>
+        <label class="companyEmail">Contact Email</label>
+        <input type="text" class="form-control" id="companyEmail" value="{{post.companyEmail}}" name="companyEmail" >
 
-        <select multiple id="category" name="category">
+      </div>
 
-          <option value="interview">interview</option>
-          <option value="daily thoughts">daily thoughts</option>
-          <option value="making friends">making friends</option>
-          <option value="housing">housing</option>
-          <option value="asking for help">asking for help</option>
-          <option value="others">others</option>
+      <div class="col-md-12">
+
+        <label for="jobTitle" class="jobTitle" >Job Title</label>
+        <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="{{post.jobTitle}}">
+
+      </div>
+
+      <div class="col-md-12">
+
+        <label for="salary" class="form-label" value={{post.salary}}>Salary (USD : Yearly)</label>
+        <input type="number" class="form-control" id="salary" name="salary" >
+
+      </div>
+
+      <div class="col-md-12">
+
+        <label for="level">Experience Level (single selection)</label>
+        <select id="level" name="level">
+
+          <option value="senior">Senior (More than 5+ years)</option>
+          <option value="internship">Internship (1 year or less)</option>
+          <option value="mid">Mid Level (1 to 5 years)</option>
+
+        </select>
+
+      </div>      
+<p>Your previous choice for Experience Level: {{post.level}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+
+        <label for="jobType">Job Type (multiple selection)</label>
+        <select multiple id="jobType" name="jobType">
+
+          <option value="remote">Remote</option>
+          <option value="online">Online</option>
+          <option value="hybrid">Hybrid</option>
+
         </select>
 
       </div>
-      <p>Your previous choice for category tag(s): {{post.category}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for Job Type: {{post.jobType}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
 
-        <label for="company">Select company tag(s)</label>
+        <label for="skills">Skills Required (multiple selection)</label>
+        <select multiple="multiple" id="skills" name="skills">
 
-        <select multiple id="company" name="company">
-  
-        {{#each companyList}}
-          <option value="{{companyName}}">{{companyName}}</option>
-        {{/each}}
-        
+          <option value="Python">Python</option>
+          <option value="C++">C++</option>
+          <option value="JavaScript">JavaScript</option>
+          <option value="NodeJS">NodeJS</option>
+          <option value="React">React</option>
+          <option value="DataScience">DataScience</option>
+          <option value="Others">Others</option>
+
         </select>
 
       </div>
-      <p>Your previous choice for company tag(s): {{post.company}}, if you do not want to modify it, just leave it.</p>
+<p>Your previous choice for Skills Required: {{post.skills}}, if you do not want to modify it, just leave it.</p>
       <div class="col-md-12">
-        <button type="submit" class="btn btn-outline-info">Post the Post</button>
+
+        <label for="location">Select the location (multiple selection)</label>
+
+        <select multiple id="location" name="location">
+
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="DC">District Of Columbia</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
+
+        </select>
+
+      </div>
+<p>Your previous choice for location: {{post.location}}, if you do not want to modify it, just leave it.</p>
+      <div class="col-md-12">
+
+        <label for="description">Job Description</label>
+        <textarea name="description" id="description" rows="5"
+          placeholder="Give A Brief Description About the Job .... ">{{post.description}}</textarea>
+
+      </div>
+      
+
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-outline-info">Post the Refer</button>
       </div>
 
     </form>
