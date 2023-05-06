@@ -50,6 +50,18 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
   let { companyName, companyEmail, industry, employee, location, description } = bodyData;
   let createdAt = new Date();
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  employee = xss(req.body.employee);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+  location = location.map(x => xss(x));
+
+
   try {
 
     if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename )
@@ -62,7 +74,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
     description = xss(description);
 
     if (typeof(location) === 'string') location = [location];
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
 
     location = location.map(x => xss(x));
 
@@ -70,7 +82,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
       throw "Error : Parameters can only be string not just string with empty spaces";
 
     if (typeof(location) === 'string') location = [location];
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
     validations.checkEmail(companyEmail);
 
     companyEmail = companyEmail.trim();
@@ -90,7 +102,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (req.file.filename));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (xss(req.file.filename)));
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
@@ -182,6 +194,17 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
 
   let { companyName, companyEmail, industry, numberOfEmployees, location, description } = bodyData;
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  numberOfEmployees = xss(req.body.numberOfEmployees);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.checkLocationTags([location]);
+
+  location = location.map(x => xss(x));
+
   try {
 
     if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename )
@@ -197,13 +220,13 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
     description = xss(description);
 
     if (typeof(location) === 'string') location = [location];
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
 
     location = location.map(x => xss(x));
 
     if (typeof(location) === 'string') location = [location];
     
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
     validations.checkEmail(companyEmail);
 
     companyEmail = companyEmail.trim();
@@ -214,7 +237,6 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
     validations.isNumberOfEmployee(numberOfEmployees);
     numberOfEmployees = Number(numberOfEmployees);
 
-    console.log("routes", numberOfEmployees);
 
     const data = await companyFunctions.updateCompany(req.session.user.email, companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename) );
 
@@ -311,6 +333,25 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
   req.body;
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  jobTitle = xss(req.body.jobTitle);
+  salary = xss(req.body.salary);
+  level = xss(req.body.level);
+  description = xss(req.body.description);
+
+  if (typeof (jobType) === 'string') jobType = [jobType];
+  validations.checkJobtypeTags(jobType);
+  jobType = jobType.map(x => xss(x));
+
+  if (typeof(location) === 'string') location = [location];
+  validations.checkLocationTags(location);
+  location = location.map(x => xss(x));
+
+  if (typeof (skills) === 'string') skills = [skills];
+  validations.checkSkillsTags(skills);
+  skills = skills.map(x => xss(x));
+
   try {
 
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
@@ -324,30 +365,30 @@ router.route("/job/:name").post(async (req, res) => { // create job post
     description = xss(description);
 
     if (typeof (jobType) === 'string') jobType = [jobType];
-    validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+    validations.checkJobtypeTags(jobType);
     jobType = jobType.map(x => xss(x));
 
     if (typeof(location) === 'string') location = [location];
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
     location = location.map(x => xss(x));
 
     if (typeof (skills) === 'string') skills = [skills];
-    validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+    validations.checkSkillsTags(skills);
     skills = skills.map(x => xss(x));
 
     if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]) )
       throw "Error : Parameters can only be string not just string with empty spaces";
     
     if (typeof (jobType) === 'string') jobType = [jobType];
-    validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+    validations.checkJobtypeTags(jobType);
     jobType = jobType.map(x => x.trim().toLowerCase());
 
     if (typeof (skills) === 'string') skills = [skills];
-    validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+    validations.checkSkillsTags(skills);
     skills = skills.map(x => x.trim().toLowerCase());
 
     if (typeof (location) === 'string') location = [location]; 
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
     location = location.map(x => x.trim().toLowerCase());
 
     validations.isSalary(salary);
@@ -464,8 +505,25 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } = req.body;
 
-  
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  jobTitle = xss(req.body.jobTitle);
+  salary = xss(req.body.salary);
+  level = xss(req.body.level);
+  description = xss(req.body.description);
 
+  if (typeof (jobType) === 'string') jobType = [jobType];
+  validations.checkJobtypeTags(jobType);
+  jobType = jobType.map(x => xss(x));
+
+  if (typeof(location) === 'string') location = [location];
+  validations.checkLocationTags(location);
+  location = location.map(x => xss(x));
+
+  if (typeof (skills) === 'string') skills = [skills];
+  validations.checkSkillsTags(skills);
+  skills = skills.map(x => xss(x));
+  
   try {
 
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
@@ -479,15 +537,15 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
       description = xss(description);
     
       if (typeof (jobType) === 'string') jobType = [jobType];
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+      validations.checkJobtypeTags(jobType);
       jobType = jobType.map(x => xss(x));
     
       if (typeof(location) === 'string') location = [location];
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
+      validations.checkLocationTags(location);
       location = location.map(x => xss(x));
     
       if (typeof (skills) === 'string') skills = [skills];
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+      validations.checkSkillsTags(skills);
       skills = skills.map(x => xss(x));
     
 
@@ -495,15 +553,15 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
       throw "Error : Parameters can only be string not just string with empty spaces";
 
     if (typeof (jobType) === 'string') jobType = [jobType];
-    validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+    validations.checkJobtypeTags(jobType);
     jobType = jobType.map(x => x.trim().toLowerCase());
 
     if (typeof (skills) === 'string') skills = [skills];
-    validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+    validations.checkSkillsTags(skills);
     skills = skills.map(x => x.trim().toLowerCase());
 
     if (typeof (location) === 'string') location = [location];
-    validations.isArrayWithTheNonEmptyStringForLocation([location]);
+    validations.checkLocationTags(location);
     location = location.map(x => x.trim().toLowerCase());
 
     validations.isSalary(salary);
