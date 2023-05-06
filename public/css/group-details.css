@@ -104,3 +104,47 @@ img {
   border-radius: 75px;
   padding: 8px 16px;
 }
+
+.small-square {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 5px;
+}
+
+.card-title {
+  color: blue;
+  font-style: italic;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+.calendar {
+  max-width: 35%; /* or any other desired width */
+  overflow: auto;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture {
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  color: white !important;
+}
+
+.btn-sky-blue {
+  background-color: skyblue;
+  color: white;
+}

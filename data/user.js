@@ -216,6 +216,11 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
+
+    let gitHubUserName = updateData.gitHubUserName.trim();
+    if (typeof gitHubUserName !== "string" || gitHubUserName.length === 0) {
+      throw new Error("Github username must be a string that is not empty");
+    }
     const userCollection = await users();
     let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
@@ -234,6 +239,7 @@ const exportedMethods = {
       image: image,
       university: university,
       collegeMajor: collegeMajor,
+      gitHubUserName: gitHubUserName,
       skills: skills,
       experience: experience,
       jobHistory: jobHistory,
