@@ -251,7 +251,7 @@ const exportedMethods = {
     let usersCollection = await users();
     let newuserPost = await usersCollection.findOneAndUpdate(
       { _id: new ObjectId(posterId) },
-      { $addtoSet: { socialPost: newPostId.toString() } },
+      { $push: { socialPost: newPostId.toString() } },
       { returnDocument: "after" }
     );
     if (newuserPost.lastErrorObject.n === 0)
@@ -402,7 +402,7 @@ const exportedMethods = {
     const socialPostCollection = await socialPost();
     let newsocialPosts = await socialPostCollection.findOneAndUpdate(
       { _id: new ObjectId(postId) },
-      { $addToSet: { comments: newComments } },
+      { $push: { comments: newComments } },
       { returnDocument: "after" }
     );
     const returnValue = newsocialPosts.value;
