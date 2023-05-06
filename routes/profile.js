@@ -132,6 +132,23 @@ router.get("/:id/addJobHistory", async (req, res) => {
   }
 });
 
+router.get("/:id/updateJobHistory", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    let userInfo = await userData.getUserById(id);
+
+    res.render("./profile/profileUpdateJobHistory", userInfo);
+  } catch (e) {
+    console.error(e);
+    res.status(404).render("./error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a user with that id does not exist.`,
+    });
+  }
+});
+
 router.post("/:id/addJobHistory", async (req, res) => {
   const id = req.params.id;
   let { role, organization, startDate, endDate, description } = req.body;
@@ -242,6 +259,36 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).send("Error updating profile.");
+  }
+});
+
+router.post("/:userId/updateJobHistory", async (req, res) => {
+  const userId = req.params.userId;
+  const jobs = await jobHistoryData.getAll(userId);
+  try {
+    for (let i = 0; i < jobs.length; i++) {
+      let { _id, role, organization, startDate, endDate, description } =
+        jobs[i];
+      _id = _id.toString();
+      await jobHistoryData.update(
+        userId,
+        _id,
+        req.body[`role${_id}`],
+        req.body[`organization${_id}`],
+        req.body[`startDate${_id}`],
+        req.body[`endDate${_id}`],
+        req.body[`description${_id}`]
+      );
+    }
+
+    res.redirect(`/profile/${userId}`);
+  } catch (e) {
+    console.error(e);
+    res.status(400).render("./profile/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Failed to update the job history: ${e.message}`,
+    });
   }
 });
 

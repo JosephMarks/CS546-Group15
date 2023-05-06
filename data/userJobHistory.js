@@ -263,97 +263,37 @@ export const update = async (
     updateObject["jobHistory.$.organization"] = organization.trim();
   }
   if (startDate) {
-    // Validate startDate
-    const startDateDateObj = parse(endDate, "MM/dd/yyyy", new Date());
-    if (!isValid(startDateDateObj)) {
-      throw new Error("Date is not of proper format");
+    const parsedStartDate = parse(startDate, "MM/dd/yyyy", new Date());
+    if (!isValid(parsedStartDate)) {
+      throw new Error("Invalid start date format");
     }
-    if (typeof startDate !== "string") {
-      throw new Error("This is not a type string");
-    }
-    if (startDate.length === 0) {
-      throw new Error("String cannot be of length empty");
-    }
-    let startDateDateArray = [];
-    startDateDateArray = startDate.split("/");
-    if (startDateDateArray.length < 3) {
-      throw new Error("This is not valid");
-    }
-    if (startDateDateArray.length !== 3) {
-      throw new Error("This is not valid");
-    }
-    if (
-      startDateDateArray[0].length !== 2 ||
-      startDateDateArray[1].length !== 2 ||
-      startDateDateArray[2].length !== 4
-    ) {
-      throw new Error("This is not valid format");
-    }
-    let startDateYearString;
-    let startDateYearValue;
-    startDateYearString = startDateDateArray[2];
-    startDateYearValue = Number(startDateYearString);
-    if (startDateYearString < 1950 || startDateYearString > 2023) {
-      throw new Error("The date is out of the appropriate range");
-    }
+    updateObject["jobHistory.$.startDate"] = startDate.trim();
   }
-  updateObject["jobHistory.$.startDate"] = startDate.trim();
-
   if (endDate) {
     if (endDate !== "present") {
-      // need to ensure that the date provide is of the proper format
-      // TO DO: double check all this date stuff - may be a little buggy?
-      const endDateDateObj = parse(endDate, "MM/dd/yyyy", new Date());
-      if (!isValid(endDateDateObj)) {
-        throw new Error("Date is not of proper format");
-      }
-      if (typeof endDate !== "string") {
-        throw new Error("This is not a type string");
-      }
-      if (endDate.length === 0) {
-        throw new Error("String cannot be of length empty");
-      }
-      let endDateDateArray = [];
-      endDateDateArray = endDate.split("/");
-      if (endDateDateArray.length < 3) {
-        throw new Error("This is not valid");
-      }
-      if (endDateDateArray.length !== 3) {
-        throw new Error("This is not valid");
-      }
-      if (
-        endDateDateArray[0].length !== 2 ||
-        endDateDateArray[1].length !== 2 ||
-        endDateDateArray[2].length !== 4
-      ) {
-        throw new Error("This is not valid format");
-      }
-      let endDateYearString;
-      let endDateYearValue;
-      endDateYearString = endDateDateArray[2];
-      endDateYearValue = Number(endDateYearString);
-      if (endDateYearString < 1950 || endDateYearString > 2023) {
-        throw new Error("The date is out of the appropriate range");
+      const parsedEndDate = parse(endDate, "MM/dd/yyyy", new Date());
+      if (!isValid(parsedEndDate)) {
+        throw new Error("Invalid end date format");
       }
       updateObject["jobHistory.$.endDate"] = endDate.trim();
-
-      if (description) {
-        updateObject["jobHistory.$.description"] = description.trim();
-      }
-
-      // Update the job history
-      const dataResult = await userCollection.updateOne(
-        { _id: new ObjectId(userId), "jobHistory._id": new ObjectId(jobId) },
-        { $set: updateObject }
-      );
-
-      // Check if the job history was updated successfully
-      if (dataResult.modifiedCount !== 1) {
-        throw new Error("Failed to update the job history");
-      }
-
-      // Return success message or updated job object
-      return { message: "Job history updated successfully" };
+    } else {
+      updateObject["jobHistory.$.endDate"] = endDate;
     }
   }
+  if (description) {
+    updateObject["jobHistory.$.description"] = description.trim();
+  }
+
+  if (Object.keys(updateObject).length === 0) {
+    return { message: "No changes to update" };
+  }
+
+  // Update the job history
+  const dataResult = await userCollection.updateOne(
+    { _id: new ObjectId(userId), "jobHistory._id": new ObjectId(jobId) },
+    { $set: updateObject }
+  );
+
+  // Return success message or updated job object
+  return { message: "Job history updated successfully" };
 };
