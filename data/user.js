@@ -161,6 +161,7 @@ const exportedMethods = {
   ) {
     userId = validations.checkId(userId);
     rules.validate(updateData.password);
+    
     let fname = validations.validateNameReturn(updateData.fname);
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
