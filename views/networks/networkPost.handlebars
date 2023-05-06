@@ -76,16 +76,16 @@
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}{{!-- &nbsp; Likes: {{likes.length}}--}}</a>&nbsp;
                     {{!-- Check comments and leave comments --}}
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
+                    <a id="network-post-comment" class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
                         target="_blank">
                         Leave comments
                     </a>
                     {{!-- Edit comments --}}
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
+                    <a id="network-edit-post" class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
                         target="_blank">
                         Edit this post
                     </a>
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
+                    <a id="network-remove-post" class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
                         target="_blank">
                         Remove this post
                     </a>
@@ -118,7 +118,7 @@
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
                     <a class="link-dark">Commits: {{comments.length}}{{!--&nbsp; Likes: {{likes.length}} --}}</a>&nbsp
-                    <a class="btn btn-primary" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
+                    <a id="network-follower-post-comment" class="btn btn-primary" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
                         role="button">
                         Leave comments
                     </a>

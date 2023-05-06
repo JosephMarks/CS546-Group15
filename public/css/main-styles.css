@@ -5,7 +5,7 @@ body {
   background-color: #f0a150 !important;
 }
 
-a{
+a {
   color: black !important;
 }
 
@@ -24,11 +24,11 @@ h1 {
   text-align: center;
 }
 
-.card-title{
+.card-title {
   color: black !important;
 }
 
-#update-company-logo{
+#update-company-logo {
   width: 35vh;
   height: 35vh;
 }
@@ -47,7 +47,8 @@ button:hover {
   width: 15vh;
   height: 10vh;
 }
-#errorDisplay{
+
+#errorDisplay {
   color: black
 }
 
@@ -180,7 +181,7 @@ button:hover {
 .main-center {
   display: flex;
   justify-content: center;
-  
+
   align-items: center;
 }
 
@@ -252,53 +253,73 @@ button:hover {
 
 /* Network */
 .nav-item #network-new-post-button {
-  background-color: #1300bb;
+  background-color: #00FBFF;
 }
 
 .accordion-button:not(.collapsed) {
-  background-color: #003994;
-  --bs-accordion-active-bg: #003994;
+  background-color: #00FBFF;
+  --bs-accordion-active-bg: #00FBFF;
 }
 
 .accordion-item .your-post-button {
-  background-color: #003994;
+  background-color: #00FBFF;
 }
 
 .accordion-item .follower-button {
-  background-color: #003994;
+  background-color: #00FBFF;
 }
 
-#network-add-button{
-  background-color: #003994;
+#network-add-button {
+  background-color: #00FBFF;
 }
 
-#network-follower-remove-button{
-  background-color: #003994;
+#network-follower-remove-button {
+  background-color: #00FBFF;
 }
 
-#follower-comment-button{
-  background-color: #003994;
+#follower-comment-button {
+  background-color: #00FBFF;
 }
 
-#network-your-post-comment-button{
-  background-color: #003994;
+#network-your-post-comment-button {
+  background-color: #00FBFF;
 }
 
-#your-post-edit-button{
-  background-color: #003994;
+#your-post-edit-button {
+  background-color: #00FBFF;
 }
 
-#your-post-remove-button{
-  background-color: #003994;
+#your-post-remove-button {
+  background-color: #00FBFF;
 }
 
 /* skills */
-#skill-api-search-button{
-  background-color: #003994;
+#skill-api-search-button {
+  background-color: #00FBFF;
 }
 
-#skills-create-new-post-button{
-  background-color: #003994;
+#skills-create-new-post-button {
+  background-color: #00FBFF;
+}
+
+#network-post-comment {
+  background-color: #00FBFF;
+}
+
+#network-edit-post {
+  background-color: #00FBFF;
+}
+
+#network-remove-post {
+  background-color: #00FBFF;
+}
+
+#network-follower-post-comment {
+  background-color: #00FBFF;
+}
+
+#whole-article-button{
+  background-color: #00FBFF;
 }
 
 @media(max-width: 1200px) {
