@@ -48,11 +48,11 @@
         <a href="/profile/{{_id}}/connect/"><button>Add Friend</button></a>
         {{connectionMessage}}
       {{/if}}
-        <h2>{{name}}</h2>
-        <h2>Description: {{description}}</h2>
-        <h2>Education: {{university}}</h2>
-        <h2>College Major: {{collegeMajor}}</h2>
-        <h2>Location: {{locationState}}</h2>
+        <h4>Name: {{fname}} {{lname}}</h4>
+        <h4>Description: {{description}}</h4>
+        <h4>Education: {{university}}</h4>
+        <h4>College Major: {{collegeMajor}}</h4>
+        <h4>Location: {{locationState}}</h4>
 
 
 
@@ -62,7 +62,7 @@
           window.addEventListener('load', function() { LeetCodeCard.init(); });
         </script>
 
-        <h2>Job History:</h2>
+        <h3>Job History:</h3>
         {{#if jobHistory}}
           <div>
             {{#each jobHistory}}

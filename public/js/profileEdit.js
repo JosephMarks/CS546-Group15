@@ -65,6 +65,12 @@ if (profileEditForm) {
       errors.push("Please select at least one skill.");
     }
 
+    console.log(inputSkills.length);
+    if (inputSkills.length < 2) {
+      event.preventDefault();
+      errors.push("Please select at least two skills.");
+    }
+
     // Validate About Me
     if (!inputAboutMe.value || inputAboutMe.value.trim().length === 0) {
       event.preventDefault();

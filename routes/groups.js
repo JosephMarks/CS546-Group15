@@ -17,7 +17,15 @@ router.route("/").get(async (req, res) => {
     for (let i = 0; i < groupList.length; i++) {
       let { name } = groupList[i];
       let { _id } = groupList[i];
-      let groupObject = { _id: _id, name: name };
+      let { description } = groupList[i];
+
+      let numOfUsers = await groupData.numberOfUsers(_id);
+      let groupObject = {
+        _id: _id,
+        name: name,
+        numOfUsers: numOfUsers,
+        description: description,
+      };
       displayArray.push(groupObject);
     }
     res.render("./groups/groups", {
@@ -75,8 +83,7 @@ router.route("/").get(async (req, res) => {
 // });
 
 router.get("/create", (req, res) => {
-  console.log("we are creating a group");
-  res.render("./groups/createGroup");
+  res.render("./groups/createGroup", { title: "Create Group" });
 });
 
 router.post("/", async (req, res) => {
@@ -159,6 +166,7 @@ router.get("/:id/edit", async (req, res) => {
       name: groupInfo.name,
       description: groupInfo.description,
       image: groupInfo.base64Image,
+      title: "Edit Group",
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -212,11 +220,13 @@ router.get("/:id/join", async (req, res) => {
     let joinedGroup = await groupData.addUser(id, req.session.user.userId);
     if (joinedGroup) {
       res.render("./groups/groupsJoin", {
+        title: "Group Join",
         message: "You have successfully joined the group!",
         userId: req.session.user.userId,
       });
     } else {
       res.render("./groups/groupsJoin", {
+        title: "Group Join",
         message: "You have successfully joined the group!",
         userId: req.session.user.userId,
       });
@@ -352,6 +362,7 @@ router.get("/:id/users", async (req, res) => {
   console.log(userNames);
 
   res.render("./groups/groupsUsers", {
+    title: "Group Members",
     groupName: retrievedGroup.name,
     users: userNames,
     groupId,
