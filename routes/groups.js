@@ -17,7 +17,15 @@ router.route("/").get(async (req, res) => {
     for (let i = 0; i < groupList.length; i++) {
       let { name } = groupList[i];
       let { _id } = groupList[i];
-      let groupObject = { _id: _id, name: name };
+      let { description } = groupList[i];
+
+      let numOfUsers = await groupData.numberOfUsers(_id);
+      let groupObject = {
+        _id: _id,
+        name: name,
+        numOfUsers: numOfUsers,
+        description: description,
+      };
       displayArray.push(groupObject);
     }
     res.render("./groups/groups", {
@@ -75,8 +83,7 @@ router.route("/").get(async (req, res) => {
 // });
 
 router.get("/create", (req, res) => {
-  console.log("we are creating a group");
-  res.render("./groups/createGroup");
+  res.render("./groups/createGroup", { title: "Create Group" });
 });
 
 router.post("/", async (req, res) => {
@@ -129,6 +136,15 @@ router.route("/:id").get(async (req, res) => {
     // }
     // console.log(eventsArray);
 
+    // Get author names for each activity and update the author field
+    for (let i = 0; i < groupInfo.activity.length; i++) {
+      const authorId = groupInfo.activity[i].author;
+      const authorName = await userData.getUserFullNameById(authorId);
+      groupInfo.activity[
+        i
+      ].author = `${authorName.firstName} ${authorName.lastName}`;
+    }
+
     res.render("./groups/groupById", {
       title: "Group Specific Page",
       _id: id,
@@ -159,6 +175,7 @@ router.get("/:id/edit", async (req, res) => {
       name: groupInfo.name,
       description: groupInfo.description,
       image: groupInfo.base64Image,
+      title: "Edit Group",
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -212,11 +229,13 @@ router.get("/:id/join", async (req, res) => {
     let joinedGroup = await groupData.addUser(id, req.session.user.userId);
     if (joinedGroup) {
       res.render("./groups/groupsJoin", {
+        title: "Group Join",
         message: "You have successfully joined the group!",
         userId: req.session.user.userId,
       });
     } else {
       res.render("./groups/groupsJoin", {
+        title: "Group Join",
         message: "You have successfully joined the group!",
         userId: req.session.user.userId,
       });
@@ -237,6 +256,7 @@ router.get("/:id/eventEdit", async (req, res) => {
   try {
     res.render("./groups/eventEdit", {
       _id: id,
+      title: "Events Edit",
       events: groupEvents,
     });
   } catch (e) {
@@ -251,18 +271,22 @@ router.get("/:id/eventEdit", async (req, res) => {
 router.post("/:groupId/eventEdit/:eventId", async (req, res) => {
   const { groupId, eventId } = req.params;
   const { title, eventDate, description } = req.body;
+  console.log({ title, eventDate, description });
 
   const updatedEvent = {
-    title,
-    eventDate,
-    description,
+    title: title,
+    eventDate: eventDate,
+    description: description,
   };
   try {
     await groupEventData.update(groupId, eventId, updatedEvent);
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    console.error(e);
-    res.status(500).send("Error updating event.");
+    res.status(400).render("./groups/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `Error here: ${e.message}`,
+    });
   }
 });
 
@@ -272,12 +296,13 @@ router.get("/:id/eventAdd", async (req, res) => {
   try {
     res.render("./groups/eventAdd", {
       _id: id,
+      title: "Add Event",
     });
   } catch (e) {
-    res.status(404).render("./error", {
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `We're sorry, a venue with that id does not exist .`,
+      errorMessage: `Error here: ${e.message}`,
     });
   }
 });
@@ -294,7 +319,8 @@ router.post("/:id/eventAdd", async (req, res) => {
     );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    res.status(400).render("./error", {
+    console.log(e);
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
       errorMessage: `Error adding the event: ${e.message}`,
@@ -308,6 +334,7 @@ router.get("/:id/activityAdd", async (req, res) => {
   try {
     res.render("./groups/activityAdd", {
       _id: id,
+      title: "Add Activity",
     });
   } catch (e) {
     res.status(404).render("./error", {
@@ -332,10 +359,10 @@ router.post("/:id/activityAdd", async (req, res) => {
     );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
-    res.status(400).render("./error", {
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
-      errorMessage: `Error adding the event: ${e.message}`,
+      errorMessage: `Error adding the activity: ${e.message}`,
     });
   }
 });
@@ -352,6 +379,7 @@ router.get("/:id/users", async (req, res) => {
   console.log(userNames);
 
   res.render("./groups/groupsUsers", {
+    title: "Group Members",
     groupName: retrievedGroup.name,
     users: userNames,
     groupId,

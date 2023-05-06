@@ -1,4 +1,3 @@
-import { isValidObjectId } from "mongoose";
 import { company } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
@@ -6,59 +5,51 @@ import { ObjectId } from "mongodb";
 const companyCollection = await company();
 
 const companyFunctions = {
-  async createComapny(
-    companyName,
-    companyEmail,
-    industry,
-    locations,
-    numberOfEmployees,
-    description,
-    createdAt,
-    imgSrc
-  ) {
+
+  async createCompany( companyName, companyEmail, industry, locations, numberOfEmployees, description, createdAt, imgSrc ) {
+    
+    if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description|| !imgSrc || !createdAt)
+      throw "Error : You should provide all the parameters";
+
     validations.isNumberOfEmployee(numberOfEmployees);
     validations.checkEmail(companyEmail);
     numberOfEmployees = Number(numberOfEmployees);
 
-    if (!validations.isProperString([companyName, industry, description]))
+    if (!validations.isProperString([companyName, industry, description, imgSrc]))
       throw "Error : Parameters can only be string not just string with empty spaces";
-
-    validations.isArrayWithTheNonEmptyString([locations]);
-
-    const ifAlready = await companyCollection.findOne({
-      companyName: companyName,
-    });
-    if (ifAlready) throw "Error: User Company Name is already registered";
-
+    
     companyName = companyName.trim().toLowerCase();
     industry = industry.trim().toLowerCase();
-    locations = locations.map((x) => x.trim()); // TODO : Must fall in the states array.
     description = description.trim().toLowerCase();
+    imgSrc = imgSrc.trim();
 
-    const finalPush = await companyCollection.insertOne({
-      companyName,
-      companyEmail,
-      industry,
-      locations,
-      numberOfEmployees,
-      jobs: [],
-      description,
-      imgSrc,
-      createdAt,
-    });
+    if (typeof(locations) === 'string') locations = [locations];
+    validations.checkLocationTags(locations);
+    locations = locations.map((x) => x.trim());
 
+    const ifAlready = await companyCollection.findOne({ companyName: companyName });
+    if (ifAlready) throw "Error: User Company Name is already registered";
+
+    const finalPush = await companyCollection.insertOne({ companyName, companyEmail, industry, locations, numberOfEmployees, jobs: [], description, imgSrc, createdAt});
     return await companyCollection.findOne({ _id: finalPush.insertedId });
+    
   },
 
   async getCompanyData(id) {
-    let companyData = await companyCollection.findOne({
-      _id: new ObjectId(id),
-    });
+
+    if (!id || !ObjectId.isValid(id)) throw "Error : Invalid Id";
+
+    let companyData = await companyCollection.findOne( { _id: new ObjectId(id) });
     if (!companyData) throw "Error : No Company Found";
+
     return companyData;
+
   },
 
   async getCompanyDataFromEmail(email) {
+
+    if (!email) throw "Error: Email required";
+    
     validations.checkEmail(email);
     let companyData = await companyCollection.findOne({ companyEmail: email });
 
@@ -66,155 +57,95 @@ const companyFunctions = {
   },
 
   async getCompanyDetailsFromCompanyName(name) {
+
+    if (!name) throw "Error: All parameteres are required";
+
     if (!validations.isProperString([name]))
       throw "Error : Parameters can only be string not just string with empty spaces";
 
     let companyData = await companyCollection.findOne({ companyName: name });
     if (!companyData) throw "Error : No Company Found";
     return companyData;
+
   },
 
-  async createJob(
-    companyName,
-    companyEmail,
-    jobTitle,
-    salary,
-    level,
-    jobType,
-    skills,
-    location,
-    description
-  ) {
-    if (
-      !companyName ||
-      !companyEmail ||
-      !jobTitle ||
-      !salary ||
-      !level ||
-      !jobType ||
-      !location ||
-      !description
-    )
-      throw "Error : All parameters are required";
+  // async createJob(
+  //   companyName,
+  //   companyEmail,
+  //   jobTitle,
+  //   salary,
+  //   level,
+  //   jobType,
+  //   skills,
+  //   location,
+  //   description
+  // ) {
+  //   if (
+  //     !companyName ||
+  //     !companyEmail ||
+  //     !jobTitle ||
+  //     !salary ||
+  //     !level ||
+  //     !jobType ||
+  //     !location ||
+  //     !description
+  //   )
+  //     throw "Error : All parameters are required";
 
-    if (
-      !validations.isProperString([
-        companyName,
-        companyEmail,
-        jobTitle,
-        description,
-        level,
-      ])
-    )
-      throw "Error : Parameters can only be string not just string with empty spaces";
+  //   if (
+  //     !validations.isProperString([
+  //       companyName,
+  //       companyEmail,
+  //       jobTitle,
+  //       description,
+  //       level,
+  //     ])
+  //   )
+  //     throw "Error : Parameters can only be string not just string with empty spaces";
 
-      return await companyCollection.findOne({ _id: finalPush.insertedId });
-    },
+  //     return await companyCollection.findOne({ _id: finalPush.insertedId });
+  //   },
 
     async deleteCompany(id){
-
-      if(!isValidObjectId(id)) throw "Error : Invalid Id";
+      console.log(id);
+      if(!ObjectId.isValid(id)) throw "Error : Invalid Id";
 
       let companyData = await companyCollection.findOneAndDelete({_id: new ObjectId(id)});
       if (!companyData) throw "Error : No Company Found";
       return companyData;
     },
 
-    async getCompanyData (id) {
-
-      if(!isValidObjectId(id)) throw "Error : Invalid Id";
-
-      let companyData = await companyCollection.findOne({_id: new ObjectId(id)});
-      if (!companyData) throw "Error : No Company Found";
-      return companyData;
-
-    },
-
-    async getCompanyDataFromEmail (email) {
-
-      validations.checkEmail(email);
-      let companyData = await companyCollection.findOne({companyEmail: email});
-
-      return companyData;
-    },
-
-    async getCompanyDetailsFromCompanyName (name) {
-      
-      if (!validations.isProperString([name]))
-        throw "Error : Parameters can only be string not just string with empty spaces";
-
-      let companyData = await companyCollection.findOne({ companyName: name});
-      if (!companyData) throw "Error : No Company Found";
-      return companyData;
-
-    },
-
     async createJob ( companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description ) {
       
-      if (
-        !companyName ||
-        !companyEmail ||
-        !jobTitle ||
-        !salary ||
-        !level ||
-        !jobType ||
-        !location ||
-        !description
-      )
+      if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description )
         throw "Error : All parameters are required";
   
-      if (
-        !validations.isProperString([
-          companyName,
-          companyEmail,
-          jobTitle,
-          description,
-          level
-        ])
-      )
+      if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ] ))
         throw "Error : Parameters can only be string not just string with empty spaces";
 
-        if (typeof(jobType) === 'string'){
+      if (typeof(jobType) === 'string') jobType = [jobType];
+      validations.checkJobtypeTags(jobType);
+      jobType = jobType.map(x => x.trim().toLowerCase());
 
-          if (!validations.isProperString([jobType])) throw "Error : job type can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-          jobType = jobType.map(x => x.trim().toLowerCase());
-    
-        }
-    
-        if (typeof(skills) === 'string'){
-    
-          if (!validations.isProperString([jobType])) throw "Error : skills can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-          skills = skills.map(x => x.trim().toLowerCase());
-          
-        }
-    
-        if (typeof(location) === 'string'){
-    
-          if (!validations.isProperString([location])) throw "Error : location can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForLocation([location]);
-          location = location.map(x => x.trim().toLowerCase());
-          
-        }
+      if (typeof(skills) === 'string') skills = [skills];
+      validations.checkSkillsTags(skills);
+      skills = skills.map(x => x.trim().toLowerCase());
 
+      if (typeof(location) === 'string') location = [location];
+      validations.checkLocationTags(location);
+      location = location.map(x => x.trim().toLowerCase());
+          
       validations.isSalary(salary);
       salary = Number(salary);
+
+      jobTitle = jobTitle.trim().toLowerCase();
+      description = description.trim().toLowerCase();
 
       let jobData = {
 
         _id: new ObjectId(),
-        jobTitle : jobTitle.trim().toLowerCase(),
-        skills: skills,
+        jobTitle,
+        skills,
         level,
         jobType,
         salary,
@@ -232,62 +163,26 @@ const companyFunctions = {
     },
 
     async updateJob (id, companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description) {
+
+      if (!id || !ObjectId.isValid(id)) throw "Error: Invalid Id";
       
-      if (
-        !companyName ||
-        !companyEmail ||
-        !jobTitle ||
-        !salary ||
-        !level ||
-        !jobType ||
-        !location ||
-        !description
-      )
+      if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description)
         throw "Error : All parameters are required";
   
-      if (
-        !validations.isProperString([
-          companyName,
-          companyEmail,
-          jobTitle,
-          description,
-          level
-        ])
-      )
+      if ( !validations.isProperString([ companyName, companyEmail, jobTitle, description, level ]))
         throw "Error : Parameters can only be string not just string with empty spaces";
 
-        if (typeof(jobType) === 'string'){
+      if (typeof (jobType) === 'string') jobType = [jobType];
+      validations.checkJobtypeTags(jobType);
+      jobType = jobType.map(x => x.trim().toLowerCase());
 
-          if (!validations.isProperString([jobType])) throw "Error : job type can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-          jobType = jobType.map(x => x.trim().toLowerCase());
-    
-        }
-    
-        if (typeof(skills) === 'string'){
-    
-          if (!validations.isProperString([jobType])) throw "Error : skills can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-          skills = skills.map(x => x.trim().toLowerCase());
-          
-        }
-    
-        if (typeof(location) === 'string'){
-    
-          if (!validations.isProperString([location])) throw "Error : location can only be a valid string or array with valid strings";
-    
-        } else {
-    
-          validations.isArrayWithTheNonEmptyStringForLocation([location]);
-          location = location.map(x => x.trim().toLowerCase());
-          
-        }
+      if (typeof (skills) === 'string') skills = [skills];
+      validations.checkSkillsTags(skills);
+      skills = skills.map(x => x.trim().toLowerCase());
+
+      if (typeof (location) === 'string') location = [location];
+      validations.checkLocationTags(location);
+      location = location.map(x => x.trim().toLowerCase());
 
       validations.isSalary(salary);
       salary = Number(salary);
@@ -306,30 +201,35 @@ const companyFunctions = {
       } 
 
       let temp = await this.getJobById(id);
-      // console.log("temp", temp);
+
+      let getCompanyDetails = await this.getCompanyDataFromEmail(companyEmail);
 
       let updatedInfo = await companyCollection.updateOne(
 
-        {"jobs._id": new ObjectId(id)}, // TODO validate id's
+        {"jobs._id": new ObjectId(id)},
         {$pull: {jobs: { jobTitle: temp.jobs[0].jobTitle }}},
         {returnDocument: 'after'}
 
       );
 
-      // this.createJob()
+      let getCompanyInfo = await companyCollection.updateOne(
 
-      // console.log(updatedInfo.value.jobs);
+        {_id: getCompanyDetails._id},
+        {$push: {jobs: jobData}},
+        {returnDocument: 'after'}
 
-      return updatedInfo;
+      )
+
+      return getCompanyInfo;
     },
 
     async getJobById (id) {
 
       if (!id) throw "Error : Invalid Id";
       if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
+      id = id.trim();
 
       let getJob = await companyCollection.findOne( { "jobs._id": new ObjectId(id) }, { projection: { companyName: 1, "jobs.$": 1 } });
-      console.log(getJob);
       
       if (!getJob || getJob.length === 0) throw "Error : No Job Found";
       
@@ -338,8 +238,12 @@ const companyFunctions = {
       
     },
 
-    async updateCompany(companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc) {
+    async updateCompany(email, companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc) {
       
+
+      if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description || !imgSrc )
+        throw "Error : You should provide all the parameters";
+
       validations.isNumberOfEmployee(numberOfEmployees);
       validations.checkEmail(companyEmail);
       numberOfEmployees = Number(numberOfEmployees);
@@ -347,7 +251,7 @@ const companyFunctions = {
       if (!validations.isProperString([companyName, industry, description]))
         throw "Error : Parameters can only be string not just string with empty spaces";
 
-      validations.isArrayWithTheNonEmptyString([locations])
+      validations.checkLocationTags(locations);
         
       companyName = companyName.trim().toLowerCase();
       industry = industry.trim().toLowerCase();
@@ -368,9 +272,11 @@ const companyFunctions = {
         imgSrc,
       }
 
+      let getCompanyDetails = await this.getCompanyDataFromEmail(email);
+
       const updatedInfo = await companyCollection.findOneAndUpdate(
 
-        {companyName: companyName},
+        {companyName: getCompanyDetails.companyName},
         {$set: updatedData},
         {returnDocument: 'after'}
 
@@ -390,189 +296,182 @@ const companyFunctions = {
       if (!companyName) throw "Error : company name cannot be empty";
       if (!validations.isProperString([companyName])) throw "Error : Company Name must be valid string";
 
+      companyName = companyName.trim();
+
       let allJobs = await companyCollection.find({ companyName: companyName }, { projection : { jobs: 1 } } ).toArray();
        
       return allJobs;
     },
 
-    
-  async updateJob(
-    companyName,
-    companyEmail,
-    jobTitle,
-    salary,
-    level,
-    jobType,
-    skills,
-    location,
-    description
-  ) {
-    if (
-      !companyName ||
-      !companyEmail ||
-      !jobTitle ||
-      !salary ||
-      !level ||
-      !jobType ||
-      !location ||
-      !description
-    )
-      throw "Error : All parameters are required";
+    async getAllCompanyName() {
+      let res = ["others"];
+      let companyNmae = await companyCollection
+        .find({}, { projection: { companyName: 1 } })
+        .toArray();
+      if (companyNmae.length === 0) throw "no company in database";
+      for (let x of companyNmae) {
+        res.push(x.companyName);
+      }
+      return res.sort();
+    },
 
-    if (
-      !validations.isProperString([
-        companyName,
-        companyEmail,
-        jobTitle,
-        description,
-        level,
-      ])
-    )
-      throw "Error : Parameters can only be string not just string with empty spaces";
+    async getAllCompanyNameinObject() {
+      let companyName = await companyCollection
+        .find({}, { projection: { companyName: 1 } })
+        .toArray();
+      if (companyName.length === 0) throw "no company in database";
+      companyName.push({ companyName: "others" });
+      return companyName;
+    },
 
-    if (typeof jobType === "string") {
-      if (!validations.isProperString([jobType]))
-        throw "Error : job type can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
-      jobType = jobType.map((x) => x.trim().toLowerCase());
+    async deleteJob (id) {
+
+      if (!id || !ObjectId.isValid(id)) throw "Error: Invalid Id";
+
+      let temp = await this.getJobById(id);
+      // console.log(temp);
+
+      let updatedInfo = await companyCollection.updateOne(
+
+        {_id: new ObjectId(temp._id)},
+        {$pull: { "jobs": { "_id": new ObjectId(id) }} },
+        {returnDocument: 'after'}
+
+      );
+
+      if (!updatedInfo) throw "Error: Cannot delete the listing";
+      
+      return updatedInfo;
     }
 
-    if (typeof skills === "string") {
-      if (!validations.isProperString([jobType]))
-        throw "Error : skills can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForSkills([skills]);
-      skills = skills.map((x) => x.trim().toLowerCase());
-    }
 
-    if (typeof location === "string") {
-      if (!validations.isProperString([location]))
-        throw "Error : location can only be a valid string or array with valid strings";
-    } else {
-      validations.isArrayWithTheNonEmptyStringForLocation([location]);
-      location = location.map((x) => x.trim().toLowerCase());
-    }
+  //   if (typeof location === "string") {
+  //     if (!validations.isProperString([location]))
+  //       throw "Error : location can only be a valid string or array with valid strings";
+  //   } else {
+  //     validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  //     location = location.map((x) => x.trim().toLowerCase());
+  //   }
 
-    validations.isSalary(salary);
-    salary = Number(salary);
+  //   validations.isSalary(salary);
+  //   salary = Number(salary);
 
-    let jobData = {
-      _id: new ObjectId(),
-      jobTitle: jobTitle.trim().toLowerCase(),
-      skills: skills,
-      salary,
-      location,
-      description: description.trim().toLowerCase(),
-    };
+  //   let jobData = {
+  //     _id: new ObjectId(),
+  //     jobTitle: jobTitle.trim().toLowerCase(),
+  //     skills: skills,
+  //     salary,
+  //     location,
+  //     description: description.trim().toLowerCase(),
+  //   };
 
-    let updatedInfo = await companyCollection.findOneAndUpdate(
-      { "jobs._id": new ObjectId(id) }, // TODO validate id's
-      { $set: jobData },
-      { returnDocument: "after" }
-    );
+  //   let updatedInfo = await companyCollection.findOneAndUpdate(
+  //     { "jobs._id": new ObjectId(id) }, // TODO validate id's
+  //     { $set: jobData },
+  //     { returnDocument: "after" }
+  //   );
 
-    return updatedInfo;
-  },
+  //   return updatedInfo;
+  // },
 
-  async getJobById(id) {
-    if (!id) throw "Error : Invalid Id";
-    if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
+  // async getJobById(id) {
+  //   if (!id) throw "Error : Invalid Id";
+  //   if (!ObjectId.isValid(id)) throw "Error : Invalid Id";
 
-    let getJob = await companyCollection.findOne({
-      "jobs._id": new ObjectId(id),
-    });
-    if (!getJob || getJob.length === 0) throw "Error : No Job Found";
+  //   let getJob = await companyCollection.findOne({
+  //     "jobs._id": new ObjectId(id),
+  //   });
+  //   if (!getJob || getJob.length === 0) throw "Error : No Job Found";
 
-    return getJob;
-  },
+  //   return getJob;
+  // },
 
-  async updateCompany(
-    companyName,
-    companyEmail,
-    industry,
-    locations,
-    numberOfEmployees,
-    description,
-    imgSrc
-  ) {
-    validations.isNumberOfEmployee(numberOfEmployees);
-    validations.checkEmail(companyEmail);
-    numberOfEmployees = Number(numberOfEmployees);
+  // async updateCompany(
+  //   companyName,
+  //   companyEmail,
+  //   industry,
+  //   locations,
+  //   numberOfEmployees,
+  //   description,
+  //   imgSrc
+  // ) {
+  //   validations.isNumberOfEmployee(numberOfEmployees);
+  //   validations.checkEmail(companyEmail);
+  //   numberOfEmployees = Number(numberOfEmployees);
 
-    if (!validations.isProperString([companyName, industry, description]))
-      throw "Error : Parameters can only be string not just string with empty spaces";
+  //   if (!validations.isProperString([companyName, industry, description]))
+  //     throw "Error : Parameters can only be string not just string with empty spaces";
 
-    validations.isArrayWithTheNonEmptyString([locations]);
+  //   validations.isArrayWithTheNonEmptyString([locations]);
 
-    companyName = companyName.trim().toLowerCase();
-    industry = industry.trim().toLowerCase();
-    locations = locations.map((x) => x.trim()); // TODO : Must fall in the states array.
-    description = description.trim().toLowerCase();
+  //   companyName = companyName.trim().toLowerCase();
+  //   industry = industry.trim().toLowerCase();
+  //   locations = locations.map((x) => x.trim()); // TODO : Must fall in the states array.
+  //   description = description.trim().toLowerCase();
 
-    let ifExists = await companyCollection.findOne({
-      companyEmail: companyEmail,
-    });
-    if (!ifExists) throw "Error : No Company Found";
+  //   let ifExists = await companyCollection.findOne({
+  //     companyEmail: companyEmail,
+  //   });
+  //   if (!ifExists) throw "Error : No Company Found";
 
-    let updatedData = {
-      companyName,
-      companyEmail,
-      industry,
-      locations,
-      numberOfEmployees,
-      description,
-      jobs: ifExists.jobs,
-      imgSrc,
-    };
+  //   let updatedData = {
+  //     companyName,
+  //     companyEmail,
+  //     industry,
+  //     locations,
+  //     numberOfEmployees,
+  //     description,
+  //     jobs: ifExists.jobs,
+  //     imgSrc,
+  //   };
 
-    const updatedInfo = await companyCollection.findOneAndUpdate(
-      { companyName: companyName },
-      { $set: updatedData },
-      { returnDocument: "after" }
-    );
+  //   const updatedInfo = await companyCollection.findOneAndUpdate(
+  //     { companyName: companyName },
+  //     { $set: updatedData },
+  //     { returnDocument: "after" }
+  //   );
 
-    if (updatedInfo.lastErrorObject.n === 0) {
-      throw "could not update company successfully";
-    }
+  //   if (updatedInfo.lastErrorObject.n === 0) {
+  //     throw "could not update company successfully";
+  //   }
 
-    updatedInfo.value._id = updatedInfo.value._id.toString();
-    return updatedInfo.value;
-  },
+  //   updatedInfo.value._id = updatedInfo.value._id.toString();
+  //   return updatedInfo.value;
+  // },
 
-  async getAllJobs(companyName) {
-    if (!companyName) throw "Error : company name cannot be empty";
-    if (!validations.isProperString([companyName]))
-      throw "Error : Company Name must be valid string";
+  // async getAllJobs(companyName) {
+  //   if (!companyName) throw "Error : company name cannot be empty";
+  //   if (!validations.isProperString([companyName]))
+  //     throw "Error : Company Name must be valid string";
 
-    let allJobs = await companyCollection
-      .find({ companyName: companyName }, { projection: { jobs: 1 } })
-      .toArray();
+  //   let allJobs = await companyCollection
+  //     .find({ companyName: companyName }, { projection: { jobs: 1 } })
+  //     .toArray();
 
-    return allJobs;
-  },
+  //   return allJobs;
+  // },
 
-  async getAllCompanyName() {
-    let res = ["others"];
-    let companyNmae = await companyCollection
-      .find({}, { projection: { companyName: 1 } })
-      .sort({ companyName: 1 })
-      .toArray();
-    if (companyNmae.length === 0) throw "no company in database";
-    for (let x of companyNmae) {
-      res.push(x.companyName);
-    }
-    return res.sort();
-  },
-  async getAllCompanyNameinObject() {
-    let companyName = await companyCollection
-      .find({}, { projection: { companyName: 1 } })
-      .sort({ companyName: 1 })
-      .toArray();
-    if (companyName.length === 0) throw "no company in database";
-    companyName.push({ companyName: "others" });
-    return companyName;
-  },
+  // async getAllCompanyName() {
+  //   let res = ["others"];
+  //   let companyNmae = await companyCollection
+  //     .find({}, { projection: { companyName: 1 } })
+  //     .sort({ companyName: 1 })
+  //     .toArray();
+  //   if (companyNmae.length === 0) throw "no company in database";
+  //   for (let x of companyNmae) {
+  //     res.push(x.companyName);
+  //   }
+  //   return res.sort();
+  // },
+  // async getAllCompanyNameinObject() {
+  //   let companyName = await companyCollection
+  //     .find({}, { projection: { companyName: 1 } })
+  //     .sort({ companyName: 1 })
+  //     .toArray();
+  //   if (companyName.length === 0) throw "no company in database";
+  //   companyName.push({ companyName: "others" });
+  //   return companyName;
+  // },
 };
 
 export default companyFunctions;

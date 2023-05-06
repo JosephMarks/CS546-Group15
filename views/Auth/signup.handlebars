@@ -3,8 +3,8 @@
 <div class="signup-container">
         <div class="signUp">
 
-            <form class="row g-3 needs-validation" action="/signUp/data" method="post">
-                <span id="errorDisplay" style="color: red"> {{error}} </span>
+            <form class="row g-3 needs-validation" action="/signUp/data" method="post" id="registration-form">
+                <span id="errorDisplay" > {{error}} </span>
                 <img id = "icon" src='../public/static/images/user.svg' alt="user icon">
 
                 <div class="col-md-12">
@@ -30,6 +30,11 @@
                 <div class="col-md-12">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" placeholder="Must be atleast 8 characters" id="password" name="password">
+                </div> 
+
+                <div class="col-md-12">
+                    <label for="cpassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" placeholder="Must be atleast 8 characters" id="cpassword" name="cpassword">
                 </div> 
 
                 <div class="col-md-12">

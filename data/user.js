@@ -67,7 +67,7 @@ const exportedMethods = {
     let university = "";
     let collegeMajor = "";
     let gitHubUserName = "";
-    let interestArea = [];
+    let skills = [];
     let experience = 0;
     let jobHistory = [];
     let seekingJob = [];
@@ -95,7 +95,7 @@ const exportedMethods = {
         university,
         collegeMajor,
         gitHubUserName,
-        interestArea,
+        skills,
         experience,
         jobHistory,
         seekingJob,
@@ -133,7 +133,7 @@ const exportedMethods = {
         university,
         collegeMajor,
         gitHubUserName,
-        interestArea,
+        skills,
         experience,
         jobHistory,
         seekingJob,
@@ -154,13 +154,31 @@ const exportedMethods = {
       return returnUser;
     }
   },
-
+  async updateUsersCompany(
+    userId,
+    updateData // update user's profile
+  ) {
+    const userCollection = await users();
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $set: { companyName: updateData } },
+      { returnDocument: "after" }
+    );
+    if (updateInfo.lastErrorObject.n === 0)
+      throw [
+        404,
+        `Error: Update failed, could not find a user with id of ${userId}`,
+      ];
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return await updateInfo.value;
+  },
   async updateUsers(
     userId,
     updateData // update user's profile
   ) {
     userId = validations.checkId(userId);
     rules.validate(updateData.password);
+    
     let fname = validations.validateNameReturn(updateData.fname);
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
@@ -186,8 +204,8 @@ const exportedMethods = {
       updateData.collegeMajor,
       "Major"
     );
-    let interestArea = validations.checkStringArray(
-      updateData.interestArea,
+    let skills = validations.checkStringArray(
+      updateData.skills,
       "Interest area"
     );
     let experience = validations.checkExperience(
@@ -215,6 +233,11 @@ const exportedMethods = {
       updateData.updatedAt,
       "Updated date"
     ); // updated date can be modified
+
+    let gitHubUserName = updateData.gitHubUserName.trim();
+    if (typeof gitHubUserName !== "string" || gitHubUserName.length === 0) {
+      throw new Error("Github username must be a string that is not empty");
+    }
     const userCollection = await users();
     let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
@@ -233,7 +256,8 @@ const exportedMethods = {
       image: image,
       university: university,
       collegeMajor: collegeMajor,
-      interestArea: interestArea,
+      gitHubUserName: gitHubUserName,
+      skills: skills,
       experience: experience,
       jobHistory: jobHistory,
       seekingJob: seekingJob,
@@ -398,18 +422,18 @@ const exportedMethods = {
     return { firstName: user.fname, lastName: user.lname };
   },
 
-  async getUserInterestArea(id) {
+  async getUserSkills(id) {
     if (!id || ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
 
-    let getUserInterests = await userCollection.findOne(
+    let getUserSkills = await userCollection.findOne(
       { _id: new ObjectId(id) },
-      { projection: { interestArea: 1 } }
+      { projection: { skills: 1 } }
     );
-    if (!getUserInterests) throw "Error : Users interest area is empty";
+    if (!getUserSkills) throw "Error : Users interest area is empty";
 
-    return getUserInterests;
+    return getUserSkills;
   },
 };
 

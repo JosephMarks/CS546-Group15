@@ -118,8 +118,12 @@ app.use("/referral", (req, res, next) => {
   }
   next();
 });
-app.use("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
+app.post("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
+  next();
+});
+app.post("/referral/post/:userid/postId/:id/remove", (req, res, next) => {
+  req.method = "delete";
   next();
 });
 app.use("/socialmediaposts", (req, res, next) => {
@@ -135,6 +139,47 @@ app.use("/socialmediaposts", (req, res, next) => {
 
 app.post("/socialmediaposts/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
+  next();
+});
+
+app.post(
+  "/socialmediaposts/post/:userid/postId/:id/remove",
+  (req, res, next) => {
+    req.method = "delete";
+    next();
+  }
+);
+
+app.post("/company/updateCompany/:name", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.get("/company/delete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+///jobUpdate/:id
+
+app.get("/company/jobDelete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+app.post("/company/jobUpdate/:id", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.use("/referral", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
   next();
 });
 
@@ -188,13 +233,11 @@ app.use("/logout", (req, res, next) => {
 });
 
 app.use("/recommendation", (req, res, next) => {
-
   if (req.session && !req.session.user) {
     return res.redirect("/login");
   } else {
     next();
   }
-  
 });
 
 app.use("/", (req, res, next) => {
