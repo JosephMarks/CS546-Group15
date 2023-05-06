@@ -58,19 +58,21 @@
 </script>
 
 <h3>Job History:</h3>
-<a
-  href="/profile/{{_id}}/addJobHistory"
-  class="btn btn-sm btn-outline-secondary btn-sky-blue"
->
-  Add Job History
-</a>
+{{#if isMyProfile}}
+  <a
+    href="/profile/{{_id}}/addJobHistory"
+    class="btn btn-sm btn-outline-secondary btn-sky-blue"
+  >
+    Add Job History
+  </a>
 
-<a
-  href="/profile/{{_id}}/updateJobHistory"
-  class="btn btn-sm btn-outline-secondary btn-sky-blue"
->
-  Edit Job History
-</a>
+  <a
+    href="/profile/{{_id}}/updateJobHistory"
+    class="btn btn-sm btn-outline-secondary btn-sky-blue"
+  >
+    Edit Job History
+  </a>
+{{/if}}
 
 {{#if jobHistory}}
   <div>
@@ -123,9 +125,11 @@
 {{/if}}
 {{#if connections.length}}
   <h2>Connections:</h2>
-  <div style="text-align: center;">
-    <a href="/network/post/{{_id}}" class="btn btn-primary">My Network</a>
-  </div>
+  {{#if isMyProfile}}
+    <div style="text-align: center;">
+      <a href="/network/post/{{_id}}" class="btn btn-primary">My Network</a>
+    </div>
+  {{/if}}
   <ul>
     {{#each connections}}
       <li><a href="/profile/{{this.id}}">{{this.firstName}}

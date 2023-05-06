@@ -8,6 +8,8 @@ import fs from "fs";
 import network from "../data/network.js";
 import * as messageData from "../data/messages.js";
 import * as jobHistoryData from "../data/userJobHistory.js";
+// import { checkProfileAccess } from "../app.js";
+import validation from "../helpers.js";
 
 import { messages } from "../config/mongoCollections.js";
 // import { de } from "date-fns/locale";
@@ -111,6 +113,16 @@ router.route("/:id").get(async (req, res) => {
 
 router.get("/:id/edit", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -129,6 +141,16 @@ router.get("/:id/edit", async (req, res) => {
 
 router.get("/:id/addJobHistory", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -149,6 +171,16 @@ router.get("/:id/addJobHistory", async (req, res) => {
 
 router.get("/:id/updateJobHistory", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   try {
     let userInfo = await userData.getUserById(id);
@@ -166,6 +198,17 @@ router.get("/:id/updateJobHistory", async (req, res) => {
 
 router.post("/:id/addJobHistory", async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   let { role, organization, startDate, endDate, description } = req.body;
 
   if (!role || !organization || !startDate || !endDate || !description) {
@@ -231,6 +274,17 @@ router.post("/:id/addJobHistory", async (req, res) => {
 
 router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const id = req.params.id;
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   const fname = req.body.fname;
   const lname = req.body.lname;
   const gender = req.body.gender;
