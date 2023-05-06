@@ -289,7 +289,7 @@ const exportedMethods = {
     const updatedPostData = {};
     if (updatedPost.posterId) {
       updatedPostData["poster.id"] = validation.checkId(
-        updatedPost.poster.id,
+        updatedPost.posterId,
         "Poster ID"
       );
 
