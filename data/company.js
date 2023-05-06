@@ -148,6 +148,9 @@ const companyFunctions = {
       validations.isSalary(salary);
       salary = Number(salary);
 
+      companyName = companyName.trim().toLowerCase();
+      companyEmail = companyEmail.trim().toLowerCase();
+      level = level.trim().toLowerCase();
       jobTitle = jobTitle.trim().toLowerCase();
       description = description.trim().toLowerCase();
 
@@ -165,6 +168,11 @@ const companyFunctions = {
       } 
 
       const sameJob = await companyCollection.findOne({companyEmail: companyEmail, "jobs.jobTitle": jobTitle});
+
+      let companyNameVal = await companyCollection.findOne({companyEmail: companyEmail});
+      
+      if (companyNameVal.companyName !== companyName) throw "Error : Company Email does not belong to the Company Name";
+
       if (sameJob) throw "Error: same company cannot have same job title";
 
       let createJobDetails = await companyCollection.updateOne({companyEmail: companyEmail}, {$push: {jobs: jobData}});
@@ -213,6 +221,9 @@ const companyFunctions = {
       let temp = await this.getJobById(id);
 
       let getCompanyDetails = await this.getCompanyDataFromEmail(companyEmail);
+      let companyNameVal = await companyCollection.findOne({companyEmail: companyEmail});
+      
+      if (companyNameVal.companyName !== companyName) throw "Error : Company Email does not belong to the Company Name";
 
       let updatedInfo = await companyCollection.updateOne(
 

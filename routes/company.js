@@ -409,6 +409,7 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   } catch (e) {
 
     if (e === "Error : All parameters are required" || 
+    e === "Error : Company Email does not belong to the Company Name" ||
     e === "Error : Parameters can only be string not just string with empty spaces" || 
     e === "Error: same company cannot have same job title") return res.status(400).render("company/createJobs", { error: e, title: "Create Job", session: req.session.user, companyDetails: { companyName } });
 
