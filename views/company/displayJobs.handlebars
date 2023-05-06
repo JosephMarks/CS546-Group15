@@ -4,7 +4,7 @@
 
     <h1> {{companyName}} </h1>
     
-    <span id="errorDisplay"> {{error}} </span>
+    <span id="errorDisplay" > {{error}} </span>
 
     {{#each jobs}}
 
@@ -35,8 +35,12 @@
                     Description : {{{ this.description }}}
                 </div>
 
-            <input type="submit" value="Edit Details or Delete">
-            <a href=/company/jobSingleDisplay/:{{{this._id}}}> View Details </a>
+            <input type="submit" value="Edit Details">
+
+                <a href=/company/jobSingleDisplay/{{{this._id}}}> View Details </a>
+                
+                <a href=/company/jobDelete/{{{this._id}}}> Delete </a>
+
             </div>
             
         </form>

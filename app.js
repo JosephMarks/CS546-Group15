@@ -141,6 +141,7 @@ app.post("/socialmediaposts/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
   next();
 });
+
 app.post(
   "/socialmediaposts/post/:userid/postId/:id/remove",
   (req, res, next) => {
@@ -148,6 +149,40 @@ app.post(
     next();
   }
 );
+
+app.post("/company/updateCompany/:name", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.get("/company/delete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+///jobUpdate/:id
+
+app.get("/company/jobDelete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+app.post("/company/jobUpdate/:id", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.use("/referral", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
     return res.render("Auth/login", {
