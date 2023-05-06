@@ -5,10 +5,6 @@ import multer from "multer";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
 import xss from "xss";
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -201,11 +197,11 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   industry = xss(req.body.industry);
-  employee = xss(req.body.employee);
+  numberOfEmployees = xss(req.body.numberOfEmployees);
   description = xss(req.body.description);
 
   if (typeof(location) === 'string') location = [location];
-  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  validations.checkLocationTags([location]);
 
   location = location.map(x => xss(x));
 
@@ -345,15 +341,15 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   description = xss(req.body.description);
 
   if (typeof (jobType) === 'string') jobType = [jobType];
-  validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+  validations.checkJobtypeTags(jobType);
   jobType = jobType.map(x => xss(x));
 
   if (typeof(location) === 'string') location = [location];
-  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  validations.checkLocationTags(location);
   location = location.map(x => xss(x));
 
   if (typeof (skills) === 'string') skills = [skills];
-  validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+  validations.checkSkillsTags(skills);
   skills = skills.map(x => xss(x));
 
   try {
@@ -517,15 +513,15 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
   description = xss(req.body.description);
 
   if (typeof (jobType) === 'string') jobType = [jobType];
-  validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+  validations.checkJobtypeTags(jobType);
   jobType = jobType.map(x => xss(x));
 
   if (typeof(location) === 'string') location = [location];
-  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  validations.checkLocationTags(location);
   location = location.map(x => xss(x));
 
   if (typeof (skills) === 'string') skills = [skills];
-  validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+  validations.checkSkillsTags(skills);
   skills = skills.map(x => xss(x));
   
   try {
