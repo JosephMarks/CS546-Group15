@@ -1041,21 +1041,31 @@ router
     let fields = [];
 
     let company = [];
-    if (req.body.field) {
-      if (typeof req.body.field === "string") {
-        fields.push(req.body.field);
-      } else {
-        fields = req.body.fields;
+    try {
+      if (req.body.field) {
+        if (typeof req.body.field === "string") {
+          fields.push(req.body.field);
+        } else {
+          fields = req.body.fields;
+        }
+        fields = fields.map((x) => xss(x));
       }
-      fields = fields.map((x) => xss(x));
-    }
-    if (req.body.company) {
-      if (typeof req.body.company === "string") {
-        company.push(req.body.company);
-      } else {
-        company = req.body.company;
+      if (req.body.company) {
+        if (typeof req.body.company === "string") {
+          company.push(req.body.company);
+        } else {
+          company = req.body.company;
+        }
+        company = company.map((x) => xss(x));
       }
-      company = company.map((x) => xss(x));
+    } catch (error) {
+      return res.status(500).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
     }
 
     let companyList = await companyData.getAllCompanyNameinObject();
