@@ -102,7 +102,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (xss(req.file.filename)));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename)));
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
