@@ -5,6 +5,10 @@ import multer from "multer";
 import validations from "../helpers.js";
 import { ObjectId } from "mongodb";
 import xss from "xss";
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -50,6 +54,18 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
   let { companyName, companyEmail, industry, employee, location, description } = bodyData;
   let createdAt = new Date();
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  employee = xss(req.body.employee);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+  location = location.map(x => xss(x));
+
+
   try {
 
     if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename )
@@ -90,7 +106,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (req.file.filename));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (xss(req.file.filename)));
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
@@ -181,6 +197,17 @@ router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (
   }
 
   let { companyName, companyEmail, industry, numberOfEmployees, location, description } = bodyData;
+
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  industry = xss(req.body.industry);
+  employee = xss(req.body.employee);
+  description = xss(req.body.description);
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+
+  location = location.map(x => xss(x));
 
   try {
 
@@ -309,6 +336,25 @@ router.route("/job/:name").post(async (req, res) => { // create job post
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
   req.body;
+
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  jobTitle = xss(req.body.jobTitle);
+  salary = xss(req.body.salary);
+  level = xss(req.body.level);
+  description = xss(req.body.description);
+
+  if (typeof (jobType) === 'string') jobType = [jobType];
+  validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+  jobType = jobType.map(x => xss(x));
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  location = location.map(x => xss(x));
+
+  if (typeof (skills) === 'string') skills = [skills];
+  validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+  skills = skills.map(x => xss(x));
 
   try {
 
@@ -463,6 +509,25 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } = req.body;
 
+  companyName = xss(req.body.companyName);
+  companyEmail = xss(req.body.companyEmail);
+  jobTitle = xss(req.body.jobTitle);
+  salary = xss(req.body.salary);
+  level = xss(req.body.level);
+  description = xss(req.body.description);
+
+  if (typeof (jobType) === 'string') jobType = [jobType];
+  validations.isArrayWithTheNonEmptyStringForJobType([jobType]);
+  jobType = jobType.map(x => xss(x));
+
+  if (typeof(location) === 'string') location = [location];
+  validations.isArrayWithTheNonEmptyStringForLocation([location]);
+  location = location.map(x => xss(x));
+
+  if (typeof (skills) === 'string') skills = [skills];
+  validations.isArrayWithTheNonEmptyStringForSkills([skills]);
+  skills = skills.map(x => xss(x));
+  
   try {
 
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
