@@ -121,11 +121,17 @@
     true }); });
   </script>
 {{/if}}
-<div>{{#if connections}}
-    <h2>Connections:</h2>
-    <ul>
-      {{#each connections}}
-        <li><a href="/profile/{{this._id}}">{{this.name}}</a></li>
-      {{/each}}
-    </ul>
-  {{/if}}</div>
+{{#if connections.length}}
+  <h2>Connections:</h2>
+  <div style="text-align: center;">
+    <a href="/network/post/{{_id}}" class="btn btn-primary">My Network</a>
+  </div>
+  <ul>
+    {{#each connections}}
+      <li><a href="/profile/{{this.id}}">{{this.firstName}}
+          {{this.lastName}}</a></li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No connections available.</p>
+{{/if}}

@@ -70,7 +70,19 @@ router.route("/:id").get(async (req, res) => {
     let jobHistory = await jobHistoryData.getAll(id);
     let connections = await network.getConnections(id);
     connections = connections.slice(0, 5);
-    console.log(connections);
+    let connectionsObj = [];
+    for (const connection of connections) {
+      const { firstName, lastName } = await userData.getUserFullNameById(
+        connection
+      );
+      let userObj = {};
+      userObj.firstName = firstName;
+      userObj.lastName = lastName;
+      userObj.id = connection;
+      connectionsObj.push(userObj);
+    }
+
+    console.log(connectionsObj);
 
     res.render("./profile/profile", {
       title: "Profile Page",
@@ -82,7 +94,7 @@ router.route("/:id").get(async (req, res) => {
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
-      connections: connections,
+      connections: connectionsObj,
       university: university,
       locationState: locationState,
       collegeMajor: collegeMajor,
