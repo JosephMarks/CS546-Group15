@@ -1,7 +1,9 @@
 {{#each jobHistory}}
   <div class="job">
     <h2>{{role}} at {{organization}}</h2>
-    <form action="/profile/{{../_id}}/updateJobHistory" method="post">
+<form id="jobHistoryForm" action="/profile/{{../_id}}/updateJobHistory" method="post">
+<div class="error"></div>
+
       <div class="form-group">
         <label for="role-{{_id}}">Role:</label>
         <input type="text" class="form-control" id="role-{{_id}}" name="role{{_id}}" value="{{role}}" required />
@@ -49,7 +51,9 @@
           required
         >{{description}}</textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+<button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
     </form>
   </div>
 {{/each}}
+
+<script src="/public/js/updateJobs.js"></script>

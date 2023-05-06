@@ -3,6 +3,7 @@ import userData from "../data/user.js";
 import validations from "../helpers.js";
 import { parse, isValid } from "date-fns";
 import { users } from "../config/mongoCollections.js";
+import { isBefore, differenceInCalendarDays } from "date-fns";
 
 export const create = async (
   userId,
@@ -278,6 +279,24 @@ export const update = async (
       updateObject["jobHistory.$.endDate"] = endDate.trim();
     } else {
       updateObject["jobHistory.$.endDate"] = endDate;
+    }
+  }
+
+  // Check if endDate is not in the future
+  if (endDate !== "present") {
+    const currentDate = new Date();
+    const parsedEndDate = parse(endDate, "MM/dd/yyyy", currentDate);
+    if (differenceInCalendarDays(parsedEndDate, currentDate) > 0) {
+      throw new Error("End date cannot be in the future");
+    }
+  }
+
+  // Check if endDate is not before startDate
+  if (startDate && endDate !== "present") {
+    const parsedStartDate = parse(startDate, "MM/dd/yyyy", new Date());
+    const parsedEndDate = parse(endDate, "MM/dd/yyyy", new Date());
+    if (isBefore(parsedEndDate, parsedStartDate)) {
+      throw new Error("End date cannot be before start date");
     }
   }
   if (description) {
