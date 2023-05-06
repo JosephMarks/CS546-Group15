@@ -312,7 +312,9 @@ router
         companyEmail,
       });
     }
-
+    companyEmail = companyEmail.trim();
+    jobTitle = jobTitle.trim();
+    description = description.trim();
     try {
       jobTitle = validation.validateNameAllNumberReturn(jobTitle);
     } catch (error) {
@@ -438,6 +440,7 @@ router
       });
     }
     try {
+      salary = salary.trim();
       validation.isSalary(salary);
       salary = Number(salary);
     } catch (error) {
@@ -1108,7 +1111,6 @@ router
         return res.render("referral/searchPage", {
           title: "Search Post",
           h1: "Search Post",
-          g: g,
           userId: req.session.user.userId,
           userPost: userPost,
           companyList: companyList,

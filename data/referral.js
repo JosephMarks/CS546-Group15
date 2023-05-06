@@ -141,7 +141,7 @@ const exportedMethods = {
   },
 
   async getPostsByCompanyTag(companyName) {
-    if (!Array.isArray(company)) {
+    if (!Array.isArray(companyName)) {
       companyName = [];
     } else {
       companyName = await validation.checkCompanyTags(companyName);
@@ -233,6 +233,7 @@ const exportedMethods = {
     }
 
     companyEmail = validation.checkEmail(companyEmail, "companyEmail");
+    salary = salary.trim();
     validation.isSalary(salary);
     salary = Number(salary);
     jobType = validation.checkJobtypeTags(jobType);
@@ -270,7 +271,7 @@ const exportedMethods = {
       },
       duedate: duedate,
       fields: fields,
-      companyEmail: companyEmail,
+      companyEmail: companyEmail.toLowerCase(),
       company: [companyName],
       jobs: jobData,
       likes: [],
