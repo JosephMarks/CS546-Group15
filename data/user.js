@@ -29,6 +29,18 @@ const exportedMethods = {
     return userList;
   },
 
+  async getUserByEmail(email){
+
+    email = validations.checkEmail(email);
+    const userCollection = await users();
+
+    let userDetails = await userCollection.findOne({ email: email });
+
+    if (!userDetails) throw "Error :No user found";
+    else return userDetails;
+
+  },
+
   async getUserById(
     userId // get user from user collection using their id
   ) {
@@ -400,10 +412,11 @@ const exportedMethods = {
   },
 
   async getUserSkills(id) {
-    if (!id || ObjectId.isValid(id)) {
+    if (!id || !ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
-
+      
+    const userCollection = await users();
     let getUserSkills = await userCollection.findOne(
       { _id: new ObjectId(id) },
       { projection: { skills: 1 } }
