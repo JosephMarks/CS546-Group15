@@ -102,7 +102,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, createdAt, encodeURIComponent (xss(req.file.filename)));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename)));
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
@@ -182,9 +182,13 @@ router.route("/dataUpdate/:name").get(async (req, res) => { // done company upda
 });
 
 
-router.route("/updateCompany/:name").patch(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
+router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (req, res) => { // chnage the method company update post
 
   const bodyData = req.body;
+  let id = req.params.id;
+
+  if (!id || !ObjectId.isValid(id)) return res.render('error', { error: 'Error : Not a Valid Id' });
+  id = id.trim();
 
   if (!bodyData || Object.keys(bodyData).length === 0) {
 
@@ -405,6 +409,7 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   } catch (e) {
 
     if (e === "Error : All parameters are required" || 
+    e === "Error : Company Email does not belong to the Company Name" ||
     e === "Error : Parameters can only be string not just string with empty spaces" || 
     e === "Error: same company cannot have same job title") return res.status(400).render("company/createJobs", { error: e, title: "Create Job", session: req.session.user, companyDetails: { companyName } });
 

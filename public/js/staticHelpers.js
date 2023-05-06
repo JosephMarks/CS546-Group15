@@ -47,8 +47,8 @@ const validations = {
   },
     validateCandidateType(param) {
         if (
-            (param.trim().toLowerCase() !== "student") &&
-            (param.trim().toLowerCase() !== "company")
+            (param !== "Student") &&
+            (param !== "Company")
         ) {
             throw "Error : Candidate Type can only be Student or Company"
         }
