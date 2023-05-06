@@ -18,14 +18,14 @@ router.route("/").get(async (req, res) => {
 
   } catch (e) {
     if (e === "Error :No user found") {
-      return res.status(404).render('error', {error: e});
+      return res.status(404).render('error', {error: e, title:"error"});
     } else {
       return res.status(500).render('error', {error : e});
     }
   }
 
   if (!id || !ObjectId.isValid(id)) {
-    return res.status(400).render("error", { error: "Error : Not a valid Id" });
+    return res.status(400).render("error", { error: "Error : Not a valid Id", title:"error" });
   }
 
   try {
@@ -34,7 +34,7 @@ router.route("/").get(async (req, res) => {
     allCompany = await companyFunctions.getAllCompanyJobs();
 
     if (!getSkills.skills) {
-      return res.status(400).render('error', {error: "No skills no recommendation"});
+      return res.status(400).render('error', {error: "No skills no recommendation", title:"error"});
     }else {
       getSkills = getSkills.skills;
     }
@@ -61,13 +61,13 @@ router.route("/").get(async (req, res) => {
       //console.log(allMyJobs);
 
       if (allMyJobs.length === 0) {
-        return res.render('company/recommendation', { error: "Sorry no job matches your skill" });
+        return res.render('company/recommendation', { error: "Sorry no job matches your skill", title: "no jobs" });
       }
 
-      return res.render('company/recommendation', { jobs: allMyJobs });
+      return res.render('company/recommendation', { jobs: allMyJobs, title: "your jobs" });
       
     } catch(e) {
-      return res.status(500).render("error", { error: e });
+      return res.status(500).render("error", { error: e, title: "error" });
     }
 
     // return res.json({allMyJobs});
@@ -77,8 +77,8 @@ router.route("/").get(async (req, res) => {
       e === "Error : Users interest area is empty" ||
       e === "Error : Invalid Id"
     ) {
-      return res.status(400).render("error", { error: e });
-    } else return res.status(500).render("error", { error: e });
+      return res.status(400).render("error", { error: e , title:"error"});
+    } else return res.status(500).render("error", { error: e , title:"error"});
   }
 });
 
