@@ -138,6 +138,39 @@ app.post("/socialmediaposts/post/:userid/postId/:id/edit", (req, res, next) => {
   next();
 });
 
+app.post("/company/updateCompany/:name", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.get("/company/delete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+///jobUpdate/:id
+
+app.get("/company/jobDelete/:id", (req, res, next) => {
+  req.method = "delete"
+  next();
+});
+
+app.post("/company/jobUpdate/:id", (req, res, next) => {
+  req.method = "patch"
+  next();
+});
+
+app.use("/referral", (req, res, next) => {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
     return res.render("Auth/login", {
@@ -224,8 +257,8 @@ app.use("/", (req, res, next) => {
 // );
 // console.log(newGroupEvent);
 
-let foundGroup = await groupData.numberOfUsers("644ea863311a2bb9a363e8f3");
-console.log(foundGroup);
+// let foundGroup = await groupData.numberOfUsers("644ea863311a2bb9a363e8f3");
+// console.log(foundGroup);
 configRoutes(app);
 
 // let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");

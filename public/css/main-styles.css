@@ -20,13 +20,22 @@ a{
 }
 
 h1 {
-  color: white !important;
+  color: black !important;
   text-align: center;
 }
 
+.card-title{
+  color: black !important;
+}
+
+#update-company-logo{
+  width: 35vh;
+  height: 35vh;
+}
+
 button {
-  color: #f0a150 !important;
-  border-color: #f0a150 !important;
+  color: black !important;
+  border-color: black !important;
 }
 
 button:hover {
@@ -37,6 +46,9 @@ button:hover {
 #logoImage {
   width: 15vh;
   height: 10vh;
+}
+#errorDisplay{
+  color: black
 }
 
 .team-grid {
@@ -88,7 +100,7 @@ button:hover {
 }
 
 .signUp {
-  color: #f0a150;
+  color: black;
   background-color: white;
   width: auto;
   max-width: 50vh;
@@ -117,7 +129,6 @@ button:hover {
 }
 
 .login {
-  color: #f0a150;
   background-color: white;
   width: auto;
   max-width: 50vh;
@@ -155,7 +166,7 @@ button:hover {
 }
 
 .company {
-  color: #F0A150;
+  /* color: #F0A150; */
   background-color: white;
   width: auto;
   max-width: 100vh;
