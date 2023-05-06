@@ -875,33 +875,15 @@ router
     let body = xss(req.body.postbody);
     let duedate = xss(req.body.duedate).toString();
     let companyEmail = xss(req.body.companyEmail);
-    let jobTitle = xss(req.body.jobTitle);
-    let salary = xss(req.body.salary);
-    let level = xss(req.body.level); //
-    let description = xss(req.body.description);
     let field = [];
-    let skills = [];
-    let jobType = [];
-    let location = [];
+
     let cs = await userData.getUserById(userId);
     let company = cs.companyName;
     try {
       if (title) {
         title = validation.validateNameAllNumberReturn(title);
       }
-      if (jobTitle) {
-        jobTitle = validation.validateNameAllNumberReturn(jobTitle);
-      }
-      if (level) {
-        level = validation.checkLevelTags([level]);
-      }
-      if (description) {
-        description = validation.checkString(description, "Job description");
-      }
-      if (salary) {
-        validation.isSalary(salary);
-        salary = Number(salary);
-      }
+
       if (body) {
         body = validation.checkString(body, "Content");
       }
@@ -914,38 +896,22 @@ router
         }
         field = field.map((x) => xss(x));
       }
-      if (req.body.skills) {
-        if (typeof req.body.skills === "string") {
-          skills.push(req.body.skills);
-        } else {
-          skills = req.body.skills;
-        }
-        skills = skills.map((x) => xss(x));
-      }
-      if (req.body.jobType) {
-        if (typeof req.body.jobType === "string") {
-          jobType.push(req.body.jobType);
-        } else {
-          jobType = req.body.jobType;
-        }
-        jobType = jobType.map((x) => xss(x));
-      }
-      if (req.body.location) {
-        if (typeof req.body.location === "string") {
-          location.push(req.body.location);
-        } else {
-          location = req.body.location;
-        }
-        location = location.map((x) => xss(x));
-      }
 
       if (duedate) {
-        duedate = validation.checkDate(duedate);
+        duedate = validation.checkDueDate(duedate);
       }
       if (companyEmail) {
         companyEmail = validation.checkEmail(companyEmail, "companyEmail");
       }
-    } catch (error) {}
+    } catch (error) {
+      return res.status(400).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
+    }
     let updatePost = {
       title: title,
       body: body,
@@ -954,13 +920,6 @@ router
       company: [company],
       duedate: duedate,
       companyEmail: companyEmail,
-      jobTitle: jobTitle,
-      salary: salary,
-      level: level,
-      jobType: jobType,
-      skills: skills,
-      location: location,
-      description: description,
     };
     try {
       let updated = await referralData.updatePost(postId, updatePost);

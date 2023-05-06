@@ -1,6 +1,6 @@
 import spost from "./data/socialPost.js";
 import user from "./data/user.js";
-import refer from "./data/referral.js";
+//import refer from "./data/referral.js";
 import { ObjectId } from "mongodb";
 
 let title = "aefarfasf";
@@ -19,7 +19,7 @@ let skills = "java";
 let location = "AZ";
 let description = "asdfad";
 try {
-  await user.updateUsersCompany("6455434e2428c03d42c5b3b4", "af");
+  await user.updateUsersCompany("6455434e2428c03d42c5b3b4", "adobe pp");
 } catch (e) {
   console.log(e);
 }
