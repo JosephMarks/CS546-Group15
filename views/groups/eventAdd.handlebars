@@ -8,7 +8,13 @@
     <form action="/groups/{{_id}}/eventAdd" method="POST" id="event-add-form">
       <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control" />
+        <input
+          type="text"
+          name="title"
+          id="title"
+          class="form-control"
+          required
+        />
       </div>
       <div class="form-group">
         <label for="description">Description</label>
@@ -16,6 +22,7 @@
           name="description"
           id="description"
           class="form-control"
+          required
         ></textarea>
       </div>
       <div class="form-group">
@@ -25,9 +32,20 @@
           name="eventDate"
           id="eventDate"
           class="form-control"
+          required
         />
       </div>
+      <div id="error" class="error-message"></div>
       <input type="submit" value="Save" class="btn btn-primary" />
+      <button
+        type="button"
+        class="btn btn-secondary"
+        onclick="window.history.back();"
+      >Cancel</button>
     </form>
   </div>
 </div>
+
+<script src="/public/js/eventAdd.js"></script>
+
+{{message}}

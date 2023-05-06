@@ -431,6 +431,26 @@ export const update = async (groupId, eventId, newAttributes) => {
     throw new Error("Group has not been found");
   }
 
+  if (!newAttributes.title) {
+    throw new Error("You must provide a title");
+  }
+  if (typeof newAttributes.title !== "string") {
+    throw new Error("You must provide a string");
+  }
+  if (newAttributes.title.length === 0) {
+    throw new Error("Cannnot be empty string");
+  }
+
+  if (!newAttributes.description) {
+    throw new Error("You must provide a description");
+  }
+  if (typeof newAttributes.description !== "string") {
+    throw new Error("You must provide a string");
+  }
+  if (newAttributes.description.length === 0) {
+    throw new Error("Cannot be empty string");
+  }
+
   if (newAttributes.users) {
     if (typeof newAttributes.users !== "string") {
       throw new Error("Users must be of type string");

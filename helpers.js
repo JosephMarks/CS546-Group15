@@ -105,7 +105,7 @@ const validations = {
 
     if (typeof param !== "number" || isNaN(Number(param)))
       throw "Error: Salary must be a number";
-    if (param < 1 || param > 100000) throw "Error: Salary with in 1 to 100000";
+    if (param < 15000 || param > 1000000000 ) throw "Error: Salary should be in between 15000 and 1000000000";
     if (!Number.isInteger(param)) throw "Error: Salary an Integer";
     return param;
   },
@@ -121,6 +121,7 @@ const validations = {
   },
 
   isArrayWithTheNonEmptyStringForLocation(param) {
+    let allLocations = [];
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Location must be an Array";
 
@@ -131,21 +132,32 @@ const validations = {
   },
 
   isArrayWithTheNonEmptyStringForJobType(param) {
+
+    let allJobs = ['remote', 'online', 'hybrid'];
+    console.log(param);
+
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The JobType must be an Array";
 
     for (let i = 0; i < param.length; i++) {
-      if (this.isProperString(param[i]) === 0)
+
+      console.log(allJobs.includes(param[i][0]));
+      if (this.isProperString(param[i]) === 0 || !allJobs.includes(param[i][0].trim().toLowerCase())) 
         throw "Error: The JobType must contains only valid non empty strings";
     }
   },
 
   isArrayWithTheNonEmptyStringForSkills(param) {
+    let allSkills = ["python", "c++", "javascript", "nodejs"];
+  
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Skills must be an Array";
+    console.log(param);
 
     for (let i = 0; i < param.length; i++) {
-      if (this.isProperString(param[i]) === 0)
+      console.log(allSkills.includes(param[i][0]));
+
+      if (this.isProperString(param[i]) === 0 || !allSkills.includes(param[i][0].trim().toLowerCase()));
         throw "Error: The Skills must contains only valid non empty strings";
     }
   },
