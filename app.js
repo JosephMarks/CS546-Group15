@@ -224,8 +224,8 @@ app.use("/", (req, res, next) => {
 // );
 // console.log(newGroupEvent);
 
-let foundGroup = await groupData.numberOfUsers("644ea863311a2bb9a363e8f3");
-console.log(foundGroup);
+// let foundGroup = await groupData.numberOfUsers("644ea863311a2bb9a363e8f3");
+// console.log(foundGroup);
 configRoutes(app);
 
 // let jobHistory = await userJobHistoryData.getAll("643b2afed6271e8e940ad58e");
