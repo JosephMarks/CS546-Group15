@@ -105,7 +105,8 @@ const validations = {
 
     if (typeof param !== "number" || isNaN(Number(param)))
       throw "Error: Salary must be a number";
-    if (param < 15000 || param > 1000000000 ) throw "Error: Salary should be in between 15000 and 1000000000";
+    if (param < 15000 || param > 1000000000)
+      throw "Error: Salary should be in between 15000 and 1000000000";
     if (!Number.isInteger(param)) throw "Error: Salary an Integer";
     return param;
   },
@@ -132,39 +133,36 @@ const validations = {
   },
 
   isArrayWithTheNonEmptyStringForJobType(param) {
-
-    let allJobs = ['remote', 'online', 'hybrid'];
-    console.log(param);
+    let allJobs = ["remote", "online", "hybrid"];
 
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The JobType must be an Array";
 
     for (let i = 0; i < param.length; i++) {
-
-      console.log(allJobs.includes(param[i][0]));
-      if (this.isProperString(param[i]) === 0 || !allJobs.includes(param[i][0].trim().toLowerCase())) 
+      if (
+        this.isProperString(param[i]) === 0 ||
+        !allJobs.includes(param[i][0].trim().toLowerCase())
+      )
         throw "Error: The JobType must contains only valid non empty strings";
     }
   },
 
   isArrayWithTheNonEmptyStringForSkills(param) {
     let allSkills = ["python", "c++", "javascript", "nodejs"];
-  
+
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Skills must be an Array";
-    console.log(param);
 
     for (let i = 0; i < param.length; i++) {
-      console.log(allSkills.includes(param[i][0]));
-
-      if (this.isProperString(param[i]) === 0 || !allSkills.includes(param[i][0].trim().toLowerCase()));
-        throw "Error: The Skills must contains only valid non empty strings";
+      if (
+        this.isProperString(param[i]) === 0 ||
+        !allSkills.includes(param[i][0].trim().toLowerCase())
+      );
+      throw "Error: The Skills must contains only valid non empty strings";
     }
   },
 
-  display() {
-    console.log("hi");
-  },
+  display() {},
 
   checkId(id) {
     if (!id) throw "Error: You must provide an id to search for";

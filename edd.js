@@ -19,12 +19,12 @@ let skills = "java";
 let location = "AZ";
 let description = "asdfad";
 try {
-  await user.updateUsersCompany("6455434e2428c03d42c5b3b4", "adobe pp");
+  await user.updateUsersCompany("64567444e5065780753eddb3", "google");
 } catch (e) {
   console.log(e);
 }
 try {
-  let s = await user.getUserById("6455434e2428c03d42c5b3b4");
+  let s = await user.getUserById("64567444e5065780753eddb3");
   console.log(s.companyName);
 } catch (e) {
   console.log(e);
