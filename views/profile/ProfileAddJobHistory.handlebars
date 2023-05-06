@@ -1,6 +1,10 @@
 <div class="container">
   <h1>Update Job History</h1>
-  <form action="/profile/{{_id}}/addJobHistory" method="post">
+  <form
+    id="job-history-form"
+    action="/profile/{{_id}}/addJobHistory"
+    method="post"
+  >
     <div class="form-group">
       <label for="role">Role:</label>
       <input type="text" class="form-control" id="role" name="role" required />
@@ -48,3 +52,5 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
+
+<script src="/public/js/addJobs.js" defer></script>
