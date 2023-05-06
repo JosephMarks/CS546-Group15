@@ -45,23 +45,23 @@ router
     if (req.session.user.candidateType === "Company") {
       identity = true;
     }
+
     const title = "Post";
     const h1 = "Post";
     let userPostedPostList, userLikedPostList;
-    if (req.session.user.candidateType === "Company") {
-      try {
-        userPostedPostList = await referralData.getPostedPostByUserId(
-          req.params.userid
-        );
-      } catch (error) {
-        return res.status(400).render("referral/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-          identity: identity,
-        });
-      }
+
+    try {
+      userPostedPostList = await referralData.getPostedPostByUserId(
+        req.params.userid
+      );
+    } catch (error) {
+      return res.status(400).render("referral/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+        identity: identity,
+      });
     }
 
     try {
@@ -1006,7 +1006,7 @@ router
         if (typeof req.body.field === "string") {
           fields.push(req.body.field);
         } else {
-          fields = req.body.fields;
+          fields = req.body.field;
         }
         fields = fields.map((x) => xss(x));
       }

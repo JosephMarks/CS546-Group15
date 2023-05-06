@@ -19,7 +19,10 @@ let skills = "java";
 let location = "AZ";
 let description = "asdfad";
 try {
-  await user.updateUsersCompany("64567444e5065780753eddb3", "google");
+  await user.updateUsersCompany(
+    "64569ed7f395241a7a3b6b66",
+    "company name last"
+  );
 } catch (e) {
   console.log(e);
 }

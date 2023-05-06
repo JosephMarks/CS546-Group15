@@ -10,7 +10,7 @@ const exportedMethods = {
     for (let x in ori) {
       if (await this.getPostById(ori[x]._id.toString())) {
         let a = await this.getPostById(ori[x]._id.toString());
-        ori[x].jobs = a.jobs[0];
+        ori[x].jobs = a.jobs;
       }
     }
     return ori;
@@ -135,7 +135,7 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
@@ -153,7 +153,7 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
@@ -171,7 +171,7 @@ const exportedMethods = {
       .toArray();
     for (let x in ori) {
       let a = await this.getPostById(ori[x]._id.toString());
-      ori[x].jobs = a.jobs[0];
+      ori[x].jobs = a.jobs;
     }
     return ori;
   },
