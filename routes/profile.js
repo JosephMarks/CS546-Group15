@@ -121,7 +121,10 @@ router.get("/:id/addJobHistory", async (req, res) => {
   try {
     let userInfo = await userData.getUserById(id);
 
-    res.render("./profile/profileAddJobHistory", userInfo);
+    res.render("./profile/profileAddJobHistory", {
+      ...userInfo,
+      title: "Add Job History",
+    });
   } catch (e) {
     console.error(e);
     res.status(404).render("./error", {
