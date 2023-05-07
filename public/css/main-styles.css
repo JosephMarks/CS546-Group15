@@ -269,27 +269,27 @@ button:hover {
   background-color: #00FBFF;
 }
 
-#network-add-button {
+.network-add-button {
   background-color: #00FBFF;
 }
 
-#network-follower-remove-button {
+.network-follower-remove-button {
   background-color: #00FBFF;
 }
 
-#follower-comment-button {
+.follower-comment-button {
   background-color: #00FBFF;
 }
 
-#network-your-post-comment-button {
+.network-your-post-comment-button {
   background-color: #00FBFF;
 }
 
-#your-post-edit-button {
+.your-post-edit-button {
   background-color: #00FBFF;
 }
 
-#your-post-remove-button {
+.your-post-remove-button {
   background-color: #00FBFF;
 }
 
@@ -302,23 +302,23 @@ button:hover {
   background-color: #00FBFF;
 }
 
-#network-post-comment {
+.network-post-comment {
   background-color: #00FBFF;
 }
 
-#network-edit-post {
+.network-edit-post {
   background-color: #00FBFF;
 }
 
-#network-remove-post {
+.network-remove-post {
   background-color: #00FBFF;
 }
 
-#network-follower-post-comment {
+.network-follower-post-comment {
   background-color: #00FBFF;
 }
 
-#whole-article-button{
+.whole-article-button{
   background-color: #00FBFF;
 }
 

@@ -303,7 +303,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   if (req.file) {
     // Convert the image to base64
     const imgBuffer = req.file.buffer;
-    const imgBase64 = imgBuffer.toString("base64");
+    imgBase64 = imgBuffer.toString("base64");
 
     // Remove the temporary file
     // fs.unlinkSync(req.file.path);
