@@ -108,6 +108,7 @@ app.use("/skills", (req, res, next) => {
   }
   next();
 });
+
 app.use("/referral", (req, res, next) => {
   if (
     !req.session.user ||
@@ -118,14 +119,17 @@ app.use("/referral", (req, res, next) => {
   }
   next();
 });
+
 app.post("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
   next();
 });
+
 app.post("/referral/post/:userid/postId/:id/remove", (req, res, next) => {
   req.method = "delete";
   next();
 });
+
 app.use("/socialmediaposts", (req, res, next) => {
   if (
     !req.session.user ||
@@ -182,6 +186,16 @@ app.use("/referral", (req, res, next) => {
   }
   next();
 });
+
+app.get("/allCompany", (req, res, next) => {
+  if (!req.session || !req.session.user){
+    return res.redirect('login');
+  } 
+  else {
+    next();
+  }
+});
+
 
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {

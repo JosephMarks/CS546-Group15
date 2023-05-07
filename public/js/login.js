@@ -125,7 +125,7 @@ if (registerForm) {
                 e.preventDefault();
             }
         } else {
-            errorMsg.innerHTML = 'You Must Enter a valid value';
+            errorMsg.innerHTML = 'Erro : You Must Enter a valid value';
             registerForm.reset();
             e.preventDefault();
         }

@@ -73,6 +73,8 @@ const companyFunctions = {
     if (!validations.isProperString([name]))
       throw "Error : Parameters can only be string not just string with empty spaces";
 
+    name = name.trim().toLowerCase();
+
     let companyData = await companyCollection.findOne({ companyName: name });
     if (!companyData) throw "Error : No Company Found";
     return companyData;
