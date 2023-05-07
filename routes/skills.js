@@ -99,7 +99,7 @@ router
         postTitle: postTitle,
         article: article,
         interest: interest,
-        url: url,
+        videoUrl: url,
         error: error,
       });
     }
@@ -114,7 +114,7 @@ router
         postTitle: postTitle,
         article: article,
         interest: interest,
-        url: url,
+        videoUrl: url,
         error: error,
       });
     }
@@ -129,21 +129,13 @@ router
         postTitle: postTitle,
         article: article,
         interest: interest,
-        url: url,
+        videoUrl: url,
         error: error,
       });
     }
 
     try {
       url = validations.checkVideoUrl(url, "Video link");
-      url = url.replace(
-        /(\http|https)\:\/\/(www)\.(youtube)\.(com)\/(watch)\?(v=)/gi,
-        "https://www.youtube.com/embed/"
-      );
-      url = url.replace(
-        /(\http|https)\:\/\/(youtu\.be)\//gi,
-        "https://www.youtube.com/embed/"
-      );
     } catch (error) {
       return res.status(400).render("skills/skillsNewPost", {
         title: "New Post",
@@ -152,11 +144,10 @@ router
         postTitle: postTitle,
         article: article,
         interest: interest,
-        url: url,
+        videoUrl: url,
         error: error,
       });
     }
-
     try {
       interest = validations.checkTags(interest, "Interest");
     } catch (error) {
@@ -167,7 +158,7 @@ router
         postTitle: postTitle,
         article: article,
         interest: interest,
-        url: url,
+        videoUrl: url,
         error: error,
       });
     }
@@ -286,6 +277,7 @@ router
         location: location,
       });
     return res.render("skills/skillsApi", {
+      Id: req.session.user.userId,
       title: "API Search",
       h1: "API Search",
       jobSearch: jobSearch,

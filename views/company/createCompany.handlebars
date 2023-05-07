@@ -2,32 +2,29 @@
 
 <div class="company-container">
   <div class="company">
-    <form class="row g-3 needs-validation" action="/company/data" method="post" enctype="multipart/form-data">
+    <form class="row g-3 needs-validation" action="/company/data" method="post" id="company-form" enctype="multipart/form-data">
       <span id="errorDisplay" > {{error}} </span>
 
       <div class="col-md-12">
-        <label class="companyName">Company Name</label>
+        <label for="companyName">Company Name</label>
         <input type="text" class="form-control" id="companyName" name="companyName" >
       </div>
 
       <div class="col-md-12">
-        <label class="companyEmail">Company Email</label>
+        <label for="companyEmail">Company Email</label>
         <input type="text" class="form-control" id="companyEmail" value="{{ session.email }}" name="companyEmail"
-          readonly />
+          readonly >
       </div>
 
       <div class="col-md-12">
         <label for="industry" class="industry">Industry</label>
-        <input type="text" class="form-control" id="industry" name="industry" />
+        <input type="text" class="form-control" id="industry" name="industry" >
       </div>
-
-      {{!-- TODO : Make Industry a Select --}}
-      {{!-- Include Form for company Validations as well --}}
 
       <div class="col-md-12">
         <label for="employee" class="form-label">Numbers of Employee</label>
         <input type="number" class="form-control" id="employee" placeholder="There should be atleast one employee"
-          name="employee" />
+          name="employee" >
       </div>
 
       <div class="col-md-12">
@@ -93,7 +90,7 @@
 
       <div class="col-md-12">
         <label for="uploadImage">Upload Profile Image</label>
-        <input type="file" name="uploadImage" id="uploadImage" />
+        <input type="file" name="uploadImage" id="uploadImage" >
       </div>
 
       <div class="col-md-12">

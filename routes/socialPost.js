@@ -149,29 +149,51 @@ router
     let posttitle = xss(req.body.posttitle);
     let postbody = xss(req.body.postbody);
     let eventdate = xss(req.body.eventdate).toString();
-    let field = [];
-    if (xss(req.body.field).includes(",")) {
-      field = xss(req.body.field).split(",");
-    } else {
-      field.push(xss(req.body.field));
+    let field;
+    let category;
+    let company;
+    if (req.body.field) {
+      if (typeof req.body.field === "string") {
+        field = [req.body.field];
+      } else {
+        field = req.body.field;
+      }
+      field = field.map((x) => xss(x));
     }
-    let category = [];
-    if (xss(req.body.category).includes(",")) {
-      category = xss(req.body.category).split(",");
-    } else {
-      category.push(xss(req.body.category));
+
+    if (req.body.category) {
+      if (typeof req.body.category === "string") {
+        category = [req.body.category];
+      } else {
+        category = req.body.category;
+      }
+      category = category.map((x) => xss(x));
     }
-    let company = [];
-    if (xss(req.body.company).includes(",")) {
-      company = xss(req.body.company).split(",");
-    } else {
-      company.push(xss(req.body.company));
+    if (req.body.company) {
+      if (typeof req.body.company === "string") {
+        company = [req.body.company];
+      } else {
+        company = req.body.company;
+      }
+      company = company.map((x) => xss(x));
     }
+
     let posterId = req.session.user.userId;
     let userId = req.params.userid;
     let companyList = await companyData.getAllCompanyNameinObject();
     try {
       posttitle = validation.checkString(posttitle, "Post title");
+    } catch (error) {
+      return res.render("socialPost/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId: req.session.user.userId,
+        companyList,
+      });
+    }
+    try {
+      field = validation.checkFieldsTags(field);
     } catch (error) {
       return res.render("socialPost/createNewPost", {
         error,
@@ -203,17 +225,7 @@ router
         companyList,
       });
     }
-    try {
-      field = validation.checkFieldsTags(field);
-    } catch (error) {
-      return res.render("socialPost/createNewPost", {
-        error,
-        posttitle,
-        postbody,
-        userId: req.session.user.userId,
-        companyList,
-      });
-    }
+
     try {
       category = validation.checkCategoryTags(category);
     } catch (error) {
@@ -475,53 +487,61 @@ router
     let title = xss(req.body.posttitle);
     let body = xss(req.body.postbody);
     let eventdate = xss(req.body.eventdate).toString();
+    let fields;
+    let category;
+    let company;
 
-    let fields = xss(req.body.field);
-    let category = xss(req.body.category);
-    let company = xss(req.body.company);
-    if (title) {
-      title = validation.checkString(title, "title");
-    }
-    if (body) {
-      body = validation.checkString(body, "Content");
-    }
-    let field = [];
-    if (fields) {
-      if (xss(req.body.field).includes(",")) {
-        field = xss(req.body.field).split(",");
-      } else {
-        field.push(xss(req.body.field));
-      }
-      fields = field;
-    }
-    let categorys = [];
-    if (category) {
-      if (xss(req.body.category).includes(",")) {
-        categorys = xss(req.body.category).split(",");
-      } else {
-        categorys.push(xss(req.body.category));
-      }
-      category = categorys;
-    }
-    let companys = [];
-    if (company) {
-      if (xss(req.body.company).includes(",")) {
-        companys = xss(req.body.company).split(",");
-      } else {
-        companys.push(xss(req.body.company));
-      }
-      company = companys;
-    }
-
-    if (eventdate) {
-      eventdate = validation.checkDate(eventdate);
-    }
     try {
-    } catch (error) {}
+      if (title) {
+        title = validation.checkString(title, "title");
+      }
+      if (body) {
+        body = validation.checkString(body, "Content");
+      }
+
+      if (req.body.field) {
+        if (typeof req.body.field === "string") {
+          fields = [req.body.field];
+        } else {
+          fields = req.body.field;
+        }
+        fields = fields.map((x) => xss(x));
+      }
+      if (req.body.company) {
+        if (typeof req.body.company === "string") {
+          company = [req.body.company];
+        } else {
+          company = req.body.company;
+        }
+        company = company.map((x) => xss(x));
+      }
+      if (req.body.category) {
+        if (typeof req.body.category === "string") {
+          category = [req.body.category];
+        } else {
+          category = req.body.category;
+        }
+        category = category.map((x) => xss(x));
+      }
+
+      if (eventdate) {
+        eventdate = validation.checkDate(eventdate);
+      }
+    } catch (error) {
+      return res.status(400).render("socialPost/yourPostEdit", {
+        title: title,
+        h1: h1,
+        post: post,
+        error: error,
+        userId: req.session.user.userId,
+        postId: req.params.id,
+        companyList: companyList,
+      });
+    }
     let updatePost = {
       title: title,
       body: body,
-      poster: { id: userId },
+      posterId: userId,
       fields: fields,
       category: category,
       company: company,
@@ -591,36 +611,32 @@ router
       });
     }
 
-    let fields = xss(req.body.field);
-    let category = xss(req.body.category);
-    let company = xss(req.body.company);
-
-    let field = [];
-    if (fields) {
-      if (xss(req.body.field).includes(",")) {
-        field = xss(req.body.field).split(",");
+    let fields;
+    let category;
+    let company;
+    if (req.body.field) {
+      if (typeof req.body.field === "string") {
+        fields = [req.body.field];
       } else {
-        field.push(xss(req.body.field));
+        fields = req.body.field;
       }
-      fields = field;
+      fields = fields.map((x) => xss(x));
     }
-    let categorys = [];
-    if (category) {
-      if (xss(req.body.category).includes(",")) {
-        categorys = xss(req.body.category).split(",");
+    if (req.body.company) {
+      if (typeof req.body.company === "string") {
+        company = [req.body.company];
       } else {
-        categorys.push(xss(req.body.category));
+        company = req.body.company;
       }
-      category = categorys;
+      company = company.map((x) => xss(x));
     }
-    let companys = [];
-    if (company) {
-      if (xss(req.body.company).includes(",")) {
-        companys = xss(req.body.company).split(",");
+    if (req.body.category) {
+      if (typeof req.body.category === "string") {
+        category = [req.body.category];
       } else {
-        companys.push(xss(req.body.company));
+        category = req.body.category;
       }
-      company = companys;
+      category = category.map((x) => xss(x));
     }
     let companyList = await companyData.getAllCompanyNameinObject();
     let a,
@@ -630,7 +646,7 @@ router
       e,
       f,
       g = false;
-    if (fields.length > 0 && category.length > 0 && company.length > 0) {
+    if (fields && category && company) {
       a = true;
       try {
         let userPost = await socialPostData.getPostsByAllTag(
@@ -657,7 +673,7 @@ router
           error: error,
         });
       }
-    } else if (fields.length > 0 && category.length > 0) {
+    } else if (fields && category) {
       b = true;
       try {
         let userPost = await socialPostData.getPostsByFieldsCategoryTag(
@@ -683,7 +699,7 @@ router
           error: error,
         });
       }
-    } else if (fields.length > 0 && company.length > 0) {
+    } else if (fields && company) {
       c = true;
       try {
         let userPost = await socialPostData.getPostsByFieldsCompanyTag(
@@ -709,7 +725,7 @@ router
           error: error,
         });
       }
-    } else if (category.length > 0 && company.length > 0) {
+    } else if (category && company) {
       d = true;
       try {
         let userPost = await socialPostData.getPostsByCompanyCategoryTag(
@@ -735,7 +751,7 @@ router
           error: error,
         });
       }
-    } else if (category.length > 0) {
+    } else if (category) {
       e = true;
       try {
         let userPost = await socialPostData.getPostsByCategoryTag(category);
@@ -758,7 +774,7 @@ router
           error: error,
         });
       }
-    } else if (company.length > 0) {
+    } else if (company) {
       f = true;
       try {
         let userPost = await socialPostData.getPostsByCompanyTag(company);
@@ -781,7 +797,7 @@ router
           error: error,
         });
       }
-    } else if (fields.length > 0) {
+    } else if (fields) {
       g = true;
       try {
         let userPost = await socialPostData.getPostsByFieldsTag(fields);

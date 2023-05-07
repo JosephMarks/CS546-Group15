@@ -67,7 +67,7 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button your-post-button" data-bs-toggle="collapse" data-bs-target="#{{_id}}"
-                    aria-expanded="true" aria-controls="collapseOne">
+                    aria-expanded="true" aria-controls="{{_id}}">
                     {{content}}
                 </button>
             </h2>
@@ -76,16 +76,16 @@
                 <div class="accordion-body">
                     <a class="link-dark">Comments: {{comments.length}}{{!-- &nbsp; Likes: {{likes.length}}--}}</a>&nbsp;
                     {{!-- Check comments and leave comments --}}
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
+                    <a class="btn btn-primary network-post-comment" href="/network/post/{{../authorId}}/postId/{{_id}}" role="button"
                         target="_blank">
                         Leave comments
                     </a>
                     {{!-- Edit comments --}}
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
+                    <a class="btn btn-primary network-edit-post" href="/network/post/{{../authorId}}/postId/{{_id}}/edit" role="button"
                         target="_blank">
                         Edit this post
                     </a>
-                    <a class="btn btn-primary" href="/network/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
+                    <a class="btn btn-primary network-remove-post" href="/network/post/{{../authorId}}/postId/{{_id}}/remove" role="button"
                         target="_blank">
                         Remove this post
                     </a>
@@ -117,8 +117,8 @@
             </h2>
             <div id="{{_id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <a class="link-dark">Commits: {{comments.length}}{{!--&nbsp; Likes: {{likes.length}} --}}</a>&nbsp
-                    <a class="btn btn-primary" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
+                    <a class="link-dark">Commits: {{comments.length}}{{!--&nbsp; Likes: {{likes.length}} --}}</a>&nbsp;
+                    <a class="btn btn-primary network-follower-post-comment" href="/network/post/{{../userId}}/followerId/{{userId}}/postId/{{_id}}"
                         role="button">
                         Leave comments
                     </a>

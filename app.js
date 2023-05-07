@@ -118,8 +118,12 @@ app.use("/referral", (req, res, next) => {
   }
   next();
 });
-app.use("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
+app.post("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
+  next();
+});
+app.post("/referral/post/:userid/postId/:id/remove", (req, res, next) => {
+  req.method = "delete";
   next();
 });
 app.use("/socialmediaposts", (req, res, next) => {
@@ -137,6 +141,14 @@ app.post("/socialmediaposts/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
   next();
 });
+
+app.post(
+  "/socialmediaposts/post/:userid/postId/:id/remove",
+  (req, res, next) => {
+    req.method = "delete";
+    next();
+  }
+);
 
 app.post("/company/updateCompany/:name", (req, res, next) => {
   req.method = "patch";

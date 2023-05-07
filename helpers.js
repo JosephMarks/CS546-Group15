@@ -105,7 +105,8 @@ const validations = {
 
     if (typeof param !== "number" || isNaN(Number(param)))
       throw "Error: Salary must be a number";
-    if (param < 1 || param > 100000) throw "Error: Salary with in 1 to 100000";
+    if (param < 15000 || param > 1000000000)
+      throw "Error: Salary should be in between 15000 and 1000000000";
     if (!Number.isInteger(param)) throw "Error: Salary an Integer";
     return param;
   },
@@ -121,6 +122,7 @@ const validations = {
   },
 
   isArrayWithTheNonEmptyStringForLocation(param) {
+    let allLocations = [];
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Location must be an Array";
 
@@ -131,22 +133,32 @@ const validations = {
   },
 
   isArrayWithTheNonEmptyStringForJobType(param) {
+    let allJobs = ["remote", "online", "hybrid"];
+
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The JobType must be an Array";
 
     for (let i = 0; i < param.length; i++) {
-      if (this.isProperString(param[i]) === 0)
+      if (
+        this.isProperString(param[i]) === 0 ||
+        !allJobs.includes(param[i][0].trim().toLowerCase())
+      )
         throw "Error: The JobType must contains only valid non empty strings";
     }
   },
 
   isArrayWithTheNonEmptyStringForSkills(param) {
+    let allSkills = ["python", "c++", "javascript", "nodejs"];
+
     //check if the incoming array of strings contains only valid strings
     if (!Array.isArray(param)) throw "Error: The Skills must be an Array";
 
     for (let i = 0; i < param.length; i++) {
-      if (this.isProperString(param[i]) === 0)
-        throw "Error: The Skills must contains only valid non empty strings";
+      if (
+        this.isProperString(param[i]) === 0 ||
+        !allSkills.includes(param[i][0].trim().toLowerCase())
+      );
+      throw "Error: The Skills must contains only valid non empty strings";
     }
   },
 
@@ -321,11 +333,23 @@ const validations = {
     if (strVal === "") return "";
     if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
     strVal = strVal.trim();
-    const regex = /(http|https):\/\/(\w{3,}\.|\www\.)(\w{2,})(\.com|\S+)/g;
-    if (!regex.test(strVal)) throw `Error: ${varName} is not a valid link!`;
     if (!isNaN(strVal))
       throw `Error: ${varName} is not a valid value for video link as it only contains digits`;
-    return strVal;
+    let embedUrl;
+    const regex1 =
+      /(http|https):\/\/(\w{3,}\.|\www\.)(\w{2,})(\.com|\S+)\/watch\?v=/g;
+    if (regex1.test(strVal)) {
+      embedUrl = strVal.replace(regex1, "").slice(0, 11);
+      embedUrl = "https://www.youtube.com/embed/" + embedUrl;
+    }
+
+    const regex2 = /(http|https):\/\/(\w{3,}\.|\www\.)be\//g;
+    if (regex2.test(strVal)) {
+      embedUrl = strVal.replace(regex2, "").slice(0, 11);
+      embedUrl = "https://www.youtube.com/embed/" + embedUrl;
+    }
+    if (!embedUrl) return strVal;
+    return embedUrl;
   },
   checkTags(arr) {
     //if it's not empty, we will make sure all tags are strings
@@ -406,11 +430,10 @@ const validations = {
   checkFieldsTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
-    if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw "Error: You must provide at least one FieldsTags";
+    if (arr.length < 1) throw `Error: You must provide at least one FieldsTags`;
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: FieldsTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;
@@ -445,11 +468,11 @@ const validations = {
   checkCategoryTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
+      throw "Error: You must provide at least one CategoryTags";
     if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw `Error: You must provide at least one CategoryTags`;
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: CategoryTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;
@@ -473,11 +496,10 @@ const validations = {
   checkSkillsTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
-    if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw "Error: You must provide at least one SkillsTags";
+    if (arr.length < 1) throw `Error: You must provide at least one SkillsTags`;
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: SkillsTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;
@@ -501,11 +523,11 @@ const validations = {
   checkJobtypeTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
+      throw "Error: You must provide at least one JobtypeTags";
     if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw `Error: You must provide at least one JobtypeTags`;
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: JobtypeTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;
@@ -521,11 +543,11 @@ const validations = {
   checkLevelTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
-    if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw "Error: You must provide at least one LevelTags";
+    if (arr.length < 1) throw `Error: You must provide at least one LevelTags`;
+    if (arr.length > 1) throw "Error: You must only select one tag for level.";
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: LevelTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;
@@ -541,11 +563,11 @@ const validations = {
   checkLocationTags(arr) {
     //if it's not empty, we will make sure all tags are strings
     if (arr === undefined)
-      throw "Error: You must provide at least one interest area";
+      throw "Error: You must provide at least one LocationTags";
     if (arr.length < 1)
-      throw `Error: You must provide at least one interest area`;
+      throw `Error: You must provide at least one LocationTags`;
     if (typeof arr === "string") return arr;
-    if (!Array.isArray(arr)) throw `Error: Interest area is not valid type`;
+    if (!Array.isArray(arr)) throw `Error: LocationTags is not valid type`;
     for (let i in arr) {
       if (typeof arr[i] !== "string" || arr[i].trim().length === 0) {
         throw `Error: One or more elements in tags array is not a string or is an empty string`;

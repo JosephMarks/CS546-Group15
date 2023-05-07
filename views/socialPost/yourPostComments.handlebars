@@ -43,20 +43,20 @@
     <div class="card" style="width: 50%;">
         <div class="card-body">
             <div class="text-center">
-                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h6>
+                <h2 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Post Content</h2>
             </div>
-            <h5 class="card-title">Content: {{post.body}}</h5>
-            <h5 class="card-title">Eventdate: {{post.eventdate}}</h5>
-            <h5 class="card-title">Fields: {{post.fields}}</h5>
-            <h5 class="card-title">Category: {{post.category}}</h5>
-            <h5 class="card-title">Company: {{post.company}}</h5>
-            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
-                {{fname}}&nbsp;{{lname}}</h6>
-            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Posted date: 
-            {{post.postdate}}</h6>
+            <h3 class="card-title">Content: {{post.body}}</h3>
+            <h3 class="card-title">Eventdate: {{post.eventdate}}</h3>
+            <h3 class="card-title">Fields: {{post.fields}}</h3>
+            <h3 class="card-title">Category: {{post.category}}</h3>
+            <h3 class="card-title">Company: {{post.company}}</h3>
+            <h4 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">
+                {{fname}}&nbsp;{{lname}}</h4>
+            <h4 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Posted date: 
+            {{post.postdate}}</h4>
             {{#if post.modifieddate}}
-            <h6 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Modified date: 
-            {{post.modifieddate}}</h6>
+            <h4 class="card-subtitle mb-3 text-body-secondary fst-italic text-decoration-underline">Modified date: 
+            {{post.modifieddate}}</h4>
             {{/if}}
                                {{!-- Edit comments --}}
             {{#if auth}}
@@ -72,7 +72,7 @@
                   <br>
             {{/if}}
             <div class="text-center">
-                <h6 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Comments</h6>
+                <h5 class="card-subtitle mb-2 badge bg-primary text-wrap fs-6">Comments</h5>
             </div>
             {{#if post.comments.length}}
             {{#each post.comments}}

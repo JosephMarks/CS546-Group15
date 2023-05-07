@@ -43,7 +43,7 @@
    {{!-- Edit --}}
     <div class="card" style="width: 50%;">
         
-    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{userId}}/postId/{{postId}}/edit" method="post">
+    <form class="row g-3 needs-validation" action="/socialmediaposts/post/{{userId}}/postId/{{postId}}/edit" method="post" id="updateSocial">
 
       <span id="errorDisplay"> {{error}} </span>
 
@@ -135,4 +135,4 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
     crossorigin="anonymous"></script>
-<script src="/public/js/socialPost.js"></script>
+<script src="/public/js/socialPost.js" type="module"></script>

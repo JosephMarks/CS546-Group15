@@ -2,48 +2,40 @@
 
   
 
-    <h1> {{companyName}} </h1>
+    <h1> Recommendations </h1>
     
     <span id="errorDisplay" > {{error}} </span>
 
     {{#each jobs}}
 
-        <form action=/company/jobUpdate/{{{this._id}}} method="get">
 
             <div class="main-jobs">
 
                 <div class="jobId">
                     Job Id : {{{ this._id }}}
                 </div>
-                <div class ="JobTitle">
+                <div class="JobTitle">
                     Job Title : {{{ this.jobTitle }}}
                 </div>
 
-                <div class ="skills">
+                <div class="skills">
                     Skills : {{{ this.skills }}}
                 </div>
 
-                <div class ="salary">
+                <div class="salary">
                     Salary : {{{ this.salary }}}
                 </div>
 
-                <div class ="location">
+                <div class="location">
                     Location : {{{ this.location }}}
                 </div>
 
-                <div class ="description">
+                <div class="description">
                     Description : {{{ this.description }}}
                 </div>
 
-            <input type="submit" value="Edit Details">
-
-                <a href=/company/jobSingleDisplay/{{{this._id}}}> View Details </a>
-                
-                <a href=/company/jobDelete/{{{this._id}}}> Delete </a>
-
             </div>
             
-        </form>
     
     {{/each}}
 

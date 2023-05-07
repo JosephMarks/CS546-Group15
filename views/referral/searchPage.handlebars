@@ -43,9 +43,9 @@
     <br>
 <div class="card" style="width: 90%;">
         
-    <form class="row g-3 needs-validation" method="post">
+    <form class="row g-3 needs-validation" method="post" id="search">
 
-      <span id="errorDisplay" style="color: red"> {{error}} </span>
+      <span id="errorDisplay" > {{error}} </span>
 
       
 
@@ -129,15 +129,15 @@
                     Fields: {{fields}} <br >
                     Company: {{company}} <br >
                     Job title: {{jobs.jobTitle}}<br >
-                    Required skills: {{jobs.skills}}
-                    Yearly salary ($): {{jobs.salary}}
-                    Location: {{jobs.location}}
-                    Job level: {{jobs.level}}
-                    Job type: {{jobs.jobType}}
-                    Job description: {{jobs.description}}
+                    Required skills: {{jobs.skills}}<br >
+                    Yearly salary ($): {{jobs.salary}}<br >
+                    Location: {{jobs.location}}<br >
+                    Job level: {{jobs.level}}<br >
+                    Job type: {{jobs.jobType}}<br >
+                    Job description: {{jobs.description}}<br >
                     PostDate: {{postdate}} <br >
                     {{#if modifieddate}}
-                    Modified date: {{modifieddate}}</h6>
+                    Modified date: {{modifieddate}}<br >
                     {{/if}}
                 </button>
             </h2>
@@ -177,3 +177,6 @@
 
 
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+    crossorigin="anonymous"></script>
+<script src="/public/js/referral.js" type="module"></script>

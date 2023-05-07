@@ -1,7 +1,8 @@
 import spost from "./data/socialPost.js";
 import user from "./data/user.js";
-import refer from "./data/referral.js";
+//import refer from "./data/referral.js";
 import { ObjectId } from "mongodb";
+
 let title = "aefarfasf";
 let body = "aefarfasf";
 let posterId = "645066e314e24f951f70c23b";
@@ -17,6 +18,20 @@ let jobType = "onsite";
 let skills = "java";
 let location = "AZ";
 let description = "asdfad";
+try {
+  await user.updateUsersCompany(
+    "64569ed7f395241a7a3b6b66",
+    "company name last"
+  );
+} catch (e) {
+  console.log(e);
+}
+try {
+  let s = await user.getUserById("64567444e5065780753eddb3");
+  console.log(s.companyName);
+} catch (e) {
+  console.log(e);
+}
 // await spost.addPost(
 //   title,
 //   body,
@@ -50,5 +65,3 @@ let description = "asdfad";
 //   console.log(error);
 // }
 // console.log(await user.getUserById("645066e314e24f951f70c23b"));
-let cur = new Object().toUTCString();
-console.log(cur);

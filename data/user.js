@@ -30,6 +30,18 @@ const exportedMethods = {
     return userList;
   },
 
+  async getUserByEmail(email){
+
+    email = validations.checkEmail(email);
+    const userCollection = await users();
+
+    let userDetails = await userCollection.findOne({ email: email });
+
+    if (!userDetails) throw "Error :No user found";
+    else return userDetails;
+
+  },
+
   async getUserById(
     userId // get user from user collection using their id
   ) {
@@ -56,6 +68,8 @@ const exportedMethods = {
     if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
     email = validations.checkEmail(email, "email"); //check email is valid
     password = validations.checkString(password, "Password");
+
+    if ((candidateType !== 'Student') && (candidateType !== 'Company')) throw "Error : Candidate Type can only be Strictly 'Student' or 'Company'";
 
     password = await bcrypt.hash(password, 10);
 
@@ -155,13 +169,31 @@ const exportedMethods = {
       return returnUser;
     }
   },
-
+  async updateUsersCompany(
+    userId,
+    updateData // update user's profile
+  ) {
+    const userCollection = await users();
+    const updateInfo = await userCollection.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      { $set: { companyName: updateData } },
+      { returnDocument: "after" }
+    );
+    if (updateInfo.lastErrorObject.n === 0)
+      throw [
+        404,
+        `Error: Update failed, could not find a user with id of ${userId}`,
+      ];
+    updateInfo.value._id = updateInfo.value._id.toString();
+    return await updateInfo.value;
+  },
   async updateUsers(
     userId,
     updateData // update user's profile
   ) {
     userId = validations.checkId(userId);
     rules.validate(updateData.password);
+    
     let fname = validations.validateNameReturn(updateData.fname);
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
@@ -410,10 +442,11 @@ const exportedMethods = {
   },
 
   async getUserSkills(id) {
-    if (!id || ObjectId.isValid(id)) {
+    if (!id || !ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
-
+      
+    const userCollection = await users();
     let getUserSkills = await userCollection.findOne(
       { _id: new ObjectId(id) },
       { projection: { skills: 1 } }
