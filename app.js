@@ -233,10 +233,13 @@ app.use("/groups", (req, res, next) => {
 app.use("/profile", (req, res, next) => {
   if (
     !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
+    (req.session.user.candidateType !== "Student" )
   ) {
     return res.redirect("/login");
+  } 
+
+  if (!req.session.user || req.session.user.candidateType !== "Company") {
+    return res.redirect("/company");
   }
   next();
 });

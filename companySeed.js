@@ -9,11 +9,11 @@ try {
     // companyFunctions.createCompany('adobe', 'adobe@adobe.com', 'tech', ['ny'], '67895', 'this is adobe', '4.png');
     // companyFunctions.createCompany('prudential', 'prudential@prudential.com', 'tech', ['nj'], '25000', 'this is prudential', '5.png');
 
-    // userFunctions.createUser('Google', 'Foogle', '21', 'google@google.com', '123456789@ggHH', 'Company');
-    // userFunctions.createUser('Barclays', 'Marclays', '25', 'Barclays@Barclays.com', '123456789@ggHH', 'Company');
-    // userFunctions.createUser('facebook', 'MemeBook', '27', 'facebook@facebook.com', '123456789@ggHH', 'Company');
-    // userFunctions.createUser('adobe', 'Fodobe', '32', 'adobe@adobe.com', '123456789@ggHH', 'Company');
-    // userFunctions.createUser('prudential', 'Identical', '56', 'prudential@prudential.com', '123456789@ggHH', 'Company');
+    await userFunctions.createUser('Google', 'Foogle 21', '21', 'google79@google.com', '123456789@ggHH', 'Company');
+    // await userFunctions.createUser('         ', '', '99', 'Barclays@Barclays.com', '123456789@ggHH', 'Company');
+    // await userFunctions.createUser('facebook', 'MemeBook', '27', 'facebook@facebook.com', '123456789@ggHH', 'Company');
+    // await userFunctions.createUser('adobe', 'Fodobe', '32', 'adobe@adobe.com', '123456789@ggHH', 'Company');
+    // await userFunctions.createUser('prudential', 'Identical', '56', 'prudential@prudential.com', '123456789@ggHH', 'Company');
 
     // companyFunctions.createJob('GOogle', 'google@google.com', 'web developer Job5', 21000, 'internship', 'remote', ['python', 'c++'], 'nj', 'this is a web developer Job');
     // companyFunctions.createJob('google', 'Google@google.com', 'WEB developer Job1', 22000, 'internship', 'remote', ['python'], 'nj', 'this is a web developer Job');
