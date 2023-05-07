@@ -15,8 +15,6 @@ import validation from "../helpers.js";
 import xss from "xss";
 import { type } from "os";
 import { skills } from "../config/mongoCollections.js";
-// import { sk } from "date-fns/locale";
-// import { de } from "date-fns/locale";
 
 router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -110,8 +108,6 @@ router.route("/:id").get(async (req, res) => {
       userObj.id = connection;
       connectionsObj.push(userObj);
     }
-
-    console.log(connectionsObj);
 
     res.render("./profile/profile", {
       title: "Profile Page",
@@ -411,32 +407,6 @@ router.post("/:userId/updateJobHistory", async (req, res) => {
   }
 });
 
-// router.post("/:id/updatename", async (req, res) => {
-//   const id = req.params.id;
-//   const newName = req.body.name;
-
-//   try {
-//     await userData.updateName(id, newName);
-//     res.redirect(`/profile/${id}`);
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send("Not able to update name");
-//   }
-// });
-
-// router.post("/:id/updategithubusername", async (req, res) => {
-//   const id = req.params.id;
-//   const newGitHubUserName = req.body.gitHubUserName;
-
-//   try {
-//     await userData.updateGitHubUserName(id, newGitHubUserName);
-//     res.redirect(`/profile/${id}`);
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send("Not able to update GitHub username");
-//   }
-// });
-
 router
   .route("/:id/messaging")
   .get(async (req, res) => {
@@ -466,6 +436,13 @@ router
         });
       }
 
+      console.log("HERE IS THE OUTPUT IM LOOKING FOR!!");
+      console.log("All Connections:", allConnections);
+      console.log(
+        "All Connections Full Names Array:",
+        allConnectionsFullNamesArray
+      );
+
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
       const conversations = [];
@@ -484,9 +461,25 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
+
+      let allMessagesRaw = await messageData.getAll(id);
+      let allMessages = allMessagesRaw.map((message) => {
+        const sender = allConnectionsFullNamesArray.find(
+          (user) => user.id === message.sender
+        );
+        const senderNameParts = sender
+          ? sender.fullName.split(" ")
+          : ["Unknown"];
+        return {
+          ...message,
+          senderFullName: {
+            firstName: senderNameParts[0],
+            lastName: senderNameParts[1] || "",
+          },
+        };
+      });
+
       let sortedConversations = conversations.sort((a, b) => {
-        console.log(a);
-        console.log(b);
         let latestMessageA = a[a.length - 1];
         let latestMessageB = b[b.length - 1];
         if (!latestMessageA || !latestMessageB) {
@@ -505,6 +498,8 @@ router
 
       res.render("./profile/profileMessage", {
         _id: id,
+        messages: allMessages,
+        title: "Message Page",
         connections: allConnections,
         conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
@@ -548,7 +543,7 @@ router
         id,
         receivedInput.connection,
         receivedInput.messageInput,
-        senderFullName // Add sender full name to message data
+        senderFullName
       );
 
       let allMessagesRaw = await messageData.getAll(id);
@@ -556,9 +551,15 @@ router
         const sender = allConnectionsFullNamesArray.find(
           (user) => user.id === message.sender
         );
+        const senderNameParts = sender
+          ? sender.fullName.split(" ")
+          : ["Unknown"];
         return {
           ...message,
-          senderName: sender ? sender.fullName : "Unknown",
+          senderFullName: {
+            firstName: senderNameParts[0],
+            lastName: senderNameParts[1] || "",
+          },
         };
       });
 
@@ -582,8 +583,6 @@ router
       }
 
       let sortedConversations = conversations.sort((a, b) => {
-        console.log(a);
-        console.log(b);
         let latestMessageA = a[a.length - 1];
         let latestMessageB = b[b.length - 1];
         if (!latestMessageA || !latestMessageB) {
@@ -602,6 +601,7 @@ router
 
       res.render("./profile/profileMessage", {
         _id: id,
+        title: "Messaging Page",
         messages: allMessages,
         connections: allConnections,
         conversations: sortedConversations,
@@ -634,7 +634,6 @@ router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
       new ObjectId(originUserId),
       new ObjectId(targetUserId)
     );
-    console.log(messages);
     res.json(messages);
   } catch (e) {
     console.error(e);

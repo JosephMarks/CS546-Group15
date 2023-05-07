@@ -1,7 +1,12 @@
 import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { messages, users } from "../config/mongoCollections.js";
 
-export const create = async (originUserId, targetUserId, message) => {
+export const create = async (
+  originUserId,
+  targetUserId,
+  message,
+  senderFullName
+) => {
   if (!originUserId || !targetUserId || !message) {
     throw new Error("Please ensure amounts have been populated");
   }
@@ -36,6 +41,7 @@ export const create = async (originUserId, targetUserId, message) => {
     targetUserId: new ObjectId(targetUserId),
     message: message,
     createdAt: createdAt,
+    senderFullName: senderFullName,
   };
 
   const messageCollection = await messages();

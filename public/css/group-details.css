@@ -198,3 +198,15 @@ img {
   margin-right: 5px;
   margin-bottom: 5px;
 }
+
+.messageLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.list-group-item {
+  cursor: pointer;
+}
+.list-group-item:hover {
+  background-color: lightgray;
+}
