@@ -538,7 +538,11 @@ router
           fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
         });
       }
-
+      let newMessage = await messageData.create(
+        id,
+        receivedInput.connection,
+        receivedInput.messageInput
+      );
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
       const conversations = [];
@@ -557,17 +561,14 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
-      let newMessage = await messageData.create(
-        id,
-        receivedInput.connection,
-        receivedInput.messageInput
-      );
+
       let allMessages = await messageData.getAll(id);
+      console.log(allMessages);
       console.log(uniqueConversationUserIds);
       console.log(conversations);
       res.render("./profile/profileMessage", {
         _id: id,
-        messages: allMessages,
+        messages: allMessages, // this is where the data is getting pushed to handlebars - need to do a map to have name
         connections: allConnections,
         conversations: conversations,
         userFullNames: allConnectionsFullNamesArray,

@@ -44,11 +44,7 @@
           >
             <label for="messageInput">Message</label>
             <input id="messageInput" type="textarea" name="messageInput" />
-            <select
-              name="connection"
-              id="userConnections"
-              style="display: none;"
-            >
+            <select name="connection" id="userConnections">
               {{#each userFullNames}}
                 <option value="{{this.id}}">{{this.fullName}}</option>
               {{/each}}
