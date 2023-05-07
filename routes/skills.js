@@ -277,6 +277,7 @@ router
         location: location,
       });
     return res.render("skills/skillsApi", {
+      Id: req.session.user.userId,
       title: "API Search",
       h1: "API Search",
       jobSearch: jobSearch,
