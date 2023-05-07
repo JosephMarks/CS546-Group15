@@ -14,6 +14,7 @@ import validation from "../helpers.js";
 // import { messages } from "../config/mongoCollections.js";
 import xss from "xss";
 import { type } from "os";
+import { skills } from "../config/mongoCollections.js";
 // import { sk } from "date-fns/locale";
 // import { de } from "date-fns/locale";
 
@@ -95,6 +96,7 @@ router.route("/:id").get(async (req, res) => {
     let locationState = userInfo.locationState;
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
+    let skills = await userInfo.skills;
     let connections = await network.getConnections(id);
     connections = connections.slice(0, 5);
     let connectionsObj = [];
@@ -121,6 +123,7 @@ router.route("/:id").get(async (req, res) => {
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
+      skills: skills,
       connections: connectionsObj,
       university: university,
       locationState: locationState,
@@ -538,11 +541,27 @@ router
           fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
         });
       }
+
+      const senderFullName = await userData.getUserFullNameById(userId);
+
       let newMessage = await messageData.create(
         id,
         receivedInput.connection,
-        receivedInput.messageInput
+        receivedInput.messageInput,
+        senderFullName // Add sender full name to message data
       );
+
+      let allMessagesRaw = await messageData.getAll(id);
+      let allMessages = allMessagesRaw.map((message) => {
+        const sender = allConnectionsFullNamesArray.find(
+          (user) => user.id === message.sender
+        );
+        return {
+          ...message,
+          senderName: sender ? sender.fullName : "Unknown",
+        };
+      });
+
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
       const conversations = [];
@@ -562,15 +581,30 @@ router
         });
       }
 
-      let allMessages = await messageData.getAll(id);
-      console.log(allMessages);
-      console.log(uniqueConversationUserIds);
-      console.log(conversations);
+      let sortedConversations = conversations.sort((a, b) => {
+        console.log(a);
+        console.log(b);
+        let latestMessageA = a[a.length - 1];
+        let latestMessageB = b[b.length - 1];
+        if (!latestMessageA || !latestMessageB) {
+          return 0;
+        }
+        if ((latestMessageA.createdAt || 0) < (latestMessageB.createdAt || 0)) {
+          return -1;
+        }
+        if (
+          (latestMessageA.createdAt || 0) === (latestMessageB.createdAt || 0)
+        ) {
+          return 0;
+        }
+        return 1;
+      });
+
       res.render("./profile/profileMessage", {
         _id: id,
-        messages: allMessages, // this is where the data is getting pushed to handlebars - need to do a map to have name
+        messages: allMessages,
         connections: allConnections,
-        conversations: conversations,
+        conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
@@ -608,18 +642,9 @@ router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
   }
 });
 
-router.get("/:id/connect", async (req, res) => {
+router.get("/:id/connect", ensureAuthenticated, async (req, res) => {
   const userId = req.session.user.userId;
   const followerId = req.params.id;
-
-  try {
-    validation.checkParamsAndSessionId(followerId, userId);
-  } catch (error) {
-    return res.status(401).render("./profile/error", {
-      title: "Error",
-      errorMessage: "You don't belong here",
-    });
-  }
 
   try {
     const newConnection = await network.addConnections(userId, followerId);
@@ -636,5 +661,16 @@ router.get("/:id/connect", async (req, res) => {
     });
   }
 });
+
+function ensureAuthenticated(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+}
 
 export default router;
