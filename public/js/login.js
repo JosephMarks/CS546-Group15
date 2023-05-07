@@ -105,7 +105,7 @@ if (registerForm) {
                 lastNameInput = lastNameInput.trim();
                 emailAddressInput = emailAddressInput.trim().toLowerCase();
                 passwordInput = passwordInput;
-                candidateType = candidateType.trim().toLowerCase();
+                candidateType = candidateType.trim()
                 confirmPasswordInput = confirmPasswordInput.trim();
                 age = age.trim();
 
