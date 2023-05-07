@@ -3,6 +3,7 @@ import { users } from "../config/mongoCollections.js";
 import validations from "../helpers.js";
 import bcrypt from "bcryptjs";
 import passwordValidator from "password-validator";
+// import { userData } from "./index.js";
 let rules = new passwordValidator();
 rules
   .is()
@@ -209,7 +210,7 @@ const exportedMethods = {
       "Header Description"
     );
     let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
-    let image;
+    let image = updateData.image;
     let university = validations.checkString(
       updateData.university,
       "University"
@@ -218,18 +219,22 @@ const exportedMethods = {
       updateData.collegeMajor,
       "Major"
     );
-    let skills = validations.checkStringArray(
-      updateData.skills,
-      "Interest area"
-    );
+    let skills = updateData.skills;
+    console.log(updateData.skills);
+    console.log(typeof skills);
+    if (typeof updateData.skills === "string") {
+      skills = validations.checkString(skills, "Skills");
+    } else {
+      skills = validations.checkStringArray(updateData.skills, "Interest area");
+    }
+    // let skills = validations.checkStringArray(
+    //   updateData.skills,
+    //   "Interest area"
+    // );
     let experience = validations.checkExperience(
       updateData.experience,
       "Experience year"
-    ); // experience year from 0 to 80
-    let jobHistory = validations.checkStringArray(
-      updateData.jobHistory,
-      "Job History"
-    );
+    ); // experience year from 0 to 80 TO DO - NEED TO UPDATE THIS CHECK - ARRY OF OBJECTS
     let seekingJob = validations.checkStringArray(
       updateData.seekingJob,
       "Seeking job"
@@ -252,6 +257,7 @@ const exportedMethods = {
     if (typeof gitHubUserName !== "string" || gitHubUserName.length === 0) {
       throw new Error("Github username must be a string that is not empty");
     }
+    console.log(7);
     const userCollection = await users();
     let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
@@ -273,7 +279,6 @@ const exportedMethods = {
       gitHubUserName: gitHubUserName,
       skills: skills,
       experience: experience,
-      jobHistory: jobHistory,
       seekingJob: seekingJob,
       connections: connections,
       group: group,
