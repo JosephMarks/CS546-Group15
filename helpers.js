@@ -33,7 +33,7 @@ const validations = {
     if (param.trim().length < 2 || param.trim().length > 25)
       throw "Error : Enter a valid firstName and the lastName";
 
-    if (param.match([/[0-9]+/])) throw "Error : Invalid First or Last Name";
+    if (param.match(/[0-9]+/)) throw "Error : Invalid First or Last Name";
 
     return param;
   },
