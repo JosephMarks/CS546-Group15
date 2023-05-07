@@ -5,3 +5,5 @@ export const mongoConfig = {
     "mongodb+srv://pundirpradyumn25:Par56789@cluster0.drlwwjm.mongodb.net/test'",
   database: "webDevelopmentGroup15",
 };
+
+// mongodb://localhost:27017

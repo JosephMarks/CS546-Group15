@@ -34,7 +34,7 @@ export const create = async (
   }
   startDate = startDate.trim();
   endDate = endDate.trim().toLowerCase();
-
+  console.log({ endDate });
   if (endDate !== "present") {
     // need to ensure that the date provide is of the proper format
     // TO DO: double check all this date stuff - may be a little buggy?
@@ -74,6 +74,7 @@ export const create = async (
     // need to ensure that the date provide is of the proper format
     // TO DO: double check all this date stuff - may be a little buggy?
     const dateObject = parse(startDate, "MM/dd/yyyy", new Date());
+    console.log(dateObject);
     if (!isValid(dateObject)) {
       throw new Error("Date is not of proper format");
     }
@@ -164,6 +165,7 @@ export const getAll = async (userId) => {
     throw new Error("User does not exist");
   }
   let { jobHistory } = userLookup;
+  console.log(jobHistory);
   for (let i = 0; i < jobHistory.length; i++) {
     jobHistory[i]._id = jobHistory[i]._id.toString();
   }
