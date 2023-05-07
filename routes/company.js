@@ -269,7 +269,7 @@ router.route("/data/:name").get(async (req, res) => { // done company details di
 
   try {
 
-    let companyData = await companyFunctions.getCompanyDetailsFromCompanyName(req.params.name.trim());
+    let companyData =   await companyFunctions.getCompanyDetailsFromCompanyName(req.params.name.trim());
     if (companyData.companyEmail === req.session.user.email){
       if (companyData) {
         return res.render("company/displayCompany", {

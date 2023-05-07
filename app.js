@@ -53,8 +53,11 @@ app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Authorizing and authenticating the routes
+
 app.use("/login", (req, res, next) => {
   if (req.session && req.session.user) {
+    if (req.session.user.candidateType === "Student") return res.redirect("/");
+    else return res.redirect("/company");
     return res.redirect("/");
   } else {
     next();
@@ -79,9 +82,9 @@ app.use("/company", (req, res, next) => {
     if (req.session.user.candidateType === "Company") {
       next();
     } else {
-      return res.render("Auth/login", {
-        error: "You Do not have Access for this page",
-        title: "Login",
+      return res.render("error", {
+        error: "You Do not have Access for this page logout and login with an authenticated user.",
+        title: "Error",
       });
     }
   }
