@@ -6,7 +6,7 @@ const companyCollection = await company();
 
 const companyFunctions = {
 
-  async createCompany( companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc ) {
+  async createCompany( companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc, perks, goals ) {
     
     if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description|| !imgSrc ||!perks || !goals)
       throw "Error : You should provide all the parameters";

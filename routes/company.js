@@ -49,8 +49,9 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   let { companyName, companyEmail, industry, employee, location, description, perks, goals } = bodyData;
   let createdAt = new Date();
+  console.log(bodyData);
 
-  if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename ||!perks || !goals )
+  if ( !companyName || !companyEmail || !industry || !employee || !location || !description || !req.file || !req.file.filename ||!perks || !goals )
       return res.status(400).render('error', { error :"Error : You should provide all the parameters"}) ;
 
   companyName = xss(req.body.companyName);
@@ -109,7 +110,7 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename), perks, goals));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename)), perks, goals);
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
@@ -540,7 +541,7 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
   if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       return res.status(400).render('error', { error : 'Error: You should provide all the parameters'});
 
-      
+
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   jobTitle = xss(req.body.jobTitle);
