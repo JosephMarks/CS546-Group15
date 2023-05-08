@@ -10,12 +10,13 @@ export const create = async (
   title,
   description,
   eventDate,
+  authorId,
   otherAttributes
 ) => {
   groupId = groupId.trim();
   title = title.trim();
 
-  if (!groupId || !title || !eventDate || !description) {
+  if (!groupId || !title || !eventDate || !description || !authorId) {
     throw new Error("Parameters groupId and title must be present");
   }
   if (
@@ -80,6 +81,7 @@ export const create = async (
     description: description,
     users: users,
     image: image,
+    authorId: authorId,
   };
 
   const groupCollection = await groups();
