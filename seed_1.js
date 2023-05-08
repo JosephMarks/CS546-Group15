@@ -67,4 +67,11 @@ export const pseudoData = async () => {
     "https://www.youtube.com/watch?v=b1kbLwvqugk&ab_channel=TaylorSwiftVEVO",
     "music",
   );
+  await skillsData.createSkills(
+    ming._id,
+    "About Blackpink",
+    "Blackpink is a South Korean girl group formed in 2016 by YG Entertainment. The group consists of four members: Jisoo, Jennie, Rosé, and Lisa. Blackpink has become one of the most successful and popular K-pop groups, known for their powerful and catchy songs, fierce performances, and fashion-forward style. They have broken numerous records, including becoming the first K-pop group to have a music video reach one billion views on YouTube. Blackpink has also gained global recognition, collaborating with artists such as Lady Gaga and Selena Gomez. Their fanbase, known as Blinks, continues to grow as they cement their status as a powerhouse in the music industry.",
+    "https://www.youtube.com/watch?v=2S24-y0Ij3Y&ab_channel=BLACKPINK",
+    "music",
+  );
 };
