@@ -13,7 +13,7 @@ router.route("/").get(async (req, res) => {
     if (req.session.user.candidateType === "Company") {
       identity = true;
     }
-    return res.status(400).render("referral/error", {
+    return res.status(404).render("referral/error", {
       title: "error",
       h1: "error",
       userId: req.session.user.userId,
@@ -55,7 +55,7 @@ router
         req.params.userid
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -69,7 +69,7 @@ router
         req.params.userid
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -102,7 +102,7 @@ router
       if (req.session.user.candidateType === "Company") {
         identity = true;
       }
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -182,7 +182,7 @@ router
     let arrofcom = await companyData.getAllCompanyName();
     try {
       if (!arrofcom.includes(s.companyName))
-        throw "You should update your company name in your profile first, then refer a job to that company!";
+        throw "You should update your company name in your profile first or create your company in system, then refer a job to that company!";
     } catch (error) {
       return res.status(403).render("referral/error", {
         title: "error",
@@ -273,6 +273,30 @@ router
     let jobType = [];
     let location = [];
     let companyList = await companyData.getAllCompanyNameinObject();
+    try {
+      if (
+        !(
+          req.body.field &&
+          req.body.skills &&
+          req.body.jobType &&
+          req.body.location
+        )
+      )
+        throw "Please select fields, skills, jobType and location tags!";
+    } catch (error) {
+      return res.status(400).render("referral/createNewPost", {
+        error,
+        posttitle,
+        postbody,
+        userId: req.session.user.userId,
+        companyList,
+        session: req.session.user,
+        jobTitle,
+        salary,
+        description,
+        companyEmail,
+      });
+    }
     try {
       if (typeof req.body.field === "string") {
         field.push(req.body.field);
@@ -596,7 +620,7 @@ router
     try {
       post = await referralData.getPostById(postid);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -608,11 +632,7 @@ router
     try {
       author = await userData.getUserById(authorid);
     } catch (error) {
-      let identity = false;
-      if (req.session.user.candidateType === "Company") {
-        identity = true;
-      }
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -648,7 +668,7 @@ router
     try {
       req.params.id = validation.checkId(req.params.id, "ID");
     } catch (e) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -664,7 +684,7 @@ router
       const author = await userData.getUserById(post.userId);
       const title = post.title;
       const h1 = post.title;
-      return res.render("referral/yourPostComments", {
+      return res.status(400).render("referral/yourPostComments", {
         userId: req.session.user.userId,
         title: title,
         h1: h1,
@@ -687,7 +707,7 @@ router
       const post = await referralData.getPostById(req.params.id);
       const author = await userData.getUserById(req.params.userid);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(500).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -712,7 +732,7 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -724,7 +744,7 @@ router
     try {
       post = await referralData.getPostById(req.params.id);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -736,7 +756,7 @@ router
     try {
       author = await userData.getUserById(o);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -753,7 +773,7 @@ router
       )
         throw `You have no right to modify this post!`;
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -812,7 +832,7 @@ router
       userId = validation.checkId(userId, "User ID");
       postId = validation.checkId(postId, "Post ID");
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -827,7 +847,7 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -841,7 +861,7 @@ router
       if (userIdByPostId.poster.id.toString() !== userId)
         throw "Error: You have no right to modify this post!";
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -883,6 +903,8 @@ router
 
     let cs = await userData.getUserById(userId);
     let company = cs.companyName;
+    let companyList = await companyData.getAllCompanyNameinObject();
+    let post = await referralData.getPostById(req.params.id);
     try {
       if (title) {
         title = validation.validateNameAllNumberReturn(title);
@@ -908,12 +930,13 @@ router
         companyEmail = validation.checkEmail(companyEmail, "companyEmail");
       }
     } catch (error) {
-      return res.status(400).render("referral/error", {
-        title: "error",
-        h1: "error",
+      return res.status(400).render("referral/yourPostEdit", {
+        title: title,
+        h1: title,
+        post: post,
         userId: req.session.user.userId,
-        error: error,
-        identity: identity,
+        postId: req.params.id,
+        companyList: companyList,
       });
     }
     let updatePost = {
@@ -928,7 +951,7 @@ router
     try {
       let updated = await referralData.updatePost(postId, updatePost);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(500).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -948,7 +971,7 @@ router
     try {
       req.params.userid = validation.checkId(req.params.userid);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -963,7 +986,7 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -992,7 +1015,7 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res.status(500).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1022,12 +1045,16 @@ router
         company = company.map((x) => xss(x));
       }
     } catch (error) {
-      return res.status(500).render("referral/error", {
-        title: "error",
-        h1: "error",
+      let companyList = await companyData.getAllCompanyNameinObject();
+      let userPost = await referralData.getAllPosts();
+      return res.status(400).render("referral/searchPage", {
+        title: "Search Post",
+        h1: "Search Post",
         userId: req.session.user.userId,
-        error: error,
+        userPost: userPost,
         identity: identity,
+        companyList: companyList,
+        error: error,
       });
     }
 
@@ -1142,7 +1169,7 @@ router
         req.session.user.userId
       );
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1154,7 +1181,7 @@ router
     try {
       post = await referralData.getPostById(req.params.id);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1173,7 +1200,7 @@ router
       )
         throw `Error: You have not right to access.`;
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1203,7 +1230,7 @@ router
       userId = validation.checkId(userId, "User ID");
       postId = validation.checkId(postId, "Post ID");
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1215,7 +1242,7 @@ router
     try {
       author = (await referralData.getPostById(postId)).poster.id.toString();
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(404).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1232,7 +1259,7 @@ router
       )
         throw `Error: You have not right to access.`;
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(403).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
@@ -1245,7 +1272,7 @@ router
       await referralData.removePost(postId, userId);
       res.redirect(`/referral/post/${userId}`);
     } catch (error) {
-      return res.status(400).render("referral/error", {
+      return res.status(500).render("referral/error", {
         title: "error",
         h1: "error",
         userId: req.session.user.userId,
