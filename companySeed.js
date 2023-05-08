@@ -9,7 +9,7 @@ try {
     // companyFunctions.createCompany('adobe', 'adobe@adobe.com', 'tech', ['ny'], '67895', 'this is adobe', '4.png');
     // companyFunctions.createCompany('prudential', 'prudential@prudential.com', 'tech', ['nj'], '25000', 'this is prudential', '5.png');
 
-    await userFunctions.createUser('Google', 'Foogle 21', '21', 'google79@google.com', '123456789@ggHH', 'Company');
+    await userFunctions.createUser('Google ', 'Foogle ', '70', 'google85@google.com', 'jhfhjfdhafsdghasfh@ggHH', 'Company');
     // await userFunctions.createUser('         ', '', '99', 'Barclays@Barclays.com', '123456789@ggHH', 'Company');
     // await userFunctions.createUser('facebook', 'MemeBook', '27', 'facebook@facebook.com', '123456789@ggHH', 'Company');
     // await userFunctions.createUser('adobe', 'Fodobe', '32', 'adobe@adobe.com', '123456789@ggHH', 'Company');
