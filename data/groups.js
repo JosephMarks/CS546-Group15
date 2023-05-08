@@ -2,11 +2,15 @@ import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { groups, users } from "../config/mongoCollections.js";
 import userData from "./user.js";
 
-export const create = async (name, description) => {
-  if (!name || !description) {
+export const create = async (name, description, userId) => {
+  if (!name || !description || !userId) {
     throw new Error("You must provide all required parameters");
   }
-  if (typeof name !== "string" || typeof description !== "string") {
+  if (
+    typeof name !== "string" ||
+    typeof description !== "string" ||
+    typeof userId !== "string"
+  ) {
     throw new Error("Items must be of type string");
   }
 
@@ -18,7 +22,7 @@ export const create = async (name, description) => {
 
   let events = [];
   let activity = [];
-  let users = [];
+  let users = [userId];
   let image;
 
   let newGroup = {
@@ -346,7 +350,7 @@ export const numberOfUsers = async (id) => {
     throw new Error("Group not found");
   }
 
-  // Get the number of users in the group
+  // Get the number of users in the group.
   const numberOfUsers = foundGroup.users.length;
 
   return numberOfUsers;
