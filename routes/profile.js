@@ -11,11 +11,24 @@ import * as jobHistoryData from "../data/userJobHistory.js";
 // import { checkProfileAccess } from "../app.js";
 import validation from "../helpers.js";
 
-import { messages } from "../config/mongoCollections.js";
-// import { de } from "date-fns/locale";
+// import { messages } from "../config/mongoCollections.js";
+import xss from "xss";
+import { type } from "os";
+import { skills } from "../config/mongoCollections.js";
 
 router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
+
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
 
   if (!req.file) {
     res.status(400).send("No file uploaded.");
@@ -44,6 +57,17 @@ router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
 router.get("/:id/editProfilePic", async (req, res) => {
   const id = req.params.id;
 
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(id, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   try {
     let userInfo = await userData.getUserById(id);
 
@@ -70,6 +94,7 @@ router.route("/:id").get(async (req, res) => {
     let locationState = userInfo.locationState;
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
+    let skills = await userInfo.skills;
     let connections = await network.getConnections(id);
     connections = connections.slice(0, 5);
     let connectionsObj = [];
@@ -84,8 +109,6 @@ router.route("/:id").get(async (req, res) => {
       connectionsObj.push(userObj);
     }
 
-    console.log(connectionsObj);
-
     res.render("./profile/profile", {
       title: "Profile Page",
       _id: id,
@@ -96,6 +119,7 @@ router.route("/:id").get(async (req, res) => {
       image: image,
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
+      skills: skills,
       connections: connectionsObj,
       university: university,
       locationState: locationState,
@@ -208,8 +232,14 @@ router.post("/:id/addJobHistory", async (req, res) => {
       errorMessage: "You don't belong here",
     });
   }
+  let retrievedObject = req.body;
+  let role = xss(retrievedObject.role);
+  let organization = xss(retrievedObject.organization);
+  let startDate = xss(retrievedObject.startDate);
+  let endDate = xss(retrievedObject.endDate);
+  let description = xss(retrievedObject.description);
 
-  let { role, organization, startDate, endDate, description } = req.body;
+  // let { role, organization, startDate, endDate, description } = req.body;
 
   if (!role || !organization || !startDate || !endDate || !description) {
     res.status(400).render("./profile/error", {
@@ -285,45 +315,49 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
     });
   }
 
-  const fname = req.body.fname;
-  const lname = req.body.lname;
-  const gender = req.body.gender;
-  const headerDescription = req.body.headerDescription;
-  const aboutMe = req.body.aboutMe;
-  const locationState = req.body.locationState;
-  const university = req.body.university;
-  const collegeMajor = req.body.collegeMajor;
-  const gitHubUserName = req.body.gitHubUserName;
-  const skills = req.body.skills;
+  const fname = xss(req.body.fname);
+  const lname = xss(req.body.lname);
+  const gender = xss(req.body.gender);
+  const headerDescription = xss(req.body.headerDescription);
+  const aboutMe = xss(req.body.aboutMe);
+  const locationState = xss(req.body.locationState);
+  const university = xss(req.body.university);
+  const collegeMajor = xss(req.body.collegeMajor);
+  const gitHubUserName = xss(req.body.gitHubUserName);
 
-  console.log({ fname, lname, gitHubUserName });
+  let skills = req.body.skills;
+  if (typeof skills === "string") {
+    skills = xss(skills);
+  } else if (typeof skills === "object") {
+    for (let i = 0; i < skills.length; i++) {
+      skills[i] = xss(skills[i]);
+    }
+  }
 
   let imgBase64 = null;
+  // if (req.file) {
+  //   // Convert the image to base64
+  //   const imgBuffer = req.file.buffer;
+  // const imgBase64 = imgBuffer.toString("base64");
 
-  if (req.file) {
-    // Convert the image to base64
-    const imgBuffer = req.file.buffer;
-    imgBase64 = imgBuffer.toString("base64");
-
-    // Remove the temporary file
-    // fs.unlinkSync(req.file.path);
-  }
+  // Remove the temporary file
+  // fs.unlinkSync(req.file.path);
 
   let userObject = await userData.getUserById(id);
   userObject.fname = fname;
   userObject.lname = lname;
   userObject.gitHubUserName = gitHubUserName;
-  userObject.image = imgBase64;
   userObject.gender = gender;
   userObject.headerDescription = headerDescription;
   userObject.aboutMe = aboutMe;
   userObject.locationState = locationState;
   userObject.university = university;
   userObject.collegeMajor = collegeMajor;
-  userObject.skills = skills; // Add the skills to the user object
+  userObject.skills = skills;
 
   try {
     await userData.updateUsers(id, userObject);
+
     res.redirect(`/profile/${id}`);
   } catch (e) {
     console.error(e);
@@ -333,6 +367,18 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
 
 router.post("/:userId/updateJobHistory", async (req, res) => {
   const userId = req.params.userId;
+
+  const id = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(userId, id);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   const jobs = await jobHistoryData.getAll(userId);
   try {
     for (let i = 0; i < jobs.length; i++) {
@@ -361,36 +407,22 @@ router.post("/:userId/updateJobHistory", async (req, res) => {
   }
 });
 
-// router.post("/:id/updatename", async (req, res) => {
-//   const id = req.params.id;
-//   const newName = req.body.name;
-
-//   try {
-//     await userData.updateName(id, newName);
-//     res.redirect(`/profile/${id}`);
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send("Not able to update name");
-//   }
-// });
-
-// router.post("/:id/updategithubusername", async (req, res) => {
-//   const id = req.params.id;
-//   const newGitHubUserName = req.body.gitHubUserName;
-
-//   try {
-//     await userData.updateGitHubUserName(id, newGitHubUserName);
-//     res.redirect(`/profile/${id}`);
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).send("Not able to update GitHub username");
-//   }
-// });
-
 router
   .route("/:id/messaging")
   .get(async (req, res) => {
     let id = req.params.id;
+
+    const userId = req.session.user.userId;
+
+    try {
+      validation.checkParamsAndSessionId(id, userId);
+    } catch (error) {
+      return res.status(401).render("./profile/error", {
+        title: "Error",
+        errorMessage: "You don't belong here",
+      });
+    }
+
     try {
       let allConnectionsFullNamesArray = [];
       let allConnections = await network.getConnections(id);
@@ -403,6 +435,13 @@ router
           fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
         });
       }
+
+      console.log("HERE IS THE OUTPUT IM LOOKING FOR!!");
+      console.log("All Connections:", allConnections);
+      console.log(
+        "All Connections Full Names Array:",
+        allConnectionsFullNamesArray
+      );
 
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
@@ -422,9 +461,25 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
+
+      let allMessagesRaw = await messageData.getAll(id);
+      let allMessages = allMessagesRaw.map((message) => {
+        const sender = allConnectionsFullNamesArray.find(
+          (user) => user.id === message.sender
+        );
+        const senderNameParts = sender
+          ? sender.fullName.split(" ")
+          : ["Unknown"];
+        return {
+          ...message,
+          senderFullName: {
+            firstName: senderNameParts[0],
+            lastName: senderNameParts[1] || "",
+          },
+        };
+      });
+
       let sortedConversations = conversations.sort((a, b) => {
-        console.log(a);
-        console.log(b);
         let latestMessageA = a[a.length - 1];
         let latestMessageB = b[b.length - 1];
         if (!latestMessageA || !latestMessageB) {
@@ -443,6 +498,8 @@ router
 
       res.render("./profile/profileMessage", {
         _id: id,
+        messages: allMessages,
+        title: "Message Page",
         connections: allConnections,
         conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
@@ -455,6 +512,18 @@ router
   .post(async (req, res) => {
     const receivedInput = req.body;
     const id = req.params.id;
+
+    const userId = req.session.user.userId;
+
+    try {
+      validation.checkParamsAndSessionId(id, userId);
+    } catch (error) {
+      return res.status(401).render("./profile/error", {
+        title: "Error",
+        errorMessage: "You don't belong here",
+      });
+    }
+
     try {
       let allConnectionsFullNamesArray = [];
       let allConnections = await network.getConnections(id);
@@ -467,6 +536,32 @@ router
           fullName: `${allConnectionsFullNames.firstName} ${allConnectionsFullNames.lastName}`,
         });
       }
+
+      const senderFullName = await userData.getUserFullNameById(userId);
+
+      let newMessage = await messageData.create(
+        id,
+        receivedInput.connection,
+        receivedInput.messageInput,
+        senderFullName
+      );
+
+      let allMessagesRaw = await messageData.getAll(id);
+      let allMessages = allMessagesRaw.map((message) => {
+        const sender = allConnectionsFullNamesArray.find(
+          (user) => user.id === message.sender
+        );
+        const senderNameParts = sender
+          ? sender.fullName.split(" ")
+          : ["Unknown"];
+        return {
+          ...message,
+          senderFullName: {
+            firstName: senderNameParts[0],
+            lastName: senderNameParts[1] || "",
+          },
+        };
+      });
 
       const uniqueConversationUserIds =
         await messageData.getUniqueConversationUserIds(id);
@@ -486,19 +581,30 @@ router
           fullName: `${userFullName.firstName} ${userFullName.lastName}`,
         });
       }
-      let newMessage = await messageData.create(
-        id,
-        receivedInput.connection,
-        receivedInput.messageInput
-      );
-      let allMessages = await messageData.getAll(id);
-      console.log(uniqueConversationUserIds);
-      console.log(conversations);
+
+      let sortedConversations = conversations.sort((a, b) => {
+        let latestMessageA = a[a.length - 1];
+        let latestMessageB = b[b.length - 1];
+        if (!latestMessageA || !latestMessageB) {
+          return 0;
+        }
+        if ((latestMessageA.createdAt || 0) < (latestMessageB.createdAt || 0)) {
+          return -1;
+        }
+        if (
+          (latestMessageA.createdAt || 0) === (latestMessageB.createdAt || 0)
+        ) {
+          return 0;
+        }
+        return 1;
+      });
+
       res.render("./profile/profileMessage", {
         _id: id,
+        title: "Messaging Page",
         messages: allMessages,
         connections: allConnections,
-        conversations: conversations,
+        conversations: sortedConversations,
         userFullNames: allConnectionsFullNamesArray,
       });
     } catch (e) {
@@ -511,13 +617,23 @@ router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
   const originUserId = req.params.originUserId;
   const targetUserId = req.params.targetUserId;
 
+  const userId = req.session.user.userId;
+
+  try {
+    validation.checkParamsAndSessionId(originUserId, userId);
+  } catch (error) {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+
   try {
     // Fetch the conversation between the current user and the friend
     const messages = await messageData.getConversation(
       new ObjectId(originUserId),
       new ObjectId(targetUserId)
     );
-    console.log(messages);
     res.json(messages);
   } catch (e) {
     console.error(e);
@@ -525,7 +641,7 @@ router.get("/:originUserId/messaging/:targetUserId", async (req, res) => {
   }
 });
 
-router.get("/:id/connect", async (req, res) => {
+router.get("/:id/connect", ensureAuthenticated, async (req, res) => {
   const userId = req.session.user.userId;
   const followerId = req.params.id;
 
@@ -544,5 +660,16 @@ router.get("/:id/connect", async (req, res) => {
     });
   }
 });
+
+function ensureAuthenticated(req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    return res.status(401).render("./profile/error", {
+      title: "Error",
+      errorMessage: "You don't belong here",
+    });
+  }
+}
 
 export default router;

@@ -34,7 +34,7 @@ const constructorMethod = (app) => {
   // app.use("/profile", profileRoutes); Will update momentarily
 
   app.use("*", (req, res) => {
-    res.status(404).json({ error: "Page Not Found" });
+    res.status(404).render('error', { error: "Page Not Found" });
   });
 };
 

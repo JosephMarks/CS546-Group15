@@ -10,14 +10,6 @@
 <script
   src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
 ></script>
-<link
-  rel="stylesheet"
-  href="node_modules/leetcode-card/dist/leetcode-card.min.css"
-/>
-<script
-  defer
-  src="node_modules/leetcode-card/dist/leetcode-card.min.js"
-></script>
 <script
   src="https://unpkg.com/github-calendar@latest/dist/github-calendar.min.js"
 ></script>
@@ -51,12 +43,18 @@
 <h4>Education: {{university}}</h4>
 <h4>College Major: {{collegeMajor}}</h4>
 <h4>Location: {{locationState}}</h4>
-
-<div class="leetcode-card" data-user="neal_wu" data-theme="dark"></div>
-<script>
-  window.addEventListener('load', function() { LeetCodeCard.init(); });
-</script>
-
+{{#if skills}}
+  <h4>Skills:</h4>
+  <div style="display: flex; justify-content: center;">
+    <div class="skills-container">
+      {{#each skills}}
+        <div class="skill-tile">{{this}}</div>
+      {{/each}}
+    </div>
+  </div>
+{{else}}
+  <p>No skills available.</p>
+{{/if}}
 <h3>Job History:</h3>
 {{#if isMyProfile}}
   <a
@@ -104,16 +102,17 @@
 
 {{#if gitHubUserName}}
   <p>Github profile for {{gitHubUserName}}</p>
-  <img
-    src="https://github.com/favicon.ico"
-    alt="Github logo"
-    class="github-logo"
-  />
-
-  <!-- Prepare a container for your calendar. -->
+  <a href="https://github.com/{{gitHubUserName}}" target="_blank">
+    <img
+      src="https://github.com/favicon.ico"
+      alt="Github logo"
+      class="github-logo"
+    />
+    <div class="github-banner">
+      <span>Click me!</span>
+    </div>
+  </a>
   <div class="calendar">
-    <!-- Loading stuff -->
-    Loading the data just for you.
   </div>
 
   <script>

@@ -109,8 +109,8 @@ if (registerForm) {
                 confirmPasswordInput = confirmPasswordInput.trim();
                 age = age.trim();
 
-                helpersValidation.validateName(firstNameInput);
-                helpersValidation.validateName(lastNameInput);
+                mainValidations.validateNameReturn(firstNameInput);
+                mainValidations.validateNameReturn(lastNameInput);
                 helpersValidation.validateMyPassword(passwordInput);
                 helpersValidation.validateMyEmail(emailAddressInput);
                 mainValidations.isAge(age);
@@ -125,7 +125,7 @@ if (registerForm) {
                 e.preventDefault();
             }
         } else {
-            errorMsg.innerHTML = 'You Must Enter a valid value';
+            errorMsg.innerHTML = 'Erro : You Must Enter a valid value';
             registerForm.reset();
             e.preventDefault();
         }

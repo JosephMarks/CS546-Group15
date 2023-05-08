@@ -69,13 +69,15 @@ if (companyForm) {
         let location = document.getElementById('location').value;
         let imgSrc = document.getElementById('uploadImage').value;
         let description = document.getElementById('description').value;
+        let perks = document.getElementById('perks').value;
+        let goals = document.getElementById('goals').value;
 
         if (typeof(location) === 'string') location = [location];
 
-        if (companyName.trim() || companyEmail.trim() || industry.trim() || employee.trim() || imgSrc.trim() || description.trim()){
+        if (companyName.trim() || companyEmail.trim() || industry.trim() || employee.trim() || imgSrc.trim() || description.trim() || perks.trim() || goals.trim()){
             try {
 
-                if (!mainValidations.isProperString([companyName, industry, description, imgSrc])){
+                if (!mainValidations.isProperString([companyName, industry, description, imgSrc, perks, goals])){
                     throw "Error : All inputs must be a valid strings";
                 }
 
