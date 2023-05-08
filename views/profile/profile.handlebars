@@ -43,7 +43,17 @@
 <h4>Education: {{university}}</h4>
 <h4>College Major: {{collegeMajor}}</h4>
 <h4>Location: {{locationState}}</h4>
-{{#if skills}}
+<h4>
+<span class="status-oval">{{status}}</span>
+</h4>
+<h4>Age: {{age}}</h4>
+<h4>
+  Gender:
+  <span
+    class="gender-oval {{#if gender}}{{gender}}{{else}}unknown{{/if}}-color"
+  ></span>
+  {{gender}}
+</h4>{{#if skills}}
   <h4>Skills:</h4>
   <div style="display: flex; justify-content: center;">
     <div class="skills-container">

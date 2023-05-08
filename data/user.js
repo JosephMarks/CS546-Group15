@@ -30,8 +30,7 @@ const exportedMethods = {
     return userList;
   },
 
-  async getUserByEmail(email){
-
+  async getUserByEmail(email) {
     email = validations.checkEmail(email);
     const userCollection = await users();
 
@@ -39,7 +38,6 @@ const exportedMethods = {
 
     if (!userDetails) throw "Error :No user found";
     else return userDetails;
-
   },
 
   async getUserById(
@@ -69,7 +67,8 @@ const exportedMethods = {
     email = validations.checkEmail(email, "email"); //check email is valid
     password = validations.checkString(password, "Password");
 
-    if ((candidateType !== 'Student') && (candidateType !== 'Company')) throw "Error : Candidate Type can only be Strictly 'Student' or 'Company'";
+    if (candidateType !== "Student" && candidateType !== "Company")
+      throw "Error : Candidate Type can only be Strictly 'Student' or 'Company'";
 
     password = await bcrypt.hash(password, 10);
 
@@ -79,6 +78,7 @@ const exportedMethods = {
     let aboutMe = "";
     let locationState = "";
     let image = "";
+    let status = "";
     let university = "";
     let collegeMajor = "";
     let gitHubUserName = "";
@@ -107,6 +107,7 @@ const exportedMethods = {
         aboutMe,
         locationState,
         image,
+        status,
         university,
         collegeMajor,
         gitHubUserName,
@@ -193,7 +194,7 @@ const exportedMethods = {
   ) {
     userId = validations.checkId(userId);
     rules.validate(updateData.password);
-    
+
     let fname = validations.validateNameReturn(updateData.fname);
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
@@ -211,6 +212,7 @@ const exportedMethods = {
     );
     let aboutMe = validations.checkString(updateData.aboutMe, "AboutMe");
     let image = updateData.image;
+    let status = updateData.status;
     let university = validations.checkString(
       updateData.university,
       "University"
@@ -220,8 +222,7 @@ const exportedMethods = {
       "Major"
     );
     let skills = updateData.skills;
-    console.log(updateData.skills);
-    console.log(typeof skills);
+
     if (typeof updateData.skills === "string") {
       skills = validations.checkString(skills, "Skills");
     } else {
@@ -257,7 +258,6 @@ const exportedMethods = {
     if (typeof gitHubUserName !== "string" || gitHubUserName.length === 0) {
       throw new Error("Github username must be a string that is not empty");
     }
-    console.log(7);
     const userCollection = await users();
     let oldInfo = await this.getUserById(userId);
     let oldLikedPost = oldInfo.likedPost;
@@ -274,6 +274,7 @@ const exportedMethods = {
       aboutMe: aboutMe,
       locationState: locationState,
       image: image,
+      status: status,
       university: university,
       collegeMajor: collegeMajor,
       gitHubUserName: gitHubUserName,
@@ -445,7 +446,7 @@ const exportedMethods = {
     if (!id || !ObjectId.isValid(id)) {
       throw "Error : Invalid Id";
     }
-      
+
     const userCollection = await users();
     let getUserSkills = await userCollection.findOne(
       { _id: new ObjectId(id) },
