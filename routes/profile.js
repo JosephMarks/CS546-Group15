@@ -95,6 +95,9 @@ router.route("/:id").get(async (req, res) => {
     let image = await userInfo.base64Image;
     let jobHistory = await jobHistoryData.getAll(id);
     let skills = await userInfo.skills;
+    let gender = await userInfo.gender;
+    let age = await userInfo.age;
+    let status = await userInfo.status;
     let connections = await network.getConnections(id);
     connections = connections.slice(0, 5);
     let connectionsObj = [];
@@ -117,8 +120,11 @@ router.route("/:id").get(async (req, res) => {
       lname: userInfo.lname,
       description: userInfo.aboutMe,
       image: image,
+      status: status,
       gitHubUserName: userInfo.gitHubUserName,
       jobHistory: jobHistory,
+      age: age,
+      gender: gender,
       skills: skills,
       connections: connectionsObj,
       university: university,
@@ -324,6 +330,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const university = xss(req.body.university);
   const collegeMajor = xss(req.body.collegeMajor);
   const gitHubUserName = xss(req.body.gitHubUserName);
+  const status = xss(req.body.status);
 
   let skills = req.body.skills;
   if (typeof skills === "string") {
@@ -353,6 +360,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   userObject.locationState = locationState;
   userObject.university = university;
   userObject.collegeMajor = collegeMajor;
+  userObject.status = status;
   userObject.skills = skills;
 
   try {
