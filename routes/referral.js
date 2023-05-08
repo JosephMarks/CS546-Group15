@@ -192,7 +192,17 @@ router
         identity: identity,
       });
     }
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
 
     return res.render("referral/createNewPost", {
       title: "New Post",
@@ -272,7 +282,17 @@ router
     let skills = [];
     let jobType = [];
     let location = [];
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     try {
       if (
         !(
@@ -808,7 +828,17 @@ router
       });
     }
 
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
 
     const title = post.title;
     const h1 = post.title;
@@ -903,7 +933,17 @@ router
 
     let cs = await userData.getUserById(userId);
     let company = cs.companyName;
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     let post = await referralData.getPostById(req.params.id);
     try {
       if (title) {
@@ -993,7 +1033,17 @@ router
         error: error,
       });
     }
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     let userPost = await referralData.getAllPosts();
     return res.render("referral/searchPage", {
       title: "Search Post",
@@ -1045,7 +1095,17 @@ router
         company = company.map((x) => xss(x));
       }
     } catch (error) {
-      let companyList = await companyData.getAllCompanyNameinObject();
+      let companyList;
+      try {
+        companyList = await companyData.getAllCompanyNameinObject();
+      } catch (error) {
+        return res.status(404).render("socialPost/error", {
+          title: "error",
+          h1: "error",
+          userId: req.session.user.userId,
+          error: error,
+        });
+      }
       let userPost = await referralData.getAllPosts();
       return res.status(400).render("referral/searchPage", {
         title: "Search Post",
@@ -1058,7 +1118,17 @@ router
       });
     }
 
-    let companyList = await companyData.getAllCompanyNameinObject();
+    let companyList;
+    try {
+      companyList = await companyData.getAllCompanyNameinObject();
+    } catch (error) {
+      return res.status(404).render("socialPost/error", {
+        title: "error",
+        h1: "error",
+        userId: req.session.user.userId,
+        error: error,
+      });
+    }
     let a,
       b,
       c = false;
