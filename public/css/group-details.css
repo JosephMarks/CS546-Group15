@@ -210,3 +210,32 @@ img {
 .list-group-item:hover {
   background-color: lightgray;
 }
+
+.gender-oval {
+  display: inline-block;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+}
+
+.male-color {
+  background-color: blue;
+}
+
+.female-color {
+  background-color: pink;
+}
+
+.prefer-not-to-say-color {
+  background-color: green;
+}
+
+.status-oval {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 15px;
+  background-color: blue;
+  color: white;
+  font-size: 14px;
+}

@@ -346,7 +346,7 @@ export const numberOfUsers = async (id) => {
     throw new Error("Group not found");
   }
 
-  // Get the number of users in the group
+  // Get the number of users in the group.
   const numberOfUsers = foundGroup.users.length;
 
   return numberOfUsers;
