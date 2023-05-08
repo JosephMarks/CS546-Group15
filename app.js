@@ -58,7 +58,7 @@ app.use("/login", (req, res, next) => {
   if (req.session && req.session.user) {
     if (req.session.user.candidateType === "Student") return res.redirect("/");
     else return res.redirect("/company");
-    return res.redirect("/");
+    // return res.redirect("/");
   } else {
     next();
   }
@@ -233,15 +233,15 @@ app.use("/groups", (req, res, next) => {
 app.use("/profile", (req, res, next) => {
   if (
     !req.session.user ||
-    (req.session.user.candidateType !== "Student" )
+    (req.session.user.candidateType === "Student" )
   ) {
-    return res.redirect("/login");
+    return next();
   } 
 
-  if (!req.session.user || req.session.user.candidateType !== "Company") {
+  if (!req.session.user || req.session.user.candidateType === "Company") {
     return res.redirect("/company");
   }
-  next();
+  return next();
 });
 
 app.use("/logout", (req, res, next) => {

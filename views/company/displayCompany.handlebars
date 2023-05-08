@@ -6,7 +6,7 @@
 
     <h1>{{companyData.companyName}}</h1>
 
-    {{ #if companyData.imgSrc }}
+    {{!-- {{ #if companyData.imgSrc }}
 
     <img
       src=/public/uploads/{{ companyData.imgSrc }}
@@ -22,7 +22,13 @@
       id="my-company-src"
     >
 
-    {{ /if }}
+    {{ /if }} --}}
+
+    <img
+      src=/public/uploads/{{ companyData.imgSrc }}
+      alt="Company Logo"
+      id="my-company-src"
+    >
 
     <div class="industry">Industry : {{companyData.industry}}</div>
 
