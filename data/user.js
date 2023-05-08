@@ -64,10 +64,15 @@ const exportedMethods = {
     candidateType = validations.checkString(candidateType, "Candidate Type");
     age = validations.isAge(Number(age));
     const userCollection = await users();
-    const ifAlready = await userCollection.findOne({ email: email });
-    if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
+
     email = validations.checkEmail(email, "email"); //check email is valid
     password = validations.checkString(password, "Password");
+    if (!rules.validate(password)) throw "Error : Invalid Password";
+    
+    const ifAlready = await userCollection.findOne({ email: email });
+    if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
+    
+
 
     if ((candidateType !== 'Student') && (candidateType !== 'Company')) throw "Error : Candidate Type can only be Strictly 'Student' or 'Company'";
 

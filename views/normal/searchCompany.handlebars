@@ -1,0 +1,23 @@
+<h1>{{title}}</h1>
+
+<div class="company-container">
+  <div class="company">
+    <form class="row g-3 needs-validation" action="/allCompany/" method="post" id="search-company-form">
+      <span id="errorDisplay" > {{error}} </span>
+
+      <div class="col-md-12">
+        <label for="companyName">Search by Company Name</label>
+        <input type="text" class="form-control" id="companyName" name="companyName" >
+      </div>
+
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-outline-info">Search Company</button>
+      </div>
+
+    </form>
+
+  </div>
+
+  <script src="/public/js/allCompany.js" type="module"></script>
+
+</div>
