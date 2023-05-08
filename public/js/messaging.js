@@ -4,7 +4,6 @@ async function loadConversation(targetUserId) {
   const userId = document
     .querySelector("#profileMessage")
     .getAttribute("data-user-id");
-  //const userId = document.body.dataset.userId;
   const dropDown = document.querySelector("#userConnections");
   dropDown.value = targetUserId;
   console.log(dropDown);
@@ -60,26 +59,31 @@ document
       errorEl.textContent = "Please enter something";
     }
 
-    //send the form data
-    //action="/profile/{{_id}}/messaging"
-    //method="POST"
-
     if (valid) {
       console.log("send form");
-      document.querySelector("#send-message").submit();
+
+      try {
+        const response = await fetch(`/profile/${id.value}/messaging`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            connection: connection.value,
+            messageInput: messageInput.value,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error("Error sending message:", response.status);
+          errorEl.textContent = "Error sending message. Please try again.";
+        } else {
+          messageInput.value = "";
+          await loadConversation(connection.value);
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+        errorEl.textContent = "Error sending message. Please try again.";
+      }
     }
-
-    /*
-    const result = fetch(`/profile/${id.value}/messaging`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        connection: connection.value,
-        messageInput: messageInput.value,
-      }),
-    });
-
-    console.log(result);*/
   });

@@ -47,7 +47,7 @@ export const create = async (
   const messageCollection = await messages();
   const insertedMessage = await messageCollection.insertOne(newMessage);
   if (!insertedMessage.acknowledged || !insertedMessage.insertedId) {
-    throw new Error("This band was not successfully added");
+    throw new Error("This message was not successfully added");
   }
 
   const newId = insertedMessage.insertedId.toString();
