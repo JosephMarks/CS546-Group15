@@ -92,7 +92,7 @@ router.route('/post/:userid/new')
             validation.checkParamsAndSessionId(req.params.userid, req.session.user.userId);
         } catch(error)
         {
-            return res.status(500).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
+            return res.status(403).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/500.jpg" });
         }
 
         try

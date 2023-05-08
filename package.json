@@ -1,7 +1,7 @@
 {
-  "name": "cs-546-lab-8",
+  "name": "cs-546-group-15-final-project",
   "version": "1.0.0",
-  "description": "cs-546-lab-8",
+  "description": "Group 15 - Final Project: Better Interview Book",
   "main": "app.js",
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node seed.js"
   },
-  "author": "Pradyumn Pundir 20012602",
+  "author": "Pradyumn Pundir 20012602, Tzu-Ming Lu 20017771, Joseph Marks 10472517, Ruobing Liu xxxxxxxx",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.3.4",

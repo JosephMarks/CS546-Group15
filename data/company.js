@@ -6,22 +6,24 @@ const companyCollection = await company();
 
 const companyFunctions = {
 
-  async createCompany( companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc ) {
+  async createCompany( companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc, perks, goals ) {
     
-    if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description|| !imgSrc)
+    if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description|| !imgSrc ||!perks || !goals)
       throw "Error : You should provide all the parameters";
 
     validations.isNumberOfEmployee(numberOfEmployees);
     validations.checkEmail(companyEmail);
     numberOfEmployees = Number(numberOfEmployees);
 
-    if (!validations.isProperString([companyName, industry, description, imgSrc]))
+    if (!validations.isProperString([companyName, industry, description, imgSrc, perks, goals]))
       throw "Error : Parameters can only be string not just string with empty spaces";
     
     companyName = companyName.trim().toLowerCase();
     companyEmail = companyEmail.trim().toLowerCase();
     industry = industry.trim().toLowerCase();
     description = description.trim().toLowerCase();
+    perks = perks.trim().toLowerCase();
+    goals = goals.trim().toLowerCase();
     imgSrc = imgSrc.trim();
 
     if (typeof(locations) === 'string') locations = [locations];
@@ -31,7 +33,7 @@ const companyFunctions = {
     const ifAlready = await companyCollection.findOne({ companyName: companyName });
     if (ifAlready) throw "Error: User Company Name is already registered";
 
-    const finalPush = await companyCollection.insertOne({ companyName, companyEmail, industry, locations, numberOfEmployees, jobs: [], description, imgSrc, createdAt: new Date()});
+    const finalPush = await companyCollection.insertOne({ companyName, companyEmail, industry, locations, numberOfEmployees, jobs: [], description, imgSrc, perks, goals, createdAt: new Date()});
     return await companyCollection.findOne({ _id: finalPush.insertedId });
     
   },
@@ -72,6 +74,8 @@ const companyFunctions = {
 
     if (!validations.isProperString([name]))
       throw "Error : Parameters can only be string not just string with empty spaces";
+
+    name = name.trim().toLowerCase();
 
     let companyData = await companyCollection.findOne({ companyName: name });
     if (!companyData) throw "Error : No Company Found";
@@ -259,10 +263,10 @@ const companyFunctions = {
       
     },
 
-    async updateCompany(email, companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc) {
+    async updateCompany(email, companyName, companyEmail, industry, locations, numberOfEmployees, description, imgSrc, perks, goals) {
       
 
-      if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description || !imgSrc )
+      if ( !companyName || !companyEmail || !industry || !locations || !numberOfEmployees || !description || !imgSrc || !perks || !goals)
         throw "Error : You should provide all the parameters";
 
       validations.isNumberOfEmployee(numberOfEmployees);
@@ -279,6 +283,8 @@ const companyFunctions = {
       locations = locations.map(x => x.trim()); // TODO : Must fall in the states array.
       description = description.trim().toLowerCase();
       companyEmail = companyEmail.trim().toLowerCase();
+      perks = perks.trim().toLowerCase();
+      goals = goals.trim().toLowerCase();
 
 
       let ifExists = await companyCollection.findOne({ companyEmail: companyEmail });
@@ -293,8 +299,10 @@ const companyFunctions = {
         description,
         jobs: ifExists.jobs,
         createdAt: ifExists.createdAt,
-        updatedAt: new Date(),
         imgSrc,
+        perks,
+        goals,
+        updatedAt: new Date()
       }
 
       let getCompanyDetails = await this.getCompanyDataFromEmail(email);

@@ -1,7 +1,12 @@
 import { MongoUnexpectedServerResponseError, ObjectId, Binary } from "mongodb";
 import { messages, users } from "../config/mongoCollections.js";
 
-export const create = async (originUserId, targetUserId, message) => {
+export const create = async (
+  originUserId,
+  targetUserId,
+  message,
+  senderFullName
+) => {
   if (!originUserId || !targetUserId || !message) {
     throw new Error("Please ensure amounts have been populated");
   }
@@ -36,12 +41,13 @@ export const create = async (originUserId, targetUserId, message) => {
     targetUserId: new ObjectId(targetUserId),
     message: message,
     createdAt: createdAt,
+    senderFullName: senderFullName,
   };
 
   const messageCollection = await messages();
   const insertedMessage = await messageCollection.insertOne(newMessage);
   if (!insertedMessage.acknowledged || !insertedMessage.insertedId) {
-    throw new Error("This band was not successfully added");
+    throw new Error("This message was not successfully added");
   }
 
   const newId = insertedMessage.insertedId.toString();
