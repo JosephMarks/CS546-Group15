@@ -14,7 +14,7 @@ import validation from "../helpers.js";
 // import { messages } from "../config/mongoCollections.js";
 import xss from "xss";
 import { type } from "os";
-import { skills } from "../config/mongoCollections.js";
+import { messages, skills } from "../config/mongoCollections.js";
 
 router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
   const id = req.params.id;
@@ -471,6 +471,9 @@ router
       }
 
       let allMessagesRaw = await messageData.getAll(id);
+
+      console.log("HERE are the RAW MESSAGES");
+      console.log(allMessagesRaw);
       let allMessages = allMessagesRaw.map((message) => {
         const sender = allConnectionsFullNamesArray.find(
           (user) => user.id === message.sender
@@ -503,7 +506,8 @@ router
         }
         return 1;
       });
-
+      console.log("Here are all the messages!!!!!!!!!!!");
+      console.log(allMessages);
       res.render("./profile/profileMessage", {
         _id: id,
         messages: allMessages,
@@ -519,6 +523,9 @@ router
   })
   .post(async (req, res) => {
     const receivedInput = req.body;
+    let connection = xss(receivedInput.connection);
+    let message = xss(receivedInput.messageInput);
+    console.log(receivedInput.messageInput);
     const id = req.params.id;
 
     const userId = req.session.user.userId;
@@ -549,8 +556,8 @@ router
 
       let newMessage = await messageData.create(
         id,
-        receivedInput.connection,
-        receivedInput.messageInput,
+        connection,
+        message,
         senderFullName
       );
 
