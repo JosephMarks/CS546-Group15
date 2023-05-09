@@ -43,6 +43,15 @@ const validation = {
           throw `Error: ${varName} is not a valid value for video link as it only contains digits`;
       return strVal;
   },
+  checkPost(strVal, varName) {
+    if (!strVal) throw `Error: You must supply a ${varName}!`;
+    strVal = strVal.toString();
+    if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
+    strVal = strVal.trim();
+    if (strVal.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    return strVal;
+  }
 }
 
 //  create new post handlebars
@@ -57,7 +66,7 @@ if(postCreate)
     {
       errorDiv.innerText = "";
       let originPost = post.value;
-      originPost = validation.checkString(originPost, "Content");
+      originPost = validation.checkPost(originPost, "Content");
     } catch(error)
     {
       errorDiv.innerText = error;
@@ -103,8 +112,8 @@ if(networkPostEdit)
       originContent = validation.checkString(originContent, "Post content");
     } catch(error)
     {
-      errorDiv.innerText = error;
       event.preventDefault();
+      errorDiv.innerText = error;
     }
   });
 }

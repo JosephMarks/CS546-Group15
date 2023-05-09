@@ -698,7 +698,18 @@ const validations = {
       throw "The date should be a number from current year to 2050.";
     return date;
   },
+
+  checkPost(strVal, varName) {
+    if (!strVal) throw `Error: You must supply a ${varName}!`;
+    strVal = strVal.toString();
+    if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
+    strVal = strVal.trim();
+    if (strVal.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    return strVal;
+  }
 };
+
 
 const checkArrNumber = (arr) => {
   for (let x of arr) {
