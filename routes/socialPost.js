@@ -123,17 +123,7 @@ router
         error: error,
       });
     }
-    let companyList;
-    try {
-      companyList = await companyData.getAllCompanyNameinObject();
-    } catch (error) {
-      return res.status(500).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
 
     return res.render("socialPost/createNewPost", {
       title: "New Post",
@@ -162,17 +152,7 @@ router
     let field;
     let category;
     let company;
-    let companyList;
-    try {
-      companyList = await companyData.getAllCompanyNameinObject();
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
     try {
       if (!(req.body.field && req.body.category && req.body.company))
         throw "Please select fields, category and company tags!";
@@ -457,17 +437,7 @@ router
         error: error,
       });
     }
-    let companyList;
-    try {
-      companyList = await companyData.getAllCompanyNameinObject();
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
 
     const title = post.title;
     const h1 = post.title;
@@ -566,17 +536,7 @@ router
         eventdate = validation.checkDate(eventdate);
       }
     } catch (error) {
-      let companyList;
-      try {
-        companyList = await companyData.getAllCompanyNameinObject();
-      } catch (error) {
-        return res.status(404).render("socialPost/error", {
-          title: "error",
-          h1: "error",
-          userId: req.session.user.userId,
-          error: error,
-        });
-      }
+      let companyList = await companyData.getAllCompanyNameinObject();
       let post = await socialPostData.getPostById(req.params.id);
       return res.status(400).render("socialPost/yourPostEdit", {
         title: title,
@@ -636,17 +596,7 @@ router
         error: error,
       });
     }
-    let companyList;
-    try {
-      companyList = await companyData.getAllCompanyNameinObject();
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
     let userPost = await socialPostData.getAllPosts();
     return res.render("socialPost/searchPage", {
       title: "Search Post",
@@ -698,17 +648,7 @@ router
       }
       category = category.map((x) => xss(x));
     }
-    let companyList;
-    try {
-      companyList = await companyData.getAllCompanyNameinObject();
-    } catch (error) {
-      return res.status(404).render("socialPost/error", {
-        title: "error",
-        h1: "error",
-        userId: req.session.user.userId,
-        error: error,
-      });
-    }
+    let companyList = await companyData.getAllCompanyNameinObject();
     let a,
       b,
       c,
