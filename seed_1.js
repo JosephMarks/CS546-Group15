@@ -15,6 +15,7 @@ import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
 import * as groupEventData from "./data/groupEvents.js";
+import companyFunctions from "./data/company.js";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
 export const pseudoData = async () => {
@@ -144,7 +145,7 @@ export const pseudoData = async () => {
     "employee friendly, socially aligned"
   );
 
-  await userFunctions.createUser(
+  await userData.createUser(
     "Google ",
     "Foogle ",
     "70",
@@ -152,7 +153,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "barclays ",
     "barclays",
     "55",
@@ -160,7 +161,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "adobe",
     "Fodobe",
     "32",
@@ -168,7 +169,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "prudential",
     "Identical",
     "56",
@@ -277,27 +278,11 @@ export const pseudoData = async () => {
     "nj",
     "this is a web developer Job"
   );
-  await groupData.create(
-    "Fintech Software Engineers",
-    "Let's get together and build cool fintech tools!",
-    joe._id
-  );
-
-  await groupData.create(
-    "Stevens Computer Science Alumni",
-    "Let's get together and remember the great times in Professor Patrick Hill's class!",
-    ruobing._id
-  );
-
-  await groupData.create(
-    "Stevens Computer Engineers Club",
-    "How about we have some fun!",
-    pundir._id
-  );
-
-  await groupData.create(
-    "Black Pink In Your Area",
-    "This is a group where we can get together and celebrate Black Pink in our area! - we are all Bllinks",
-    ming._id
+  await skillsData.createSkills(
+    ming._id,
+    "About Blackpink",
+    "Blackpink is a South Korean girl group formed in 2016 by YG Entertainment. The group consists of four members: Jisoo, Jennie, Rosé, and Lisa. Blackpink has become one of the most successful and popular K-pop groups, known for their powerful and catchy songs, fierce performances, and fashion-forward style. They have broken numerous records, including becoming the first K-pop group to have a music video reach one billion views on YouTube. Blackpink has also gained global recognition, collaborating with artists such as Lady Gaga and Selena Gomez. Their fanbase, known as Blinks, continues to grow as they cement their status as a powerhouse in the music industry.",
+    "https://www.youtube.com/watch?v=2S24-y0Ij3Y&ab_channel=BLACKPINK",
+    "music"
   );
 };

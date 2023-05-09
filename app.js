@@ -59,7 +59,7 @@ app.use("/login", (req, res, next) => {
   if (req.session && req.session.user) {
     if (req.session.user.candidateType === "Student") return res.redirect("/");
     else return res.redirect("/company");
-    // return res.redirect("/");
+    return res.redirect("/");
   } else {
     next();
   }
@@ -84,8 +84,7 @@ app.use("/company", (req, res, next) => {
       next();
     } else {
       return res.render("error", {
-        error:
-          "You Do not have Access for this page logout and login with an authenticated user.",
+        error: "You Do not have Access for this page logout and login with an authenticated user.",
         title: "Error",
       });
     }
@@ -93,27 +92,23 @@ app.use("/company", (req, res, next) => {
 });
 
 app.use("/network", (req, res, next) => {
-  if (!req.session.user) {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
     return res.redirect("/login");
-  } else if (req.session.user.candidateType === "Company") {
-    return res.render("error", {
-      error:
-        "You Do not have Access for this page logout and login with an authenticated user.",
-      title: "Error",
-    });
   }
   next();
 });
 
 app.use("/skills", (req, res, next) => {
-  if (!req.session.user) {
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
+  ) {
     return res.redirect("/login");
-  } else if (req.session.user.candidateType === "Company") {
-    return res.render("error", {
-      error:
-        "You Do not have Access for this page logout and login with an authenticated user.",
-      title: "Error",
-    });
   }
   next();
 });
@@ -197,12 +192,14 @@ app.use("/referral", (req, res, next) => {
 });
 
 app.get("/allCompany", (req, res, next) => {
-  if (!req.session || !req.session.user) {
-    return res.redirect("login");
-  } else {
+  if (!req.session || !req.session.user){
+    return res.redirect('login');
+  } 
+  else {
     next();
   }
 });
+
 
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
@@ -235,14 +232,17 @@ app.use("/groups", (req, res, next) => {
 });
 
 app.use("/profile", (req, res, next) => {
-  if (!req.session.user || req.session.user.candidateType === "Student") {
-    return next();
-  }
+  if (
+    !req.session.user ||
+    (req.session.user.candidateType !== "Student" )
+  ) {
+    return res.redirect("/login");
+  } 
 
-  if (!req.session.user || req.session.user.candidateType === "Company") {
+  if (!req.session.user || req.session.user.candidateType !== "Company") {
     return res.redirect("/company");
   }
-  return next();
+  next();
 });
 
 app.use("/logout", (req, res, next) => {
