@@ -4,13 +4,9 @@ import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
-<<<<<<< HEAD
-// import { userData } from "./data/index.js";
-=======
 import { userData } from "./data/index.js";
 import spost from "./data/socialPost.js";
 import refer from "./data/referral.js";
->>>>>>> main
 import * as groupData from "./data/groups.js";
 import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
