@@ -218,7 +218,7 @@ const exportedMethods = {
       ])
     )
       throw "Error : Parameters can only be string not just string with empty spaces";
-
+    validation.checkAreaText(description, "description");
     if (!Array.isArray(jobType)) {
       jobType = [];
     } else {
@@ -233,7 +233,7 @@ const exportedMethods = {
     }
 
     companyEmail = validation.checkEmail(companyEmail, "companyEmail");
-    salary = salary.trim();
+
     validation.isSalary(salary);
     salary = Number(salary);
     jobType = validation.checkJobtypeTags(jobType);

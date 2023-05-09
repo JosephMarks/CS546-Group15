@@ -75,7 +75,7 @@ export const pseudoData = async () => {
   );
 
   const mingPost = await networkData.addPost(
-    ming._id,
+    Karl._id,
     "This is Tzu Ming's first content."
   );
   await networkData.addComments(
@@ -147,7 +147,7 @@ export const pseudoData = async () => {
     "employee friendly, socially aligned"
   );
 
-  await userData.createUser(
+  let g = await userData.createUser(
     "Google ",
     "Foogle ",
     "70",
@@ -155,7 +155,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let b = await userData.createUser(
     "barclays ",
     "barclays",
     "55",
@@ -163,7 +163,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let a = await userData.createUser(
     "adobe",
     "Fodobe",
     "32",
@@ -171,7 +171,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let p = await userData.createUser(
     "prudential",
     "Identical",
     "56",
@@ -179,7 +179,9 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-
+  await userData.updateUsersCompany(a._id, "adobe");
+  await userData.updateUsersCompany(p._id, "prudential");
+  await userData.updateUsersCompany(g._id, "google");
   await companyFunctions.createJob(
     "GOogle",
     "google@google.com",
@@ -349,7 +351,7 @@ export const pseudoData = async () => {
     company1,
     category1
   );
-  let s1_id = socialPost1._id;
+  let s1_id = socialPost1._id.toString();
 
   let title2 = "aefarfasf";
   let body2 = "aefarfasf";
@@ -367,7 +369,7 @@ export const pseudoData = async () => {
     company2,
     category2
   );
-  let s2_id = socialPost2._id;
+  let s2_id = socialPost2._id.toString();
   await spost.addComments(
     s1_id,
     pundir._id,
@@ -386,9 +388,9 @@ export const pseudoData = async () => {
   let jobTitle11 = "sdffsdsf";
   let salary11 = 20000;
   let level11 = "senior";
-  let jobType11 = "onsite";
-  let skills11 = "java";
-  let location11 = "AZ";
+  let jobType11 = ["online"];
+  let skills11 = ["react"];
+  let location11 = ["AZ"];
   let description11 = "asdfad";
   let re11 = await refer.addPost(
     title11,
@@ -406,21 +408,21 @@ export const pseudoData = async () => {
     location11,
     description11
   );
-  let r1_id = re11._id;
+  let r1_id = re11._id.toString();
   let title22 = "aefarfasf";
   let body22 = "aefarfasf";
   let posterId22 = pundir._id;
   let duedate22 = "2024-10-05";
-  let fields22 = ["finance"];
+  let fields22 = ["engineering"];
   let companyName22 = "google";
   let companyEmail22 = "dsg@g.com";
 
   let jobTitle22 = "sdffsdsf";
   let salary22 = 20000;
   let level22 = "senior";
-  let jobType22 = "onsite";
-  let skills22 = "java";
-  let location22 = "AZ";
+  let jobType22 = ["online"];
+  let skills22 = ["javascript"];
+  let location22 = ["AZ"];
   let description22 = "asdfad";
   let re22 = await refer.addPost(
     title22,
@@ -438,7 +440,7 @@ export const pseudoData = async () => {
     location22,
     description22
   );
-  let r2_id = re22._id;
+  let r2_id = re22._id.toString();
   await refer.addComments(
     r1_id,
     pundir._id,

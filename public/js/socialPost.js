@@ -113,6 +113,7 @@ if (updateJob) {
     let postbody = document.getElementById("postbody").value;
     let eventdate = document.getElementById("eventdate").value;
     let field = document.getElementById("field").value;
+
     let category = document.getElementById("category").value;
     let company = document.getElementById("company").value;
 
@@ -125,11 +126,19 @@ if (updateJob) {
         if (!mainValidations.isProperString([posttitle, postbody])) {
           throw "Error : All inputs must be a valid strings";
         }
+        if (eventdate) {
+          mainValidations.checkDate(eventdate);
+        }
+        if (field.length > 1) {
+          mainValidations.checkFieldsTags(field);
+        }
+        if (category.length > 1) {
+          mainValidations.checkCategoryTags(category);
+        }
+        if (company.length > 1) {
+          mainValidations.checkCompanyTags(company);
+        }
 
-        mainValidations.checkDate(eventdate);
-        mainValidations.checkFieldsTags(field);
-        mainValidations.checkCategoryTags(category);
-        mainValidations.checkCompanyTags(company);
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
 
@@ -141,12 +150,6 @@ if (updateJob) {
 
         e.preventDefault();
       }
-    } else {
-      errorMsg.innerHTML = "All parameters are required";
-      document.getElementById("posttitle").value = posttitle;
-      document.getElementById("postbody").value = postbody;
-
-      e.preventDefault();
     }
   });
 }

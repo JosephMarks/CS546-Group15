@@ -170,9 +170,12 @@ if (updateJob) {
         }
 
         helpersValidation.validateMyEmail(companyEmail.trim());
-
-        mainValidations.checkDueDate(duedate);
-        mainValidations.checkFieldsTags(field);
+        if (duedate) {
+          mainValidations.checkDueDate(duedate);
+        }
+        if (field.length > 1) {
+          mainValidations.checkFieldsTags(field);
+        }
         document.getElementById("posttitle").value = posttitle;
         document.getElementById("postbody").value = postbody;
         document.getElementById("companyEmail").value = companyEmail;
@@ -184,12 +187,6 @@ if (updateJob) {
         document.getElementById("companyEmail").value = companyEmail;
         e.preventDefault();
       }
-    } else {
-      errorMsg.innerHTML = "All parameters are required";
-      document.getElementById("posttitle").value = posttitle;
-      document.getElementById("postbody").value = postbody;
-      document.getElementById("companyEmail").value = companyEmail;
-      e.preventDefault();
     }
   });
 }
