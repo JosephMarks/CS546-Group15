@@ -102,6 +102,12 @@ export const pseudoData = async () => {
     "music"
   );
 
+  // await companyFunctions.createCompany('google', 'google@google.com', 'tech', ['al', 'ak'], "15345", 'Google LLC is an American multinational technology company focusing on online advertising, search engine technology, cloud computing, computer software, quantum computing, e-commerce, artificial intelligence, and consumer electronics', '1.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('Barclays', 'Barclays@Barclays.com', 'chemistry', ['id'], '56789', 'Barclays is a British multinational universal bank, headquartered in London, England. Barclays operates as two divisions, Barclays UK and Barclays International, supported by a service company, Barclays Execution Services. ', '2.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('adobe', 'adobe@adobe.com', 'tech', ['ny'], '67895', 'Adobe Inc., originally called Adobe Systems Incorporated, is an American multinational computer software company incorporated in Delaware and headquartered in San Jose, California.', '4.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('prudential', 'prudential@prudential.com', 'tech', ['nj'], '25000', 'Prudential Financial, Inc. is an American Fortune Global 500 and Fortune 500 company whose subsidiaries provide insurance, retirement planning, investment management, and other products and services to both retail and institutional customers throughout the United States and in over 40 other countries', '5.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+
+
   await companyFunctions.createCompany(
     "google",
     "google@google.com",
@@ -113,6 +119,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "Barclays",
     "Barclays@Barclays.com",
@@ -124,6 +131,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "adobe",
     "adobe@adobe.com",
@@ -135,6 +143,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "prudential",
     "prudential@prudential.com",
@@ -391,7 +400,7 @@ export const pseudoData = async () => {
   let jobType11 = ["online"];
   let skills11 = ["react"];
   let location11 = ["AZ"];
-  let description11 = "asdfad";
+  let description11 = "asdfadjgkgskdfgkjsdgfkjsdgfjksdgfjksdgfksgdfksgd";
   let re11 = await refer.addPost(
     title11,
     body11,
@@ -423,7 +432,7 @@ export const pseudoData = async () => {
   let jobType22 = ["online"];
   let skills22 = ["javascript"];
   let location22 = ["AZ"];
-  let description22 = "asdfad";
+  let description22 = "asdfadkshflsghdfjksgdkfgskjdgfjskdgfjksdgfkjsdgfjks";
   let re22 = await refer.addPost(
     title22,
     body22,
