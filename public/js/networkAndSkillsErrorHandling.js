@@ -87,7 +87,7 @@ if(yourPostComments)
     {
       errorDiv.innerText = "";
       let originComments = comments.value;
-      originComments = validation.checkString(originComments, "Comments");
+      originComments = validation.checkPost(originComments, "Comments");
     } catch(error)
     {
       errorDiv.innerText = error;
@@ -109,7 +109,7 @@ if(networkPostEdit)
     {
       errorDiv.innerText = "";
       let originContent = content.value;
-      originContent = validation.checkString(originContent, "Post content");
+      originContent = validation.checkPost(originContent, "Post content");
     } catch(error)
     {
       event.preventDefault();

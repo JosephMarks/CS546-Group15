@@ -171,7 +171,7 @@ router.route('/post/:userid/postId/:id')
 
         try
         {
-            updatedData = validation.checkString(updatedData, 'Comment');
+            updatedData = validation.checkPost(updatedData, 'Comment');
         } catch(error)
         {
             const post = await networkData.getPostById(req.params.id);
@@ -255,7 +255,7 @@ router.route('/post/:userid/postId/:id/edit')
             userId = validation.checkId(userId, 'User ID');
             postId = validation.checkId(postId, "Post ID");
             if(content)
-                content = validation.checkString(content, 'Post');
+                content = validation.checkPost(content, 'Post');
         } catch(error)
         {
             return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });

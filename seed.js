@@ -9,7 +9,6 @@ const db = await dbConnection();
 await db.dropDatabase();
 
 seed.pseudoData();
-
 // user error testing
 
 // [] define js file in data
@@ -1079,78 +1078,78 @@ seed.pseudoData();
 // console.log(await networkData.getPostByConnections(did))
 /**---------social media posts------------ */
 
-try
-{
-  let title = "aefarfasf";
-  let body = "aefarfasf";
-  let posterId = "644feec03e6bc5df8c7ee4cd";
-  let eventdate = "2021/04//5";
-  let fields = ["back-end", "full-stack"];
-  let company = ["google"];
-  let category = ["others"];
-  await spost.addPost(
-    title,
-    body,
-    posterId,
-    eventdate,
-    fields,
-    company,
-    category
-  );
-  let res = await spost.getPostsByFieldsTag(["full-stack"]);
-  console.log(res);
-} catch(error)
-{
-  console.log(error);
-}
-try
-{
-  let title = "ewrfskma";
-  let body = "aefarfasf";
-  let posterId = "644feec03e6bc5df8c7ee4cd";
-  let eventdate = "2021/04//5";
-  let fields = ["full-stack"];
-  let company = ["google"];
-  let category = ["making friends"];
-  await spost.addPost(
-    title,
-    body,
-    posterId,
-    eventdate,
-    fields,
-    company,
-    category
-  );
-  let res = await spost.getPostsByFieldsTag(["full-stack"]);
-  console.log(res);
-} catch(error)
-{
-  console.log(error);
-}
-try
-{
-  let title = "ewrfskma";
-  let body = "aefarfasf";
-  let posterId = "644feeda3e6bc5df8c7ee4ce";
-  let eventdate = "2021/04//5";
-  let fields = ["full-stack"];
-  let company = ["google"];
-  let category = ["interview"];
-  await spost.addPost(
-    title,
-    body,
-    posterId,
-    eventdate,
-    fields,
-    company,
-    category
-  );
-  let res = await spost.getPostsByFieldsTag(["full-stack"]);
-  console.log(res);
-} catch(error)
-{
-  console.log(error);
-}
+// try
+// {
+//   let title = "aefarfasf";
+//   let body = "aefarfasf";
+//   let posterId = "644feec03e6bc5df8c7ee4cd";
+//   let eventdate = "2021/04//5";
+//   let fields = ["back-end", "full-stack"];
+//   let company = ["google"];
+//   let category = ["others"];
+//   await spost.addPost(
+//     title,
+//     body,
+//     posterId,
+//     eventdate,
+//     fields,
+//     company,
+//     category
+//   );
+//   let res = await spost.getPostsByFieldsTag(["full-stack"]);
+//   console.log(res);
+// } catch(error)
+// {
+//   console.log(error);
+// }
+// try
+// {
+//   let title = "ewrfskma";
+//   let body = "aefarfasf";
+//   let posterId = "644feec03e6bc5df8c7ee4cd";
+//   let eventdate = "2021/04//5";
+//   let fields = ["full-stack"];
+//   let company = ["google"];
+//   let category = ["making friends"];
+//   await spost.addPost(
+//     title,
+//     body,
+//     posterId,
+//     eventdate,
+//     fields,
+//     company,
+//     category
+//   );
+//   let res = await spost.getPostsByFieldsTag(["full-stack"]);
+//   console.log(res);
+// } catch(error)
+// {
+//   console.log(error);
+// }
+// try
+// {
+//   let title = "ewrfskma";
+//   let body = "aefarfasf";
+//   let posterId = "644feeda3e6bc5df8c7ee4ce";
+//   let eventdate = "2021/04//5";
+//   let fields = ["full-stack"];
+//   let company = ["google"];
+//   let category = ["interview"];
+//   await spost.addPost(
+//     title,
+//     body,
+//     posterId,
+//     eventdate,
+//     fields,
+//     company,
+//     category
+//   );
+//   let res = await spost.getPostsByFieldsTag(["full-stack"]);
+//   console.log(res);
+// } catch(error)
+// {
+//   console.log(error);
+// }
 // try {
 //   await spost.addLikes("644949f891a589a643521077", "6447c92fbde9899864ecafe2");
 // } catch (error) {
@@ -1369,4 +1368,4 @@ try
 // console.log(foundUser);
 
 //console.log("Done seeding database");
-//await closeConnection();
+await closeConnection();

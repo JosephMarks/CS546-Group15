@@ -1,9 +1,8 @@
 export const mongoConfig = {
-  // serverUrl:
-  //   "mongodb+srv://pundirpradyumn25:Par56789@cluster0.drlwwjm.mongodb.net/test'",
   serverUrl:
-    "mongodb+srv://pundirpradyumn25:Par56789@cluster0.drlwwjm.mongodb.net/test'",
+    "mongodb://127.0.0.1:27017",
   database: "webDevelopmentGroup15",
 };
 
 // mongodb://localhost:27017
+// mongodb://127.0.0.1:27017
