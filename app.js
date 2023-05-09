@@ -84,7 +84,8 @@ app.use("/company", (req, res, next) => {
       next();
     } else {
       return res.render("error", {
-        error: "You Do not have Access for this page logout and login with an authenticated user.",
+        error:
+          "You Do not have Access for this page logout and login with an authenticated user.",
         title: "Error",
       });
     }
@@ -192,14 +193,12 @@ app.use("/referral", (req, res, next) => {
 });
 
 app.get("/allCompany", (req, res, next) => {
-  if (!req.session || !req.session.user){
-    return res.redirect('login');
-  } 
-  else {
+  if (!req.session || !req.session.user) {
+    return res.redirect("login");
+  } else {
     next();
   }
 });
-
 
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
@@ -231,16 +230,13 @@ app.use("/groups", (req, res, next) => {
   next();
 });
 
-app.use("/profile", (req, res, next) => {
+app.use("/groups", (req, res, next) => {
   if (
     !req.session.user ||
-    (req.session.user.candidateType !== "Student" )
+    (req.session.user.candidateType !== "Student" &&
+      req.session.user.candidateType !== "Company")
   ) {
     return res.redirect("/login");
-  } 
-
-  if (!req.session.user || req.session.user.candidateType !== "Company") {
-    return res.redirect("/company");
   }
   next();
 });
