@@ -4,10 +4,6 @@ const inputDescription = document.getElementById("description");
 const inputEventDate = document.getElementById("eventDate");
 const errorDiv = document.getElementById("error");
 
-console.log(inputTitle);
-console.log(inputDescription);
-console.log(inputEventDate);
-
 if (addEventForm) {
   addEventForm.addEventListener("submit", (event) => {
     errorDiv.innerText = "";

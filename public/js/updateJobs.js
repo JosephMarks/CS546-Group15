@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("form submitted...");
         errorDiv.innerText = "";
 
-        // Change the following lines to select only the inputs within the current form
         const roleInputs = jobHistoryForm.querySelectorAll(
           "input[name^='role']"
         );
@@ -90,6 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
             event.preventDefault();
             errorDiv.innerText =
               "Please ensure the end date is after the start date.";
+            return;
+          }
+
+          regex = /[^a-zA-Z]/g;
+          if (regex.test(roleInputs)) {
+            event.preventDefault();
+            errorDiv.innerText =
+              "Please ensure role doesn't include numbers or special characters.";
             return;
           }
 
