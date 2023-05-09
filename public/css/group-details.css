@@ -126,8 +126,9 @@ img {
 }
 
 .calendar {
-  max-width: 35%; /* or any other desired width */
+  max-width: 35%;
   overflow: auto;
+  background-color: #e0f0e9;
 }
 
 .profile-container {
