@@ -64,8 +64,8 @@ const exportedMethods = {
     const userCollection = await users();
 
     email = validations.checkEmail(email, "email"); //check email is valid
-    password = validations.checkString(password, "Password");
     if (!rules.validate(password)) throw "Error : Invalid Password";
+    password = validations.checkString(password, "Password");
     
     const ifAlready = await userCollection.findOne({ email: email });
     if (ifAlready) throw "Error: User Email is already registered"; //check email is existed in db or not
@@ -204,6 +204,7 @@ const exportedMethods = {
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
     let password = validations.checkString(updateData.password, "Password");
+    password = await bcrypt.hash(password, 10);
     let age = validations.isAge(updateData.age, "age");
     let gender = validations.checkGender(updateData.gender, "Gender");
     let locationState = validations.checkState(
