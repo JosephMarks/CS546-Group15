@@ -38,6 +38,12 @@ if (profileEditForm) {
       errors.push("Please select a gender.");
     }
 
+    if (inputLocationState.length !== 2) {
+      event.preventDefault();
+
+      errors.push("Please select a gender.");
+    }
+
     // Validate Header Description
     if (
       !inputHeaderDescription.value ||

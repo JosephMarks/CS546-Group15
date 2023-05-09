@@ -50,7 +50,9 @@ router.post("/:id/editProfilePic", upload.single("image"), async (req, res) => {
     res.redirect(`/profile/${id}`);
   } catch (e) {
     console.error(e); // Log the error to console
-    res.status(500).send("Error uploading image.");
+    res
+      .status(500)
+      .render("error", { error: "Error uploading image.", title: "error" });
   }
 });
 
@@ -369,7 +371,9 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
     res.redirect(`/profile/${id}`);
   } catch (e) {
     console.error(e);
-    res.status(500).send("Error updating profile.");
+    res
+      .status(500)
+      .render("error", { error: "Error updating profile.", title: "error" });
   }
 });
 
