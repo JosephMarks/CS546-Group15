@@ -155,6 +155,27 @@ const validations = {
     }
   },
 
+  checkAreaText (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    if (param.length < 15) throw `Error: ${name} cannot be less than 15 characters`;
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+
+  checkTechJobTitle (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+
   display() {
     console.log("hi");
   },

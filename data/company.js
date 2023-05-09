@@ -26,6 +26,11 @@ const companyFunctions = {
     goals = goals.trim().toLowerCase();
     imgSrc = imgSrc.trim();
 
+    validations.checkAreaText(description, "description");
+    validations.checkAreaText(perks, "perks");
+    validations.checkAreaText(goals, "goals");
+    validations.checkTechJobTitle(industry, "industry");
+
     if (typeof(locations) === 'string') locations = [locations];
     validations.checkLocationTags(locations);
     locations = locations.map((x) => x.trim());
@@ -152,11 +157,16 @@ const companyFunctions = {
       validations.isSalary(salary);
       salary = Number(salary);
 
+      validations.checkAreaText(description, "description");
+
       companyName = companyName.trim().toLowerCase();
       companyEmail = companyEmail.trim().toLowerCase();
       level = level.trim().toLowerCase();
       jobTitle = jobTitle.trim().toLowerCase();
       description = description.trim().toLowerCase();
+
+      validations.checkJobtypeTags(jobTitle, 'jobTitle');
+
 
       let jobData = {
 
@@ -208,6 +218,8 @@ const companyFunctions = {
 
       validations.isSalary(salary);
       salary = Number(salary);
+      validations.checkAreaText(description, "description");
+      validations.checkJobtypeTags(jobTitle, 'jobTitle');
 
       let jobData = {
 
@@ -285,6 +297,11 @@ const companyFunctions = {
       companyEmail = companyEmail.trim().toLowerCase();
       perks = perks.trim().toLowerCase();
       goals = goals.trim().toLowerCase();
+
+      validations.checkAreaText(description, "description");
+      validations.checkAreaText(perks, "perks");
+      validations.checkAreaText(goals, "goals");
+      validations.checkJobtypeTags(industry, "industry");
 
 
       let ifExists = await companyCollection.findOne({ companyEmail: companyEmail });
