@@ -104,7 +104,7 @@ router.post("/", async (req, res) => {
     );
     res.redirect(`/groups/${newGroup._id}`);
   } catch (e) {
-    res.status(404).render("./groups/error", {
+    res.status(400).render("./groups/error", {
       class: "error",
       title: "Error Page",
       errorMessage: `We're sorry, a venue with that id does not exist .`,
