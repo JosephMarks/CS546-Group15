@@ -46,8 +46,8 @@ router
       identity = true;
     }
 
-    const title = "Post";
-    const h1 = "Post";
+    const title = "Referral Page";
+    const h1 = "Referral Page";
     let userPostedPostList, userLikedPostList;
 
     try {
