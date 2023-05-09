@@ -14,6 +14,7 @@ import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
 import * as groupEventData from "./data/groupEvents.js";
+import usersData from "./data/user.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,7 +42,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: { maxAge: 3600000 },
-  }),
+  })
 );
 
 app.use("/public", staticDir);
@@ -159,7 +160,7 @@ app.post(
   (req, res, next) => {
     req.method = "delete";
     next();
-  },
+  }
 );
 
 app.post("/company/updateCompany/:name", (req, res, next) => {
@@ -274,7 +275,7 @@ app.use("/", (req, res, next) => {
       " " +
       req.originalUrl +
       " " +
-      auth,
+      auth
   );
   return next();
 });
@@ -295,7 +296,17 @@ app.use("/", (req, res, next) => {
 //   next();
 // }
 
-configRoutes(app);
+// const joe = await usersData.createUser(
+//   "Joeseph",
+//   "Marks",
+//   20,
+//   "jmarsks@ggg.edu",
+//   "Test1234$",
+//   "Student"
+// );
+
+// console.log(joe._id);
+// configRoutes(app);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");

@@ -5,6 +5,16 @@ import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
 import { userData } from "./data/index.js";
+import * as groupData from "./data/groups.js";
+import * as groupEventsData from "./data/groupEvents.js";
+import multer from "multer";
+import GridFsStorage from "multer-gridfs-storage";
+import Grid from "gridfs-stream";
+import { groupActivityData, userData } from "./data/index.js";
+import * as messageData from "./data/messages.js";
+import * as userJobHistoryData from "./data/userJobHistory.js";
+import * as groupActivityDataFunctions from "./data/groupActivity.js";
+import * as groupEventData from "./data/groupEvents.js";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
 export const pseudoData = async () => {
@@ -16,6 +26,8 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  console.log(joe);
   const pundir = await usersData.createUser(
     "Pradyumn",
     "Pundir",
@@ -264,5 +276,28 @@ export const pseudoData = async () => {
     ["python"],
     "nj",
     "this is a web developer Job"
+  );
+  await groupData.create(
+    "Fintech Software Engineers",
+    "Let's get together and build cool fintech tools!",
+    joe._id
+  );
+
+  await groupData.create(
+    "Stevens Computer Science Alumni",
+    "Let's get together and remember the great times in Professor Patrick Hill's class!",
+    ruobing._id
+  );
+
+  await groupData.create(
+    "Stevens Computer Engineers Club",
+    "How about we have some fun!",
+    pundir._id
+  );
+
+  await groupData.create(
+    "Black Pink In Your Area",
+    "This is a group where we can get together and celebrate Black Pink in our area! - we are all Bllinks",
+    ming._id
   );
 };
