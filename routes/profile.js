@@ -146,6 +146,7 @@ router.route("/:id").get(async (req, res) => {
 router.get("/:id/edit", async (req, res) => {
   const id = req.params.id;
   const userId = req.session.user.userId;
+  console.log(userId);
 
   try {
     validation.checkParamsAndSessionId(id, userId);
@@ -326,6 +327,7 @@ router.post("/:id/updateprofile", upload.single("image"), async (req, res) => {
   const fname = xss(req.body.fname);
   const lname = xss(req.body.lname);
   const gender = xss(req.body.gender);
+  console.log({ gender });
   const headerDescription = xss(req.body.headerDescription);
   const aboutMe = xss(req.body.aboutMe);
   const locationState = xss(req.body.locationState);

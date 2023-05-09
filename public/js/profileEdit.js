@@ -16,6 +16,7 @@ if (profileEditForm) {
   profileEditForm.addEventListener("submit", (event) => {
     errorDiv.innerText = "";
     let errors = [];
+    console.log(inputFName.value);
 
     // Validate First Name
     if (!inputFName.value || inputFName.value.trim().length === 0) {
@@ -32,16 +33,17 @@ if (profileEditForm) {
     }
 
     // Validate Gender
+    console.log(inputGender.value);
     if (!inputGender.value) {
-      event.preventDefault();
+      // event.preventDefault();
 
       errors.push("Please select a gender.");
     }
 
-    if (inputLocationState.length !== 2) {
+    if (inputLocationState.value.length !== 2) {
       event.preventDefault();
 
-      errors.push("Please select a gender.");
+      errors.push("Please select a valid state code.");
     }
 
     // Validate Header Description
@@ -65,6 +67,7 @@ if (profileEditForm) {
     }
 
     // Validate Skills
+    console.log(inputSkills.value.length);
     if (!inputSkills.value) {
       event.preventDefault();
 
