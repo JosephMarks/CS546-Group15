@@ -25,6 +25,13 @@ export const create = async (
   }
   userId = validations.checkId(userId);
 
+  regex = /[^a-zA-Z]/g;
+  if (regex.test(role)) {
+    throw new Error(
+      "role not allowed to have numeric values or special characters"
+    );
+  }
+
   role = role.trim();
   if (typeof role !== "string") {
     throw new Error("Role must be of type string");
