@@ -5,14 +5,14 @@ const router = Router();
 router.route("/").get((req, res) => {
   if (!req.session.user) {
     return res.render("homepage", {
-      title: "Web Development I Group 15",
+      title: "Better Interview Book",
       userName: "Sign In First",
       status: false,
     });
   } else {
     console.log(req.session.user);
     return res.render("homepage", {
-      title: "Web Development I Group 15",
+      title: "Better Interview Book",
       userName: req.session.user.email,
       status: true,
       userId: req.session.user.userId,

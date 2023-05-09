@@ -155,6 +155,27 @@ const validations = {
     }
   },
 
+  checkAreaText (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    if (param.length < 15) throw `Error: ${name} cannot be less than 15 characters`;
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+
+  checkTechJobTitle (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+
   display() {
     console.log("hi");
   },
@@ -677,7 +698,18 @@ const validations = {
       throw "The date should be a number from current year to 2050.";
     return date;
   },
+
+  checkPost(strVal, varName) {
+    if (!strVal) throw `Error: You must supply a ${varName}!`;
+    strVal = strVal.toString();
+    if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
+    strVal = strVal.trim();
+    if (strVal.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    return strVal;
+  }
 };
+
 
 const checkArrNumber = (arr) => {
   for (let x of arr) {

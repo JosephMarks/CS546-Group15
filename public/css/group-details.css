@@ -45,14 +45,14 @@ img {
 .event-title {
   font-weight: bold;
   text-decoration: underline;
-  color: blue;
+  color: 90b5bf;
 }
 
 .event-title-text {
   font-weight: bold;
   color: inherit;
   text-decoration: underline;
-  color: blue;
+  color: 0000e3;
 }
 
 .action-button {
@@ -68,7 +68,7 @@ img {
   cursor: pointer;
   border: 1px solid transparent;
   border-radius: 4px;
-  background-color: #256196;
+  background-color: #5177a4;
   color: rgb(240, 240, 245);
   text-decoration: none;
 }
@@ -99,7 +99,7 @@ img {
 
 .oval-text {
   display: inline-block;
-  background-color: #222899;
+  background-color: #6c6eb3;
   border: 2px solid rgb(124, 30, 172);
   border-radius: 75px;
   padding: 8px 16px;
@@ -126,8 +126,9 @@ img {
 }
 
 .calendar {
-  max-width: 35%; /* or any other desired width */
+  max-width: 35%;
   overflow: auto;
+  background-color: #e0f0e9;
 }
 
 .profile-container {

@@ -59,7 +59,7 @@ const exportedMethods = {
   async addPost (userId, content)
   {
     userId = validations.checkId(userId);
-    content = validations.checkString(content, "post content");
+    content = validations.checkPost(content, "post content");
     const newPost = {
       userId: userId,
       content: content,
