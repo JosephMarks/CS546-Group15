@@ -4,13 +4,19 @@ import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
+<<<<<<< HEAD
 // import { userData } from "./data/index.js";
+=======
+import { userData } from "./data/index.js";
+import spost from "./data/socialPost.js";
+import refer from "./data/referral.js";
+>>>>>>> main
 import * as groupData from "./data/groups.js";
 import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
 import GridFsStorage from "multer-gridfs-storage";
 import Grid from "gridfs-stream";
-import { groupActivityData, userData } from "./data/index.js";
+import { groupActivityData } from "./data/index.js";
 import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
@@ -73,7 +79,7 @@ export const pseudoData = async () => {
   );
 
   const mingPost = await networkData.addPost(
-    ming._id,
+    Karl._id,
     "This is Tzu Ming's first content."
   );
   await networkData.addComments(
@@ -145,7 +151,7 @@ export const pseudoData = async () => {
     "employee friendly, socially aligned"
   );
 
-  await userData.createUser(
+  let g = await userData.createUser(
     "Google ",
     "Foogle ",
     "70",
@@ -153,7 +159,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let b = await userData.createUser(
     "barclays ",
     "barclays",
     "55",
@@ -161,7 +167,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let a = await userData.createUser(
     "adobe",
     "Fodobe",
     "32",
@@ -169,7 +175,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userData.createUser(
+  let p = await userData.createUser(
     "prudential",
     "Identical",
     "56",
@@ -177,7 +183,9 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-
+  await userData.updateUsersCompany(a._id, "adobe");
+  await userData.updateUsersCompany(p._id, "prudential");
+  await userData.updateUsersCompany(g._id, "google");
   await companyFunctions.createJob(
     "GOogle",
     "google@google.com",
@@ -286,9 +294,161 @@ export const pseudoData = async () => {
     "music"
   );
 
-  //   let updatedUser = await userData.getUserById(joe._id);
-  //   await userData.updateUsers(updatedUser._id, {
-  //     age: 34,
-  //     skills: ["Python", "JavaScript"],
-  //   });
+  // await companyFunctions.createCompany(
+  //   "google",
+  //   "google@google.com",
+  //   "tech",
+  //   ["al", "ak"],
+  //   "15345",
+  //   "Google LLC is an American multinational technology company focusing on online advertising, search engine technology, cloud computing, computer software, quantum computing, e-commerce, artificial intelligence, and consumer electronics",
+  //   "1.png",
+  //   "health care, dental or vision packages",
+  //   "employee friendly, socially aligned"
+  // );
+  // await companyFunctions.createCompany(
+  //   "Barclays",
+  //   "Barclays@Barclays.com",
+  //   "chemistry",
+  //   ["id"],
+  //   "56789",
+  //   "Barclays is a British multinational universal bank, headquartered in London, England. Barclays operates as two divisions, Barclays UK and Barclays International, supported by a service company, Barclays Execution Services. ",
+  //   "2.png",
+  //   "health care, dental or vision packages",
+  //   "employee friendly, socially aligned"
+  // );
+  // await companyFunctions.createCompany(
+  //   "adobe",
+  //   "adobe@adobe.com",
+  //   "tech",
+  //   ["ny"],
+  //   "67895",
+  //   "Adobe Inc., originally called Adobe Systems Incorporated, is an American multinational computer software company incorporated in Delaware and headquartered in San Jose, California.",
+  //   "4.png",
+  //   "health care, dental or vision packages",
+  //   "employee friendly, socially aligned"
+  // );
+  // await companyFunctions.createCompany(
+  //   "prudential",
+  //   "prudential@prudential.com",
+  //   "tech",
+  //   ["nj"],
+  //   "25000",
+  //   "Prudential Financial, Inc. is an American Fortune Global 500 and Fortune 500 company whose subsidiaries provide insurance, retirement planning, investment management, and other products and services to both retail and institutional customers throughout the United States and in over 40 other countries",
+  //   "5.png",
+  //   "health care, dental or vision packages",
+  //   "employee friendly, socially aligned"
+  // );
+
+  let title1 = "aefarfasf";
+  let body1 = "aefarfasf";
+  let posterId1 = ruobing._id;
+  let eventdate1 = "2024-10-05";
+  let fields1 = ["medical"];
+  let company1 = ["Barclays"];
+  let category1 = ["interview"];
+  let socialPost1 = await spost.addPost(
+    title1,
+    body1,
+    posterId1,
+    eventdate1,
+    fields1,
+    company1,
+    category1
+  );
+  let s1_id = socialPost1._id.toString();
+
+  let title2 = "aefarfasf";
+  let body2 = "aefarfasf";
+  let posterId2 = pundir._id;
+  let eventdate2 = "2024-10-05";
+  let fields2 = ["medical"];
+  let company2 = ["Barclays"];
+  let category2 = ["interview"];
+  let socialPost2 = await spost.addPost(
+    title2,
+    body2,
+    posterId2,
+    eventdate2,
+    fields2,
+    company2,
+    category2
+  );
+  let s2_id = socialPost2._id.toString();
+  await spost.addComments(
+    s1_id,
+    pundir._id,
+    "Hope we all can get good grades."
+  );
+  await spost.addLikes(s2_id, ming._id);
+
+  let title11 = "aefarfasf";
+  let body11 = "aefarfasf";
+  let posterId11 = ruobing._id;
+  let duedate11 = "2024-10-05";
+  let fields11 = ["medical"];
+  let companyName11 = "adobe";
+  let companyEmail11 = "dsg@g.com";
+
+  let jobTitle11 = "sdffsdsf";
+  let salary11 = 20000;
+  let level11 = "senior";
+  let jobType11 = ["online"];
+  let skills11 = ["react"];
+  let location11 = ["AZ"];
+  let description11 = "asdfad";
+  let re11 = await refer.addPost(
+    title11,
+    body11,
+    posterId11,
+    duedate11,
+    fields11,
+    companyName11,
+    companyEmail11,
+    jobTitle11,
+    salary11,
+    level11,
+    jobType11,
+    skills11,
+    location11,
+    description11
+  );
+  let r1_id = re11._id.toString();
+  let title22 = "aefarfasf";
+  let body22 = "aefarfasf";
+  let posterId22 = pundir._id;
+  let duedate22 = "2024-10-05";
+  let fields22 = ["engineering"];
+  let companyName22 = "google";
+  let companyEmail22 = "dsg@g.com";
+
+  let jobTitle22 = "sdffsdsf";
+  let salary22 = 20000;
+  let level22 = "senior";
+  let jobType22 = ["online"];
+  let skills22 = ["javascript"];
+  let location22 = ["AZ"];
+  let description22 = "asdfad";
+  let re22 = await refer.addPost(
+    title22,
+    body22,
+    posterId22,
+    duedate22,
+    fields22,
+    companyName22,
+    companyEmail22,
+    jobTitle22,
+    salary22,
+    level22,
+    jobType22,
+    skills22,
+    location22,
+    description22
+  );
+  let r2_id = re22._id.toString();
+  await refer.addComments(
+    r1_id,
+    pundir._id,
+    "Hope we all can get good grades."
+  );
+  await refer.addLikes(r2_id, ming._id);
 };
