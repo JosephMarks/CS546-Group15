@@ -7,16 +7,16 @@ import skillsData from "./data/skills.js";
 import { userData } from "./data/index.js";
 import spost from "./data/socialPost.js";
 import refer from "./data/referral.js";
-// import * as groupData from "./data/groups.js";
-// import * as groupEventsData from "./data/groupEvents.js";
-// import multer from "multer";
-// import GridFsStorage from "multer-gridfs-storage";
-// import Grid from "gridfs-stream";
-// import { groupActivityData } from "./data/index.js";
-// import * as messageData from "./data/messages.js";
-// import * as userJobHistoryData from "./data/userJobHistory.js";
-// import * as groupActivityDataFunctions from "./data/groupActivity.js";
-// import * as groupEventData from "./data/groupEvents.js";
+import * as groupData from "./data/groups.js";
+import * as groupEventsData from "./data/groupEvents.js";
+import multer from "multer";
+import GridFsStorage from "multer-gridfs-storage";
+import Grid from "gridfs-stream";
+import { groupActivityData } from "./data/index.js";
+import * as messageData from "./data/messages.js";
+import * as userJobHistoryData from "./data/userJobHistory.js";
+import * as groupActivityDataFunctions from "./data/groupActivity.js";
+import * as groupEventData from "./data/groupEvents.js";
 import companyFunctions from "./data/company.js";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
