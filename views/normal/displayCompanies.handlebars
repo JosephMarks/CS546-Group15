@@ -1,0 +1,43 @@
+<div class="main-center">
+
+<div class="main-company-main">
+
+  <div class="main-company">
+
+    <h1>{{companyData.companyName}}</h1>
+
+    <img
+      src=/public/uploads/{{companyData.imgSrc}}
+      alt="Company Logo"
+      id="my-company-src"
+    >
+
+    <div class="industry">Industry : {{companyData.industry}}</div>
+
+    <div class="locations">
+      Location : {{companyData.locations}}
+    </div>
+
+    <div class="numberOfEmployees">Number Of Employees :
+      {{companyData.numberOfEmployees}}
+    </div>
+
+    <div class="description"> 
+      Description : {{companyData.description}}
+    </div>
+
+    <div class="perks"> 
+      Perks : {{companyData.perks}}
+    </div>
+
+    <div class="goals"> 
+      Goals : {{companyData.goals}}
+    </div>
+
+
+  </div>
+
+</div>
+</div>
+
+{{!-- TODO : TOTALLY, XSS, AND CLIENT SIDE, STATUS CODE --}}

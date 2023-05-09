@@ -6,8 +6,26 @@
 
     <h1>{{companyData.companyName}}</h1>
 
+    {{!-- {{ #if companyData.imgSrc }}
+
     <img
-      src=/public/uploads/{{companyData.imgSrc}}
+      src=/public/uploads/{{ companyData.imgSrc }}
+      alt="Company Logo"
+      id="my-company-src"
+    >
+
+     {{ else }}
+
+    <img
+      src = '/public/uploads/no_image.png'
+      alt="Company Logo"
+      id="my-company-src"
+    >
+
+    {{ /if }} --}}
+
+    <img
+      src=/public/uploads/{{ companyData.imgSrc }}
       alt="Company Logo"
       id="my-company-src"
     >
@@ -24,6 +42,14 @@
 
     <div class="description"> 
       Description : {{companyData.description}}
+    </div>
+
+    <div class="perks"> 
+      Perks : {{companyData.perks}}
+    </div>
+
+    <div class="goals"> 
+      Goals : {{companyData.goals}}
     </div>
 
     <div class="editCompanyDetails">

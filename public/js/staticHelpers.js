@@ -16,6 +16,27 @@ const validations = {
     return 1;
   },
 
+  checkAreaText (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    if (param.length < 15) throw `Error: ${name} cannot be less than 15 characters`;
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+  
+  checkTechJobTitle (param, name) {
+    if (!param) throw `Error: ${name} cannot be empty`;
+
+    param = param.trim();
+    param = param.replaceAll(' ', '');
+
+    if (isNaN(Number(param))) return param;
+    else throw `Error: ${name} cannot be all numbers`;
+  },
+
   validateName(param) {
     if (param.trim().length < 2 || param.trim().length > 25)
       throw "Error : Enter a valid firstName and the lastName";
@@ -26,7 +47,7 @@ const validations = {
           param[i] !== " " &&
           !param[i].match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)
         )
-          throw "Error : Enter a valid firstName and the lastName";
+          throw "Error : Enter a valid firstName or Last Name";
       }
     }
   },
@@ -34,15 +55,8 @@ const validations = {
     if (param.trim().length < 2 || param.trim().length > 25)
       throw "Error : Enter a valid firstName and the lastName";
 
-    for (let i = 0; i < param.length; i++) {
-      if (!Boolean(param[i].match(/^[A-Za-z]*$/))) {
-        if (
-          param[i] !== " " &&
-          !param[i].match(/^[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/)
-        )
-          throw "Error : Enter a valid firstName and the lastName";
-      }
-    }
+    if (param.match(/[0-9]+/)) throw "Error : Invalid First or Last Name";
+
     return param;
   },
     validateCandidateType(param) {

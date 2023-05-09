@@ -47,38 +47,40 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
     return res.status(400).render("error", { error: "There are no fields in the request body" });
   }
 
-  let { companyName, companyEmail, industry, employee, location, description } = bodyData;
+  let { companyName, companyEmail, industry, employee, location, description, perks, goals } = bodyData;
   let createdAt = new Date();
+  console.log(bodyData);
+
+  if ( !companyName || !companyEmail || !industry || !employee || !location || !description || !req.file || !req.file.filename ||!perks || !goals )
+      return res.status(400).render('error', { error :"Error : You should provide all the parameters"}) ;
 
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   industry = xss(req.body.industry);
   employee = xss(req.body.employee);
   description = xss(req.body.description);
+  perks = xss(req.body.perks);
+  goals = xss(req.body.goals);
+
+
+  // console.log( { companyName, companyEmail, industry } );
 
   if (typeof(location) === 'string') location = [location];
-  validations.checkLocationTags(location);
-
   location = location.map(x => xss(x));
-
 
   try {
 
-    if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename )
-      throw "Error : You should provide all the parameters";
+    validations.checkLocationTags(location);
 
-    companyName = xss(companyName);
-    companyEmail = xss(companyEmail);
-    industry = xss(industry);
-    employee = xss(employee);
-    description = xss(description);
+    if ( !companyName || !companyEmail || !industry || !employee || !location || !description|| !req.file|| !req.file.filename || !perks || !goals)
+      throw "Error : You should provide all the parameters";
 
     if (typeof(location) === 'string') location = [location];
     validations.checkLocationTags(location);
 
     location = location.map(x => xss(x));
 
-    if (!validations.isProperString([ companyName, companyEmail, industry,  description, req.file.filename ])) // TODO : Validations for industry.
+    if (!validations.isProperString([ companyName, companyEmail, industry,  description, req.file.filename, perks, goals ])) // TODO : Validations for industry.
       throw "Error : Parameters can only be string not just string with empty spaces";
 
     if (typeof(location) === 'string') location = [location];
@@ -89,6 +91,13 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
     companyName = companyName.trim().toLowerCase();
     industry = industry.trim().toLowerCase();
     description = description.trim().toLowerCase();
+    perks = perks.trim().toLowerCase();
+    goals = goals.trim().toLowerCase();
+    validations.checkAreaText(description, "description");
+    validations.checkAreaText(perks, "perks");
+    validations.checkAreaText(goals, "goals");
+    validations.checkTechJobTitle(industry, "industry");
+
 
     location = location.map((x) => x.trim());
     validations.isNumberOfEmployee(employee);
@@ -102,10 +111,30 @@ router.route("/data").post(upload.single("uploadImage"), async (req, res) => { /
 
   try {
 
-    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename)));
+    const data = await companyFunctions.createCompany( companyName, companyEmail, industry, location, employee, description, encodeURIComponent (xss(req.file.filename)), perks, goals);
     return res.redirect(`/company/data/${companyName}`);
 
   } catch (e) {
+
+    
+    if (e === "Error: description cannot be empty" ||
+    e === "Error: description cannot be less than 15 characters" ||
+    e === "Error: description cannot be all numbers" ||
+
+    e === "Error: perks cannot be empty" ||
+    e === "Error: perks cannot be less than 15 characters" ||
+    e === "Error: perks cannot be all numbers" ||
+
+    e === "Error: goals cannot be empty" ||
+    e === "Error: goals cannot be less than 15 characters" ||
+    e === "Error: goals cannot be all numbers" ||
+    
+    e === "Error: industry cannot be empty" ||
+    e === "Error: industry cannot be less than 15 characters" ||
+    e === "Error: industry cannot be all numbers" 
+    ) 
+    
+      return res.status(400).render("company/createCompany", { error: e, title: "Create Company", session: req.session.user });
 
     return res.status(500).render("company/createCompany", { error: e, title: "Create Company", session: req.session.user });
   
@@ -155,16 +184,19 @@ router.route("/delete/:id").delete(async (req, res) => {
 
 router.route("/dataUpdate/:name").get(async (req, res) => { // done company update display
 
+  let name = req.params.name;
 
-  if (!req.params.name){
+  if (!name){
     
     return res.render("error", { error: "Error : Invalid Company Name", title: "Error" });
 
   }
 
+  name = name.trim().toLowerCase();
+
   try {
 
-    let companyData = await companyFunctions.getCompanyDetailsFromCompanyName(req.params.name.trim());
+    let companyData = await companyFunctions.getCompanyDetailsFromCompanyName(name.trim());
 
     if (companyData.companyEmail !== req.session.user.email) throw "Error : Not Authorized";
     return res.render("company/updateCompany", { title: "Update Company Details", companyData, session: req.session.user });
@@ -186,6 +218,8 @@ router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (re
 
   const bodyData = req.body;
   let id = req.params.id;
+  console.log(bodyData);
+
 
   if (!id || !ObjectId.isValid(id)) return res.render('error', { error: 'Error : Not a Valid Id' });
   id = id.trim();
@@ -196,32 +230,33 @@ router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (re
   
   }
 
-  let { companyName, companyEmail, industry, numberOfEmployees, location, description } = bodyData;
+  let { companyName, companyEmail, industry, numberOfEmployees, location, description, perks, goals } = bodyData;
+  
+  if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename ||!perks || !goals )
+      return res.status(400).render('error', { error :"Error : You should provide all the parameters"}) ;
 
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   industry = xss(req.body.industry);
   numberOfEmployees = xss(req.body.numberOfEmployees);
   description = xss(req.body.description);
+  perks = xss(req.body.perks);
+  goals = xss(req.body.goals);
 
   if (typeof(location) === 'string') location = [location];
-  validations.checkLocationTags(location);
 
   location = location.map(x => xss(x));
 
   try {
 
-    if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename )
+    validations.checkLocationTags(location);
+
+    if ( !companyName || !companyEmail || !industry || !numberOfEmployees || !location || !description || !req.file || !req.file.filename ||!perks || !goals )
       throw "Error : You should provide all the parameters";
 
-    if ( !validations.isProperString([ companyName, companyEmail, industry,  description ]) ) // TODO : Validations for industry.
+    if ( !validations.isProperString([ companyName, companyEmail, industry,  description, perks, goals ]) ) // TODO : Validations for industry.
       throw "Error : Parameters can only be string not just string with empty spaces";
 
-    companyName = xss(companyName);
-    companyEmail = xss(companyEmail);
-    industry = xss(industry);
-    numberOfEmployees = xss(numberOfEmployees);
-    description = xss(description);
 
     if (typeof(location) === 'string') location = [location];
     validations.checkLocationTags(location);
@@ -238,11 +273,18 @@ router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (re
     industry = industry.trim().toLowerCase();
     description = description.trim().toLowerCase();
     location = location.map((x) => x.trim());
+    perks = perks.trim().toLowerCase();
+    goals = goals.trim().toLowerCase();
     validations.isNumberOfEmployee(numberOfEmployees);
     numberOfEmployees = Number(numberOfEmployees);
 
+    validations.checkAreaText(description, "description");
+    validations.checkAreaText(perks, "perks");
+    validations.checkAreaText(goals, "goals");
+    validations.checkTechJobTitle(industry, "industry");
 
-    const data = await companyFunctions.updateCompany(req.session.user.email, companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename) );
+
+    const data = await companyFunctions.updateCompany(req.session.user.email, companyName, companyEmail, industry, location, numberOfEmployees, description, encodeURIComponent (req.file.filename), perks, goals );
 
     return res.redirect(`/company/data/${companyName}`);
 
@@ -253,7 +295,25 @@ router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (re
 
     if ( e === "Error : No Company Found" ) return res.status(404).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"edit company" });
     
-    if ( e === "Error : Parameters can only be string not just string with empty spaces") return res.status(400).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"edit company" });
+    if ( e === "Error : Parameters can only be string not just string with empty spaces" ||
+    
+    e === "Error: description cannot be empty" ||
+    e === "Error: description cannot be less than 15 characters" ||
+    e === "Error: description cannot be all numbers" ||
+
+    e === "Error: perks cannot be empty" ||
+    e === "Error: perks cannot be less than 15 characters" ||
+    e === "Error: perks cannot be all numbers" ||
+
+    e === "Error: goals cannot be empty" ||
+    e === "Error: goals cannot be less than 15 characters" ||
+    e === "Error: goals cannot be all numbers" ||
+
+    e === "Error: industry cannot be empty" ||
+    e === "Error: industry cannot be less than 15 characters" ||
+    e === "Error: industry cannot be all numbers"
+
+    ) return res.status(400).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"edit company" });
     
     return res.status(500).render("company/updateCompany", { error : e, companyData: newData, session: req.session.user, title:"error" });
   
@@ -261,15 +321,18 @@ router.route("/updateCompany/:id").patch(upload.single("uploadImage"), async (re
 });
 
 router.route("/data/:name").get(async (req, res) => { // done company details display page
+  let name = req.params.name;
 
-  if (!req.params.name)
+  if (!name)
     return res
       .status(400)
       .render({ title: "Error", error: "Error : Invalid Company Name" }); // todo render a page;
 
+  name = name.trim().toLowerCase();
+
   try {
 
-    let companyData = await companyFunctions.getCompanyDetailsFromCompanyName(req.params.name.trim());
+    let companyData =   await companyFunctions.getCompanyDetailsFromCompanyName(name.trim());
     if (companyData.companyEmail === req.session.user.email){
       if (companyData) {
         return res.render("company/displayCompany", {
@@ -336,6 +399,9 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } =
   req.body;
 
+  if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
+      return res.status(400).render('error', { error : 'Error: You should provide all the parameters'});
+
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   jobTitle = xss(req.body.jobTitle);
@@ -344,28 +410,32 @@ router.route("/job/:name").post(async (req, res) => { // create job post
   description = xss(req.body.description);
 
   if (typeof (jobType) === 'string') jobType = [jobType];
-  validations.checkJobtypeTags(jobType);
   jobType = jobType.map(x => xss(x));
 
   if (typeof(location) === 'string') location = [location];
-  validations.checkLocationTags(location);
   location = location.map(x => xss(x));
 
   if (typeof (skills) === 'string') skills = [skills];
-  validations.checkSkillsTags(skills);
   skills = skills.map(x => xss(x));
 
   try {
 
+    validations.checkJobtypeTags(jobType);
+    validations.checkLocationTags(location);
+    validations.checkSkillsTags(skills);
+    validations.checkAreaText(description, "description");
+    validations.checkTechJobTitle(jobTitle, 'jobTitle');
+
+
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       throw "Error : All parameters are required";
 
-    companyName = xss(companyName);
-    companyEmail = xss(companyEmail);
-    jobTitle = xss(jobTitle);
-    salary = xss(salary);
-    level = xss(level);
-    description = xss(description);
+    // companyName = xss(companyName);
+    // companyEmail = xss(companyEmail);
+    // jobTitle = xss(jobTitle);
+    // salary = xss(salary);
+    // level = xss(level);
+    // description = xss(description);
 
     if (typeof (jobType) === 'string') jobType = [jobType];
     validations.checkJobtypeTags(jobType);
@@ -410,7 +480,16 @@ router.route("/job/:name").post(async (req, res) => { // create job post
 
     if (e === "Error : All parameters are required" || 
     e === "Error : Company Email does not belong to the Company Name" ||
-    e === "Error : Parameters can only be string not just string with empty spaces" || 
+    e === "Error : Parameters can only be string not just string with empty spaces" ||
+
+    e === "Error: description cannot be empty" ||
+    e === "Error: description cannot be less than 15 characters" ||
+    e === "Error: description cannot be all numbers" ||
+
+    e === "Error: jobTitle cannot be empty" ||
+    e === "Error: jobTitle cannot be less than 15 characters" ||
+    e === "Error: jobTitle cannot be all numbers" ||
+
     e === "Error: same company cannot have same job title") return res.status(400).render("company/createJobs", { error: e, title: "Create Job", session: req.session.user, companyDetails: { companyName } });
 
     return res.status(500).render("company/createJobs", { error: e, title: "Create Job", session: req.session.user, companyDetails: { companyName } });
@@ -509,6 +588,10 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
 
   let { companyName, companyEmail, jobTitle, salary, level, jobType, skills, location, description } = req.body;
 
+  if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
+      return res.status(400).render('error', { error : 'Error: You should provide all the parameters'});
+
+
   companyName = xss(req.body.companyName);
   companyEmail = xss(req.body.companyEmail);
   jobTitle = xss(req.body.jobTitle);
@@ -517,28 +600,32 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
   description = xss(req.body.description);
 
   if (typeof (jobType) === 'string') jobType = [jobType];
-  validations.checkJobtypeTags(jobType);
   jobType = jobType.map(x => xss(x));
 
   if (typeof(location) === 'string') location = [location];
-  validations.checkLocationTags(location);
   location = location.map(x => xss(x));
 
   if (typeof (skills) === 'string') skills = [skills];
-  validations.checkSkillsTags(skills);
   skills = skills.map(x => xss(x));
   
   try {
 
+    validations.checkJobtypeTags(jobType);
+    validations.checkLocationTags(location);
+    validations.checkSkillsTags(skills);
+    validations.checkAreaText(description, "description");
+    validations.checkTechJobTitle(jobTitle, 'jobTitle');
+
+
     if ( !companyName || !companyEmail || !jobTitle || !salary || !level || !jobType || !location || !description || !skills )
       throw "Error : All parameters are required";
 
-      companyName = xss(companyName);
-      companyEmail = xss(companyEmail);
-      jobTitle = xss(jobTitle);
-      salary = xss(salary);
-      level = xss(level);
-      description = xss(description);
+      // companyName = xss(companyName);
+      // companyEmail = xss(companyEmail);
+      // jobTitle = xss(jobTitle);
+      // salary = xss(salary);
+      // level = xss(level);
+      // description = xss(description);
     
       if (typeof (jobType) === 'string') jobType = [jobType];
       validations.checkJobtypeTags(jobType);
@@ -576,6 +663,7 @@ router.route("/jobUpdate/:id").patch(async (req, res) => { // update page for jo
     return res.redirect(`/company/viewJob/${companyName}`);
 
   } catch (e) {
+
     let getJob = await companyFunctions.getJobById(id);
 
     return res.render('company/updateJob', { error: e, title: 'Edit Job', company: getJob, jobDetail: getJob.jobs[0], session: req.session.user }); 

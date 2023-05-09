@@ -41,7 +41,7 @@ app.use(
     saveUninitialized: false,
     resave: false,
     cookie: { maxAge: 3600000 },
-  })
+  }),
 );
 
 app.use("/public", staticDir);
@@ -53,9 +53,12 @@ app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 // Authorizing and authenticating the routes
+
 app.use("/login", (req, res, next) => {
   if (req.session && req.session.user) {
-    return res.redirect("/");
+    if (req.session.user.candidateType === "Student") return res.redirect("/");
+    else return res.redirect("/company");
+    // return res.redirect("/");
   } else {
     next();
   }
@@ -79,35 +82,41 @@ app.use("/company", (req, res, next) => {
     if (req.session.user.candidateType === "Company") {
       next();
     } else {
-      return res.render("Auth/login", {
-        error: "You Do not have Access for this page",
-        title: "Login",
+      return res.render("error", {
+        error:
+          "You Do not have Access for this page logout and login with an authenticated user.",
+        title: "Error",
       });
     }
   }
 });
 
 app.use("/network", (req, res, next) => {
-  if (
-    !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
-  ) {
+  if (!req.session.user) {
     return res.redirect("/login");
+  } else if (req.session.user.candidateType === "Company") {
+    return res.render("error", {
+      error:
+        "You Do not have Access for this page logout and login with an authenticated user.",
+      title: "Error",
+    });
   }
   next();
 });
 
 app.use("/skills", (req, res, next) => {
-  if (
-    !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
-  ) {
+  if (!req.session.user) {
     return res.redirect("/login");
+  } else if (req.session.user.candidateType === "Company") {
+    return res.render("error", {
+      error:
+        "You Do not have Access for this page logout and login with an authenticated user.",
+      title: "Error",
+    });
   }
   next();
 });
+
 app.use("/referral", (req, res, next) => {
   if (
     !req.session.user ||
@@ -118,14 +127,17 @@ app.use("/referral", (req, res, next) => {
   }
   next();
 });
+
 app.post("/referral/post/:userid/postId/:id/edit", (req, res, next) => {
   req.method = "patch";
   next();
 });
+
 app.post("/referral/post/:userid/postId/:id/remove", (req, res, next) => {
   req.method = "delete";
   next();
 });
+
 app.use("/socialmediaposts", (req, res, next) => {
   if (
     !req.session.user ||
@@ -147,7 +159,7 @@ app.post(
   (req, res, next) => {
     req.method = "delete";
     next();
-  }
+  },
 );
 
 app.post("/company/updateCompany/:name", (req, res, next) => {
@@ -183,6 +195,14 @@ app.use("/referral", (req, res, next) => {
   next();
 });
 
+app.get("/allCompany", (req, res, next) => {
+  if (!req.session || !req.session.user) {
+    return res.redirect("login");
+  } else {
+    next();
+  }
+});
+
 app.use("/company/job", (req, res, next) => {
   if (req.session && !req.session.user) {
     return res.render("Auth/login", {
@@ -214,14 +234,14 @@ app.use("/groups", (req, res, next) => {
 });
 
 app.use("/profile", (req, res, next) => {
-  if (
-    !req.session.user ||
-    (req.session.user.candidateType !== "Student" &&
-      req.session.user.candidateType !== "Company")
-  ) {
-    return res.redirect("/login");
+  if (!req.session.user || req.session.user.candidateType === "Student") {
+    return next();
   }
-  next();
+
+  if (!req.session.user || req.session.user.candidateType === "Company") {
+    return res.redirect("/company");
+  }
+  return next();
 });
 
 app.use("/logout", (req, res, next) => {
@@ -254,7 +274,7 @@ app.use("/", (req, res, next) => {
       " " +
       req.originalUrl +
       " " +
-      auth
+      auth,
   );
   return next();
 });

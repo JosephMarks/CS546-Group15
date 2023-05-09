@@ -113,7 +113,8 @@
               </a>
               <ul class="dropdown-menu">
                 
-                <li><a class="dropdown-item" href="/company"> Create Company</a></li>
+                <li><a class="dropdown-item" href="/company"> Create Company/ My Company</a></li>
+                <li><a class="dropdown-item" href="/allCompany"> Search a Company</a></li>
               </ul>
             </li>
 
@@ -135,7 +136,7 @@
               </ul>
             </li>
 
-            <li class="nav-item dropdown">
+            {{!-- <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -151,7 +152,7 @@
                 <li><a class="dropdown-item" href="/signUp">signUp</a></li>
 
               </ul>
-            </li>
+            </li> --}}
 
             
 
@@ -168,7 +169,7 @@
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {{userName}}
+                  My Profile
                 </a>
 
                 {{#if status}}
@@ -195,12 +196,10 @@
     {{{body}}}
 
 
-{{!-- <script src="/public/js/job.js" type="module"></script>
-<script src="/public/js/company.js" type="module"></script> --}}
+<script src="/public/js/job.js" type="module"></script>
+<script src="/public/js/company.js" type="module"></script>
 <script src="/public/js/login.js" type="module"></script>
-{{!-- <script src="/public/js/networkAndSkillsErrorHandling.js"></script>
-
-    <script src="/public/js/networkAndSkillsErrorHandling.js"></script> --}}
+<script src="/public/js/networkAndSkillsErrorHandling.js"></script>
 
   </body>
 </html>

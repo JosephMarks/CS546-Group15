@@ -72,12 +72,12 @@ if (loginForm) {
                 errorMsg.innerHTML = "";
             } catch (error) {
                 errorMsg.innerHTML = error;
-                loginForm.reset();
+                // loginForm.reset();
                 e.preventDefault();
             }
         } else {
             errorMsg.innerHTML = 'All parameters are required';
-            loginForm.reset();
+            // loginForm.reset();
             e.preventDefault();
         }
     })
@@ -109,8 +109,8 @@ if (registerForm) {
                 confirmPasswordInput = confirmPasswordInput.trim();
                 age = age.trim();
 
-                helpersValidation.validateName(firstNameInput);
-                helpersValidation.validateName(lastNameInput);
+                mainValidations.validateNameReturn(firstNameInput);
+                mainValidations.validateNameReturn(lastNameInput);
                 helpersValidation.validateMyPassword(passwordInput);
                 helpersValidation.validateMyEmail(emailAddressInput);
                 mainValidations.isAge(age);
@@ -121,12 +121,12 @@ if (registerForm) {
 
             } catch (error) {
                 errorMsg.innerHTML = error;
-                registerForm.reset();
+                // registerForm.reset();
                 e.preventDefault();
             }
         } else {
-            errorMsg.innerHTML = 'You Must Enter a valid value';
-            registerForm.reset();
+            errorMsg.innerHTML = 'Erro : You Must Enter a valid value';
+            // registerForm.reset();
             e.preventDefault();
         }
     })
