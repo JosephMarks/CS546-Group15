@@ -38,23 +38,23 @@
     {{/if}}
   </div>
 </div>
-<h4>Name: {{fname}} {{lname}}</h4>
-<h4>Description: {{description}}</h4>
-<h4>Education: {{university}}</h4>
-<h4>College Major: {{collegeMajor}}</h4>
-<h4>Location: {{locationState}}</h4>
-<h4>
+<p>Name: {{fname}} {{lname}}</p>
+<p>Description: {{description}}</p>
+<p>Education: {{university}}</p>
+<p>College Major: {{collegeMajor}}</p>
+<p>Location: {{locationState}}</p>
+<p>
 <span class="status-oval">{{status}}</span>
-</h4>
-<h4>Age: {{age}}</h4>
-<h4>
+</p>
+<p>Age: {{age}}</p>
+<p>
   Gender:
   <span
     class="gender-oval {{#if gender}}{{gender}}{{else}}unknown{{/if}}-color"
   ></span>
   {{gender}}
-</h4>{{#if skills}}
-  <h4>Skills:</h4>
+</p>{{#if skills}}
+  <p>Skills:</p>
   <div style="display: flex; justify-content: center;">
     <div class="skills-container">
       {{#each skills}}
@@ -65,7 +65,7 @@
 {{else}}
   <p>No skills available.</p>
 {{/if}}
-<h3>Job History:</h3>
+<p>Job History:</p>
 {{#if isMyProfile}}
   <a
     href="/profile/{{_id}}/addJobHistory"
@@ -133,7 +133,7 @@
   </script>
 {{/if}}
 {{#if connections.length}}
-  <h2>Connections:</h2>
+  <p>Connections:</p>
   {{#if isMyProfile}}
     <div style="text-align: center;">
       <a href="/network/post/{{_id}}" class="btn btn-primary">My Network</a>

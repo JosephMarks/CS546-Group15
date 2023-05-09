@@ -53,7 +53,12 @@ const companyFunctions = {
     goals = goals.trim().toLowerCase();
     imgSrc = imgSrc.trim();
 
-    if (typeof locations === "string") locations = [locations];
+    validations.checkAreaText(description, "description");
+    validations.checkAreaText(perks, "perks");
+    validations.checkAreaText(goals, "goals");
+    validations.checkTechJobTitle(industry, "industry");
+
+    if (typeof(locations) === 'string') locations = [locations];
     validations.checkLocationTags(locations);
     locations = locations.map((x) => x.trim());
 

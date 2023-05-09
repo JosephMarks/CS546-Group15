@@ -72,12 +72,12 @@ if (loginForm) {
                 errorMsg.innerHTML = "";
             } catch (error) {
                 errorMsg.innerHTML = error;
-                loginForm.reset();
+                // loginForm.reset();
                 e.preventDefault();
             }
         } else {
             errorMsg.innerHTML = 'All parameters are required';
-            loginForm.reset();
+            // loginForm.reset();
             e.preventDefault();
         }
     })
@@ -121,12 +121,12 @@ if (registerForm) {
 
             } catch (error) {
                 errorMsg.innerHTML = error;
-                registerForm.reset();
+                // registerForm.reset();
                 e.preventDefault();
             }
         } else {
             errorMsg.innerHTML = 'Erro : You Must Enter a valid value';
-            registerForm.reset();
+            // registerForm.reset();
             e.preventDefault();
         }
     })

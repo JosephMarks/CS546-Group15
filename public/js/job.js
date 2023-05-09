@@ -88,18 +88,20 @@ if (createJob) {
                 mainValidations.checkLocationTags(location);
                 mainValidations.checkJobtypeTags(jobType);
                 mainValidations.checkSkillsTags(skills);
+                mainValidations.checkAreaText(description, "description");
+                mainValidations.checkTechJobTitle(jobTitle, "jobTitle");
 
                 mainValidations.isSalary(salary);
 
                 errorMsg.innerHTML = "";
             } catch (error) {
                 errorMsg.innerHTML = error;
-                createJob.reset();
+                // createJob.reset();
                 e.preventDefault();
             }
         } else {
             errorMsg.innerHTML = 'All parameters are required';
-            createJob.reset();
+            c// reateJob.reset();
             e.preventDefault();
         }
     })
@@ -135,18 +137,19 @@ if (updateJob) {
                 mainValidations.checkLocationTags(location);
                 mainValidations.checkJobtypeTags(jobType);
                 mainValidations.checkSkillsTags(skills);
-
+                mainValidations.checkAreaText(description, "description");
+                mainValidations.checkTechJobTitle(jobTitle, "jobTitle");
                 mainValidations.isSalary(salary);
 
                 errorMsg.innerHTML = "";
             } catch (error) {
                 errorMsg.innerHTML = error;
-                updateJob.reset();
+                // updateJob.reset();
                 e.preventDefault();
             }
         } else {
             errorMsg.innerHTML = 'All parameters are required';
-            updateJob.reset();
+            // updateJob.reset();
             e.preventDefault();
         }
     })
