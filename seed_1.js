@@ -5,6 +5,16 @@ import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
 import { userData } from "./data/index.js";
+import * as groupData from "./data/groups.js";
+import * as groupEventsData from "./data/groupEvents.js";
+import multer from "multer";
+import GridFsStorage from "multer-gridfs-storage";
+import Grid from "gridfs-stream";
+import { groupActivityData, userData } from "./data/index.js";
+import * as messageData from "./data/messages.js";
+import * as userJobHistoryData from "./data/userJobHistory.js";
+import * as groupActivityDataFunctions from "./data/groupActivity.js";
+import * as groupEventData from "./data/groupEvents.js";
 import companyFunctions from "./data/company.js";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
@@ -17,6 +27,8 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  console.log(joe);
   const pundir = await usersData.createUser(
     "Pradyumn",
     "Pundir",
@@ -271,6 +283,6 @@ export const pseudoData = async () => {
     "About Blackpink",
     "Blackpink is a South Korean girl group formed in 2016 by YG Entertainment. The group consists of four members: Jisoo, Jennie, Rosé, and Lisa. Blackpink has become one of the most successful and popular K-pop groups, known for their powerful and catchy songs, fierce performances, and fashion-forward style. They have broken numerous records, including becoming the first K-pop group to have a music video reach one billion views on YouTube. Blackpink has also gained global recognition, collaborating with artists such as Lady Gaga and Selena Gomez. Their fanbase, known as Blinks, continues to grow as they cement their status as a powerhouse in the music industry.",
     "https://www.youtube.com/watch?v=2S24-y0Ij3Y&ab_channel=BLACKPINK",
-    "music",
+    "music"
   );
 };

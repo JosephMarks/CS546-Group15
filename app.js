@@ -14,6 +14,7 @@ import * as messageData from "./data/messages.js";
 import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
 import * as groupEventData from "./data/groupEvents.js";
+import usersData from "./data/user.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -295,6 +296,16 @@ app.use("/", (req, res, next) => {
 //   next();
 // }
 
+// const joe = await usersData.createUser(
+//   "Joeseph",
+//   "Marks",
+//   20,
+//   "jmarsks@ggg.edu",
+//   "Test1234$",
+//   "Student"
+// );
+
+// console.log(joe._id);
 configRoutes(app);
 
 app.listen(3000, () => {

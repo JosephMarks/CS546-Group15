@@ -96,13 +96,20 @@ router.post("/", async (req, res) => {
       message: "Parameters are required",
     });
   }
-  const newGroup = await groupData.create(
-    name,
-    description,
-    req.session.user.userId
-  );
-
-  res.redirect(`/groups/${newGroup._id}`);
+  try {
+    const newGroup = await groupData.create(
+      name,
+      description,
+      req.session.user.userId
+    );
+    res.redirect(`/groups/${newGroup._id}`);
+  } catch (e) {
+    res.status(404).render("./groups/error", {
+      class: "error",
+      title: "Error Page",
+      errorMessage: `We're sorry, a venue with that id does not exist .`,
+    });
+  }
 });
 
 router.route("/:id").get(async (req, res) => {
