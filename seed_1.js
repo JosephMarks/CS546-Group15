@@ -4,7 +4,7 @@ import { dbConnection, closeConnection } from "./config/mongoConnection.js";
 import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
-import { userData } from "./data/index.js";
+// import { userData } from "./data/index.js";
 import * as groupData from "./data/groups.js";
 import * as groupEventsData from "./data/groupEvents.js";
 import multer from "multer";
@@ -285,4 +285,10 @@ export const pseudoData = async () => {
     "https://www.youtube.com/watch?v=2S24-y0Ij3Y&ab_channel=BLACKPINK",
     "music"
   );
+
+  //   let updatedUser = await userData.getUserById(joe._id);
+  //   await userData.updateUsers(updatedUser._id, {
+  //     age: 34,
+  //     skills: ["Python", "JavaScript"],
+  //   });
 };

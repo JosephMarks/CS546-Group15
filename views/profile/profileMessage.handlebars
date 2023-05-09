@@ -35,7 +35,6 @@
           <input id="messageInput" type="text" name="messageInput" />
           <select name="connection" id="userConnections">
             {{#each userFullNames}}
-              <!-- Corrected line -->
               <option value="{{this.id}}">{{this.fullName}}</option>
             {{/each}}
           </select>
