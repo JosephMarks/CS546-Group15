@@ -8,7 +8,7 @@ import * as seed from "./seed_1.js";
 const db = await dbConnection();
 await db.dropDatabase();
 
-seed.pseudoData();
+await seed.pseudoData();
 // user error testing
 
 // [] define js file in data
