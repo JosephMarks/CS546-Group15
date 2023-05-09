@@ -35,10 +35,10 @@
   Group Master Page
 {{/inline}}
 <h1>Groups</h1>
-<h3>Would you like to create a new group?</h3>
+<p>Would you like to create a new group?</p>
 <a class="action-button btn btn-primary" href="/groups/create">Create Group!</a>
 
-<h3>You can check out these existing groups if you like!</h3>
+<p>You can check out these existing groups if you like!</p>
 
 <div class="container">
   <div class="row">
@@ -47,7 +47,7 @@
       <div class="card mb-4">
 <img src="/public/images/download.png" alt="{{this.name}} image" class="card-img-top small-square">
         <div class="card-body">
-          <h6 class="card-title">{{this.name}}</h6>
+          <p class="card-title">{{this.name}}</p>
           <p class="card-text">{{this.description}}</p>
           <p class="card-text">Members: {{this.numOfUsers}}</p>
           <a href="groups/{{this._id}}" class="btn btn-primary">Visit Group</a>
