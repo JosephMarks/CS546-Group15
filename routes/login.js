@@ -47,6 +47,8 @@ router.route("/data").post(async (req, res) => {
     if (validations.validateIsString([email, pass]) === 0) {
       throw "Error : All inputs must be valid String";
     }
+
+    email = email.trim();
     if (!emailValidator.validate(email)) throw "Error : Invalid Email";
     if (!rules.validate(pass))
       throw "Error : Password Must be atleast 8 characters with a capital letter, number, and special character";

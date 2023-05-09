@@ -31,6 +31,33 @@ export const pseudoData = async () => {
   );
 
   console.log(joe);
+
+  await usersData.updateUsers(joe._id, { fname: 'joe ', 
+  lname:' marks ', 
+  email:'jmarks@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'jmarks@gmail.com', 
+  gender: 'male', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++', 'python'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
+
+  
   const pundir = await usersData.createUser(
     "Pradyumn",
     "Pundir",
@@ -39,6 +66,18 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+
+  await usersData.updateUsers(pundir._id, { fname: 'pradyumn ', lname:' pundir ', email:'ppd@ggg.edu', password:'Test1234$', age: '21', gitHubUserName: 'ppp@gmail.com', gender: 'male', headerDescription: 'jhhsgysgtdf', aboutMe: 'jgdjsgdshfd', locationState: 'ny', university: 'stevens', collegeMajor: 'masters', status: 'Student', skills: ['javascript'], experience: 2, seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
+
   const ruobing = await usersData.createUser(
     "Ruobing",
     "Liu",
@@ -47,6 +86,31 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  await usersData.updateUsers(ruobing._id, { fname: 'ruobing ', 
+  lname:' liu ', 
+  email:'rubinliu@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'rubinliu@gmail.com', 
+  gender: 'female', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
   const ming = await usersData.createUser(
     "Tzu Ming",
     "Lu",
@@ -55,6 +119,30 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  await usersData.updateUsers(ming._id, { fname: 'ming ', 
+  lname:' ming ', 
+  email:'tlu14@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'tlu14@gmail.com', 
+  gender: 'female', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++', 'javascript'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
 
   const Jakob = await userData.createUser(
     "jakob",
@@ -456,4 +544,7 @@ export const pseudoData = async () => {
     "Hope we all can get good grades."
   );
   await refer.addLikes(r2_id, ming._id);
+
+
+
 };
