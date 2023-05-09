@@ -306,7 +306,7 @@ app.use("/", (req, res, next) => {
 // );
 
 // console.log(joe._id);
-// configRoutes(app);
+configRoutes(app);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
