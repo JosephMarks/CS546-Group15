@@ -96,7 +96,11 @@ router.post("/", async (req, res) => {
       message: "Parameters are required",
     });
   }
-  const newGroup = await groupData.create(name, description);
+  const newGroup = await groupData.create(
+    name,
+    description,
+    req.session.user.userId
+  );
 
   res.redirect(`/groups/${newGroup._id}`);
 });
@@ -170,13 +174,18 @@ router.get("/:id/edit", async (req, res) => {
 
   try {
     let groupInfo = await groupData.get(id);
-    res.render("./groups/groupsEdit", {
-      _id: id,
-      name: groupInfo.name,
-      description: groupInfo.description,
-      image: groupInfo.base64Image,
-      title: "Edit Group",
-    });
+
+    if (groupInfo.users.includes(req.session.user.userId)) {
+      res.render("./groups/groupsEdit", {
+        _id: id,
+        name: groupInfo.name,
+        description: groupInfo.description,
+        image: groupInfo.base64Image,
+        title: "Edit Group",
+      });
+    } else {
+      res.redirect("/groups");
+    }
   } catch (e) {
     res.status(404).render("./error", {
       class: "error",
@@ -252,6 +261,8 @@ router.get("/:id/eventEdit", async (req, res) => {
   const id = req.params.id;
   // array of all events for this group
   const groupEvents = await groupEventData.getAll(id);
+  console.log("what is groupEvevnts?", groupEvents);
+  // const groupInfo = await groupData.get(id);
 
   try {
     res.render("./groups/eventEdit", {
@@ -310,12 +321,14 @@ router.get("/:id/eventAdd", async (req, res) => {
 router.post("/:id/eventAdd", async (req, res) => {
   const groupId = req.params.id;
   const { title, description, eventDate } = req.body;
+  const authorId = req.session.user.userId;
   try {
     let newEvent = await groupEventData.create(
       groupId,
       title,
       description,
-      eventDate
+      eventDate,
+      authorId
     );
     res.redirect(`/groups/${groupId}`);
   } catch (e) {
@@ -331,17 +344,23 @@ router.post("/:id/eventAdd", async (req, res) => {
 router.get("/:id/activityAdd", async (req, res) => {
   const id = req.params.id;
 
-  try {
-    res.render("./groups/activityAdd", {
-      _id: id,
-      title: "Add Activity",
-    });
-  } catch (e) {
-    res.status(404).render("./error", {
-      class: "error",
-      title: "Error Page",
-      errorMessage: `We're sorry, a group with that id does not exist.`,
-    });
+  //get the group
+  const fetdchedGroup = await groupData.get(id);
+  if (fetdchedGroup.users.includes(req.session.user.userId)) {
+    try {
+      res.render("./groups/activityAdd", {
+        _id: id,
+        title: "Add Activity",
+      });
+    } catch (e) {
+      res.status(404).render("./error", {
+        class: "error",
+        title: "Error Page",
+        errorMessage: `We're sorry, a group with that id does not exist.`,
+      });
+    }
+  } else {
+    res.redirect("/groups");
   }
 });
 
