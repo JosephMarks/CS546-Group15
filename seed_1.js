@@ -5,6 +5,7 @@ import usersData from "./data/user.js";
 import networkData from "./data/network.js";
 import skillsData from "./data/skills.js";
 import { userData } from "./data/index.js";
+import companyFunctions from "./data/company.js";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
 export const pseudoData = async () => {
@@ -132,7 +133,7 @@ export const pseudoData = async () => {
     "employee friendly, socially aligned"
   );
 
-  await userFunctions.createUser(
+  await userData.createUser(
     "Google ",
     "Foogle ",
     "70",
@@ -140,7 +141,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "barclays ",
     "barclays",
     "55",
@@ -148,7 +149,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "adobe",
     "Fodobe",
     "32",
@@ -156,7 +157,7 @@ export const pseudoData = async () => {
     "123456789@ggHH",
     "Company"
   );
-  await userFunctions.createUser(
+  await userData.createUser(
     "prudential",
     "Identical",
     "56",

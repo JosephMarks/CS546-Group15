@@ -58,7 +58,7 @@ router.route('/post/:userid')
         {
             return res.status(404).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/404.jpg" });
         }
-        return res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
+        res.render('networks/networkPost', { title: title, h1: h1, authorId: req.params.userid, userId: req.params.userid, userPost: userPostList, followerPost: followerPostList });
 
     })
 
@@ -82,7 +82,7 @@ router.route('/post/:userid/new')
             return res.status(400).render("networks/error", { title: "Error", h1: "Error", userId: req.session.user.userId, error: error, img: "https://http.dog/400.jpg" });
         }
 
-        return res.render('networks/createNewPost', { title: "New Post", h1: "New Post", userId: req.session.user.userId });
+        res.render('networks/createNewPost', { title: "New Post", h1: "New Post", userId: req.session.user.userId });
     })
     .post(async (req, res) =>
     {
@@ -97,10 +97,10 @@ router.route('/post/:userid/new')
 
         try
         {
-            post = validation.checkString(post, 'Post');
+            post = validation.checkPost(post, 'Post');
         } catch(error)
         {
-            return res.render('networks/createNewPost', {
+            res.render('networks/createNewPost', {
                 error: error,
                 post: post,
                 userId: req.params.userid
@@ -178,7 +178,7 @@ router.route('/post/:userid/postId/:id')
             const author = await userData.getUserById(post.userId);
             const title = post.content;
             const h1 = post.content;
-            return res.render('networks/yourPostComments', {
+            res.render('networks/yourPostComments', {
                 title: title,
                 h1: h1,
                 post: post,
@@ -321,7 +321,7 @@ router.route('/post/:userid/postId/:id/remove')
         }
         const title = post.content;
         const h1 = post.content;
-        return res.render('networks/yourPostRemove', { title: title, h1: h1, post: post, userId: req.params.userid });
+        res.render('networks/yourPostRemove', { title: title, h1: h1, post: post, userId: req.params.userid });
     })
     .delete(async (req, res) =>
     {

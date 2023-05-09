@@ -25,7 +25,7 @@ if (company) {
 
             }
         } else {
-            errorMsg.innerHTML = 'Compnay Name is required';
+            errorMsg.innerHTML = 'Company Name is required';
             company.reset();
             e.preventDefault();
         }
