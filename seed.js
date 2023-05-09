@@ -1368,10 +1368,4 @@ await seed.pseudoData();
 // console.log(foundUser);
 
 //console.log("Done seeding database");
-//console.log("Done seeding database");
-//console.log("Done seeding database");
-//console.log("Done seeding database");
-//console.log("Done seeding database");
-//console.log("Done seeding database");
-//console.log("Done seeding database");
 await closeConnection();
