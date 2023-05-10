@@ -71,7 +71,7 @@ if (profileEditForm) {
     if (!inputSkills.value) {
       event.preventDefault();
 
-      errors.push("Please select at least one skill.");
+      errors.push("Please select at least two skills.");
     }
 
     console.log(inputSkills.length);

@@ -31,6 +31,33 @@ export const pseudoData = async () => {
   );
 
   console.log(joe);
+
+  await usersData.updateUsers(joe._id, { fname: 'joe ', 
+  lname:' marks ', 
+  email:'jmarks@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'jmarks@gmail.com', 
+  gender: 'male', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++', 'python'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
+
+  
   const pundir = await usersData.createUser(
     "Pradyumn",
     "Pundir",
@@ -39,6 +66,18 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+
+  await usersData.updateUsers(pundir._id, { fname: 'pradyumn ', lname:' pundir ', email:'ppd@ggg.edu', password:'Test1234$', age: '21', gitHubUserName: 'ppp@gmail.com', gender: 'male', headerDescription: 'jhhsgysgtdf', aboutMe: 'jgdjsgdshfd', locationState: 'ny', university: 'stevens', collegeMajor: 'masters', status: 'Student', skills: ['javascript'], experience: 2, seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
+
   const ruobing = await usersData.createUser(
     "Ruobing",
     "Liu",
@@ -47,6 +86,31 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  await usersData.updateUsers(ruobing._id, { fname: 'ruobing ', 
+  lname:' liu ', 
+  email:'rubinliu@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'rubinliu@gmail.com', 
+  gender: 'female', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
+
   const ming = await usersData.createUser(
     "Tzu Ming",
     "Lu",
@@ -55,6 +119,30 @@ export const pseudoData = async () => {
     "Test1234$",
     "Student"
   );
+
+  await usersData.updateUsers(ming._id, { fname: 'ming ', 
+  lname:' ming ', 
+  email:'tlu14@ggg.edu', 
+  password:'Test1234$', 
+  age: '23', 
+  gitHubUserName: 'tlu14@gmail.com', 
+  gender: 'female', 
+  headerDescription: 'jhhsgysgtdf', 
+  aboutMe: 'jgdjsgdshfd', 
+  locationState: 'ny', 
+  university: 'stevens', 
+  collegeMajor: 'masters', 
+  status: 'Student', 
+  skills: ['c++', 'javascript'], 
+  experience: 2, 
+  seekingJob: [],
+  connections: [],
+  group: [],
+  createdAt: '09/05/2023',
+  updatedAt: '09/05/2023',
+  socialPost: [],
+  likedPost: [],
+  collectedPost: []});
 
   const Jakob = await userData.createUser(
     "jakob",
@@ -102,6 +190,12 @@ export const pseudoData = async () => {
     "music"
   );
 
+  // await companyFunctions.createCompany('google', 'google@google.com', 'tech', ['al', 'ak'], "15345", 'Google LLC is an American multinational technology company focusing on online advertising, search engine technology, cloud computing, computer software, quantum computing, e-commerce, artificial intelligence, and consumer electronics', '1.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('Barclays', 'Barclays@Barclays.com', 'chemistry', ['id'], '56789', 'Barclays is a British multinational universal bank, headquartered in London, England. Barclays operates as two divisions, Barclays UK and Barclays International, supported by a service company, Barclays Execution Services. ', '2.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('adobe', 'adobe@adobe.com', 'tech', ['ny'], '67895', 'Adobe Inc., originally called Adobe Systems Incorporated, is an American multinational computer software company incorporated in Delaware and headquartered in San Jose, California.', '4.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+  // await companyFunctions.createCompany('prudential', 'prudential@prudential.com', 'tech', ['nj'], '25000', 'Prudential Financial, Inc. is an American Fortune Global 500 and Fortune 500 company whose subsidiaries provide insurance, retirement planning, investment management, and other products and services to both retail and institutional customers throughout the United States and in over 40 other countries', '5.png', 'health care, dental or vision packages', 'employee friendly, socially aligned');
+
+
   await companyFunctions.createCompany(
     "google",
     "google@google.com",
@@ -113,6 +207,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "Barclays",
     "Barclays@Barclays.com",
@@ -124,6 +219,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "adobe",
     "adobe@adobe.com",
@@ -135,6 +231,7 @@ export const pseudoData = async () => {
     "health care, dental or vision packages",
     "employee friendly, socially aligned"
   );
+
   await companyFunctions.createCompany(
     "prudential",
     "prudential@prudential.com",
@@ -391,7 +488,7 @@ export const pseudoData = async () => {
   let jobType11 = ["online"];
   let skills11 = ["react"];
   let location11 = ["AZ"];
-  let description11 = "asdfad";
+  let description11 = "asdfadjgkgskdfgkjsdgfkjsdgfjksdgfjksdgfksgdfksgd";
   let re11 = await refer.addPost(
     title11,
     body11,
@@ -423,7 +520,7 @@ export const pseudoData = async () => {
   let jobType22 = ["online"];
   let skills22 = ["javascript"];
   let location22 = ["AZ"];
-  let description22 = "asdfad";
+  let description22 = "asdfadkshflsghdfjksgdkfgskjdgfjskdgfjksdgfkjsdgfjks";
   let re22 = await refer.addPost(
     title22,
     body22,
@@ -447,4 +544,7 @@ export const pseudoData = async () => {
     "Hope we all can get good grades."
   );
   await refer.addLikes(r2_id, ming._id);
+
+
+
 };
