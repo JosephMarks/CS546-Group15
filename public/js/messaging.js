@@ -25,7 +25,7 @@ function updateMessages(messages) {
     const messageContent = document.createElement("div");
     messageContent.classList = "messageLine";
     let { firstName, lastName } = message.senderFullName;
-    messageContent.textContent = `<strong>${firstName} ${lastName}:</strong> <span>${message.message}</span>`;
+    messageContent.innerHTML = `<strong>${firstName} ${lastName}:</strong> <span>${message.message}</span>`;
 
     messageDiv.appendChild(messageContent);
     messagesContainer.appendChild(messageDiv);
