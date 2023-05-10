@@ -18,6 +18,7 @@ import * as userJobHistoryData from "./data/userJobHistory.js";
 import * as groupActivityDataFunctions from "./data/groupActivity.js";
 import * as groupEventData from "./data/groupEvents.js";
 import companyFunctions from "./data/company.js";
+import bcrypt from "bcryptjs";
 
 // this file only put the "!!![valid data]!!!" any validate checking should go into seed.js file.
 export const pseudoData = async () => {
@@ -35,7 +36,7 @@ export const pseudoData = async () => {
   await usersData.updateUsers(joe._id, { fname: 'joe ', 
   lname:' marks ', 
   email:'jmarks@ggg.edu', 
-  password:'Test1234$', 
+  password : await bcrypt.hash('Test1234$', 10),
   age: '23', 
   gitHubUserName: 'jmarks@gmail.com', 
   gender: 'male', 
@@ -56,8 +57,6 @@ export const pseudoData = async () => {
   likedPost: [],
   collectedPost: []});
 
-
-  
   const pundir = await usersData.createUser(
     "Pradyumn",
     "Pundir",
@@ -67,8 +66,7 @@ export const pseudoData = async () => {
     "Student"
   );
 
-
-  await usersData.updateUsers(pundir._id, { fname: 'pradyumn ', lname:' pundir ', email:'ppd@ggg.edu', password:'Test1234$', age: '21', gitHubUserName: 'ppp@gmail.com', gender: 'male', headerDescription: 'jhhsgysgtdf', aboutMe: 'jgdjsgdshfd', locationState: 'ny', university: 'stevens', collegeMajor: 'masters', status: 'Student', skills: ['javascript'], experience: 2, seekingJob: [],
+  await usersData.updateUsers(pundir._id, { fname: 'pradyumn ', lname:' pundir ', email:'ppd@ggg.edu', password: await bcrypt.hash('Test1234$', 10), age: '21', gitHubUserName: 'ppp@gmail.com', gender: 'male', headerDescription: 'jhhsgysgtdf', aboutMe: 'jgdjsgdshfd', locationState: 'ny', university: 'stevens', collegeMajor: 'masters', status: 'Student', skills: ['javascript'], experience: 2, seekingJob: [],
   connections: [],
   group: [],
   createdAt: '09/05/2023',
@@ -90,7 +88,7 @@ export const pseudoData = async () => {
   await usersData.updateUsers(ruobing._id, { fname: 'ruobing ', 
   lname:' liu ', 
   email:'rubinliu@ggg.edu', 
-  password:'Test1234$', 
+  password: await bcrypt.hash('Test1234$', 10), 
   age: '23', 
   gitHubUserName: 'rubinliu@gmail.com', 
   gender: 'female', 
@@ -123,7 +121,7 @@ export const pseudoData = async () => {
   await usersData.updateUsers(ming._id, { fname: 'ming ', 
   lname:' ming ', 
   email:'tlu14@ggg.edu', 
-  password:'Test1234$', 
+  password:await bcrypt.hash('Test1234$', 10), 
   age: '23', 
   gitHubUserName: 'tlu14@gmail.com', 
   gender: 'female', 
