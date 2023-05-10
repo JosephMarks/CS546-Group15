@@ -204,7 +204,6 @@ const exportedMethods = {
     let lname = validations.validateNameReturn(updateData.lname);
     let email = validations.checkEmail(updateData.email, "Email");
     let password = validations.checkString(updateData.password, "Password");
-    password = await bcrypt.hash(password, 10);
     let age = validations.isAge(updateData.age, "age");
     let gender = validations.checkGender(updateData.gender, "Gender");
     let locationState = validations.checkState(

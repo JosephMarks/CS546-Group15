@@ -37,8 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
         errorDiv.innerText = "Please fill out all required fields.";
       }
 
-      regex = /[^a-zA-Z]/g;
-      if (regex.test(role)) {
+      let regex = /^[a-zA-Z_ ]*$/g;
+      if (!regex.test(role)) {
         event.preventDefault();
         errorDiv.innerText =
           "Please ensure role doesn't include numbers or special characters.";
