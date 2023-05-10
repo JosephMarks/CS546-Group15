@@ -25,8 +25,8 @@ export const create = async (
   }
   userId = validations.checkId(userId);
 
-  regex = /[^a-zA-Z]/g;
-  if (regex.test(role)) {
+  let regex = /^[a-zA-Z_ ]*$/g
+  if (!regex.test(role)) {
     throw new Error(
       "role not allowed to have numeric values or special characters"
     );
