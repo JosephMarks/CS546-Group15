@@ -109,7 +109,6 @@ export const pseudoData = async () => {
   likedPost: [],
   collectedPost: []});
 
-
   const ming = await usersData.createUser(
     "Tzu Ming",
     "Lu",
@@ -543,4 +542,7 @@ export const pseudoData = async () => {
     "Hope we all can get good grades."
   );
   await refer.addLikes(r2_id, ming._id);
+
+
+
 };
